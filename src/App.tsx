@@ -1,11 +1,9 @@
 import { QueryClient } from '@tanstack/react-query';
 import './App.css'
-import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import AppLayout from 'components/AppLayout';
 import LandingPage from 'pages/LandingPage';
-import AuthPage from 'pages/auth';
-import SignInPage from 'pages/auth/SignInPage';
-import SignUpPage from 'pages/auth/SignUpPage';
+import AuthPage from 'pages/AuthPage';
 import PrivateRoute from 'components/PrivateRoute';
 
 function App() {
@@ -29,22 +27,22 @@ function App() {
           element: <LandingPage />
         },
         {
-          path: "auth",
+          path: "sign-in",
           element: <AuthPage />,
-          children: [
-            {
-              path: "sign-in",
-              element: <SignInPage />
-            },
-            {
-              path: "sign-up",
-              element: <SignUpPage />
-            },
-            {
-              index: true,
-              element: <Navigate to="sign-in" replace />
-            }
-          ]
+          // children: [
+          //   {
+          //     path: "sign-in",
+          //     element: <SignInPage />
+          //   },
+          //   {
+          //     path: "sign-up",
+          //     element: <SignUpPage />
+          //   },
+          //   {
+          //     index: true,
+          //     element: <Navigate to="sign-in" replace />
+          //   }
+          // ]
         },
         {
           element: <PrivateRoute />,

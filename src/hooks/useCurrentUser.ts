@@ -10,6 +10,7 @@ export default function useCurrentUser() {
     useQuery(getCurrentUserQuery());
 
   useEffect(() => {
+    console.log('[useCurrentUser] use-effect', data, isPendingCurrentUser);
     if (data) {
       setCurrentUser(data)
     }

@@ -6,15 +6,10 @@ export type UserType = {
 }
 
 export type SignInInputs = {
-  username: string
-  password: string
+  phoneNumber: string
 }
 
-export type SignUpInputs = {
-  firstName: string
-  lastName: string
-  sex: string
-  email: string
-  phone: string
-  password: string
+export type SignOTPInputs = {
+  phoneNumber: string
+  pinCode: string
 }

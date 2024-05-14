@@ -27,6 +27,7 @@ interface CurrentUserContextProviderProps {
 const CurrentUserContextProvider = ({ children }: CurrentUserContextProviderProps) => {
   const {currentUser, setCurrentUser, isPendingCurrentUser, error, isError} = useCurrentUser();
 
+  console.log('[CurrentUserContextProvider] is pending cu', isPendingCurrentUser);
   if (isPendingCurrentUser) {
     return (
       <div className="grid h-screen place-items-center">

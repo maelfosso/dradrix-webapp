@@ -8,7 +8,7 @@ import useAuth, { AuthStep } from "hooks/useAuth";
 const AuthPage = () => {
   const { currentUser } = useCurrentUserContext();
   const navigate = useNavigate();
-  const { step, id, signIn, error } = useAuth();
+  const { step, signIn, signOTP, error } = useAuth();
 
   useEffect(() => {
     if (currentUser) {
@@ -20,7 +20,7 @@ const AuthPage = () => {
     <div>
       { step === AuthStep.PHONE_NUMBER
         ? <SignInPage errorOnSignIn={error} onSignIn={signIn} />
-        : <SignOTPage />
+        : <SignOTPage errorOnSignOTP={error} onSignOTP={signOTP} />
       }
     </div>
   )

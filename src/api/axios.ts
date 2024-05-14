@@ -22,9 +22,9 @@ const api = axios.create({
 
 const redirectToSignIn = () => {
   if (window.location) {
-    if (window.location.pathname.includes("/auth/sign-in")) return;
+    if (window.location.pathname.includes("/sign-in")) return;
     
-    window.location.href = '/auth/sign-in';
+    window.location.href = '/sign-in';
   }
 };
 

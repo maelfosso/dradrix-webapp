@@ -1,23 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useCurrentUserContext } from "contexts/CurrentUserContext";
-import { SignInInputs, SignUpInputs, UserType } from "models/auth";
+import { SignInInputs, SignOTPInputs, UserType } from "models/auth";
 import { useNavigate } from "react-router-dom";
 import { processError } from "api/axios";
-import { getCurrentUserQuery, signInMutation, signUpMutation } from "api/auth";
+import { AUTH_OTP, getCurrentUserQuery, signInMutation, signOTPMutation } from "api/auth";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { randomId } from "lib/utils";
+
+export enum AuthStep {
+  PHONE_NUMBER,
+  OTP
+}
+
+const SS_AUTH_PN_KEY = 'auth/phone-number';
+const SS_AUTH_STEP_KEY = 'auth/step';
 
 export default function useAuth() {
   const navigate = useNavigate();
   const { setCurrentUser } = useCurrentUserContext();
   const [error, setError] = useState<string>("");
+  const [step, setStep] = useState<AuthStep>(
+    sessionStorage.getItem(SS_AUTH_PN_KEY) ? AuthStep.OTP : AuthStep.PHONE_NUMBER
+  );
 
-  const {data: currentUser, error: errorOnCurrentUser, refetch: refetchCurrentUser } =
+  const {data: currentUser, error: errorOnCurrentUser, refetch: refetchCurrentUser, fetchStatus } =
     useQuery(getCurrentUserQuery(
-      // {
-      //   enabled: false
-      // }
+      { enabled: false }
     ));
-
+  
   useEffect(() => {
     if (currentUser) {
       setCurrentUser(currentUser);
@@ -26,22 +36,31 @@ export default function useAuth() {
   }, [currentUser, navigate, setCurrentUser]);
 
   useEffect(() => {
-    if (errorOnCurrentUser) {
-      setError(errorOnCurrentUser.message)
+    if (fetchStatus === 'idle') return;
+
+    switch (errorOnCurrentUser?.code) {
+      case "ERR_NETWORK":
+        setError('');
+        break;
+      default:
+        setError(errorOnCurrentUser?.message || '');
     }
-  }, [errorOnCurrentUser])
+  }, [errorOnCurrentUser]);
 
   const { mutate: mutateSignIn } = useMutation(signInMutation({
-    onSuccess: (data: UserType) => {
-      setCurrentUserContext();
+    onSuccess: (phoneNumber: string) => {
+      sessionStorage.setItem(SS_AUTH_PN_KEY, phoneNumber);
+      setStep(AuthStep.OTP);
     },
     onError: (error: Error) => {
       setError(processError(error).error)
     }
   }));
 
-  const { mutate: mutateSignUp } = useMutation(signUpMutation({
+  const { mutate: mutateSignOTP } = useMutation(signOTPMutation({
     onSuccess: (data: UserType) => {
+      sessionStorage.removeItem(SS_AUTH_PN_KEY);
+      sessionStorage.removeItem(SS_AUTH_STEP_KEY);
       setCurrentUserContext();
     },
     onError: (error: Error) => {
@@ -50,11 +69,16 @@ export default function useAuth() {
   }));
 
   const setCurrentUserContext = async () => {
+    console.log('[useAuth] setCurrentUserContext');
     refetchCurrentUser();
   }
 
-  const signUp = async (signUpInputs: SignUpInputs) => {
-    mutateSignUp(signUpInputs);
+  const signOTP = async (signOTPInputs: SignOTPInputs) => {
+    console.log('[useAuth] signOTP', signOTPInputs);
+    mutateSignOTP({
+      ...signOTPInputs,
+      phoneNumber: sessionStorage.getItem(SS_AUTH_PN_KEY)!
+    });
   }
 
   const signIn = async (signInInputs: SignInInputs) => {
@@ -62,8 +86,9 @@ export default function useAuth() {
   }
 
   return {
-    signUp, 
+    signOTP, 
     signIn,
+    step,
     error
   }
 }

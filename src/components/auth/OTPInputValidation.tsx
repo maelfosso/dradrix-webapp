@@ -39,9 +39,6 @@ const OTPInputValidation = ({ numberOfDigits = 4 }: Props) => {
 
    return (
     <article className="w-1/2">
-      <p className="text-2xl font-medium text-white mt-12">OTP Input With Validation</p>
-      <p className="text-base text-white mt-4 bg-[#323232] p-4 rounded-md">A special type of input box where as user types, it checks if the otp is correct else it shows an error message below with a shake animation.</p>
-      
       <p className="text-base text-white mt-6 mb-4">One Time Password (OTP)</p>
      
      <div className='flex items-center gap-4'>
