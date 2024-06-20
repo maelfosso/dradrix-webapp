@@ -3,7 +3,7 @@ import { XCircleIcon } from "@heroicons/react/20/solid";
 interface Props {
   description: string;
 }
-export function CommonAlertDanger({ description }: Props) {
+export function AlertDanger({ description }: Props) {
   return (
     <div className="rounded-md bg-red-50 p-4">
       <div className="flex">

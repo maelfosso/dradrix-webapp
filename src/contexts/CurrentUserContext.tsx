@@ -1,4 +1,4 @@
-import CommonSpinner from "components/common/CommonSpinner";
+import Spinner from "components/common/Spinner";
 import useCurrentUser from "hooks/useCurrentUser";
 import { UserType } from "models/auth";
 import { createContext, useContext } from "react";
@@ -31,7 +31,7 @@ const CurrentUserContextProvider = ({ children }: CurrentUserContextProviderProp
   if (isPendingCurrentUser) {
     return (
       <div className="grid h-screen place-items-center">
-        <CommonSpinner />
+        <Spinner />
       </div>
     )
   }

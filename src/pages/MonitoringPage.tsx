@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getMonitoredActivities } from "api/monitoring";
-import CommonSpinner from "components/common/CommonSpinner";
+import Spinner from "components/common/Spinner";
 import MonitoredActivities from "components/monitoring/MonitoredActivities";
 import NothingMonitored from "components/monitoring/NothingMonitored";
 
@@ -9,7 +9,7 @@ const MonitoringPage = () => {
     useQuery(getMonitoredActivities());
 
   if (isPending) {
-    return <CommonSpinner />
+    return <Spinner />
   }
 
   if (error) {
