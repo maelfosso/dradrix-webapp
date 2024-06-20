@@ -1,4 +1,4 @@
-import { CommonAlertDanger } from "components/common/CommonAlert";
+import { AlertDanger } from "components/common/Alert";
 import { SignInInputs } from "models/auth";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
@@ -39,7 +39,7 @@ const SignInPage = ({ errorOnSignIn, onSignIn } : Props) => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" action="#" method="POST" onSubmit={handleSubmit}>
-            { errorOnSignIn && <CommonAlertDanger description={errorOnSignIn} /> }
+            { errorOnSignIn && <AlertDanger description={errorOnSignIn} /> }
             <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                 Your phone number
