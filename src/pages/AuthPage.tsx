@@ -12,7 +12,7 @@ const AuthPage = () => {
 
   useEffect(() => {
     if (currentUser) {
-      navigate("/orgs");
+      navigate("/monitoring");
     }
   }, [currentUser, navigate]);
 

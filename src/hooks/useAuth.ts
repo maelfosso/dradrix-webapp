@@ -31,7 +31,7 @@ export default function useAuth() {
   useEffect(() => {
     if (currentUser) {
       setCurrentUser(currentUser);
-      navigate("/orgs");
+      navigate("/monitoring");
     }
   }, [currentUser, navigate, setCurrentUser]);
 

@@ -5,6 +5,7 @@ import AppLayout from 'components/AppLayout';
 import LandingPage from 'pages/LandingPage';
 import AuthPage from 'pages/AuthPage';
 import PrivateRoute from 'components/PrivateRoute';
+import MonitoringPage from 'pages/MonitoringPage';
 
 function App() {
   const queryClient = new QueryClient({
@@ -29,27 +30,14 @@ function App() {
         {
           path: "sign-in",
           element: <AuthPage />,
-          // children: [
-          //   {
-          //     path: "sign-in",
-          //     element: <SignInPage />
-          //   },
-          //   {
-          //     path: "sign-up",
-          //     element: <SignUpPage />
-          //   },
-          //   {
-          //     index: true,
-          //     element: <Navigate to="sign-in" replace />
-          //   }
-          // ]
         },
         {
           element: <PrivateRoute />,
           children: [
             {
-              path: "",
-              children: []
+              path: "monitoring",
+              element: <MonitoringPage />
+              // children: []
             }
           ]
         }
