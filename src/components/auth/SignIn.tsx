@@ -1,7 +1,7 @@
 import { AlertDanger } from "components/common/Alert";
+import { Link } from "components/common/Link";
 import { SignInInputs } from "models/auth";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 
 interface Props {
   onSignIn: (inputs: SignInInputs) => void;

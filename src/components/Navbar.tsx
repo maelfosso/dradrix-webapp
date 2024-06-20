@@ -1,7 +1,7 @@
 import { UserCircleIcon } from '@heroicons/react/20/solid';
 import { useCurrentUserContext } from 'contexts/CurrentUserContext';
 import { UserType } from 'models/auth';
-import { Link } from 'react-router-dom';
+import { Link } from './common/Link';
 
 const Avatar = ({ currentUser }: {currentUser: UserType}) => {
   return (
