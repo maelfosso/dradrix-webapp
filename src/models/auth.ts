@@ -2,7 +2,9 @@ export type UserType = {
   id: number,
   name: string,
   email: string,
-  phone: string
+  phone: string,
+
+  currentOnboardingStep: number
 }
 
 export type SignInInputs = {
