@@ -32,7 +32,6 @@ const SignInPage = ({ errorOnSignIn, onSignIn } : Props) => {
           <form className="mt-8 space-y-6 sm:mx-auto sm:w-full sm:max-w-md" onSubmit={handleSubmit}>
             <Fieldset>
               <Field>
-                {/* <Label>Your phone number</Label> */}
                 <Input
                   id="phone_number"
                   name="phone_number"

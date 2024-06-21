@@ -51,16 +51,20 @@ const SignOTPage = ({ errorOnSignOTP, onSignOTP } : Props) => {
     //   setOtpError(null)
     // }
     if (otp.join("").length === NUMBER_OF_DIGITS) {
-      handleSubmit({
-        phoneNumber: '',
-        pinCode: otp.join("")
-      });
+      // handleSubmit({
+      //   phoneNumber: '',
+      //   pinCode: otp.join("")
+      // });
     }
    }, [otp]);
 
-  const handleSubmit = async (inputs: SignOTPInputs) => { // } (e: React.FormEvent<HTMLFormElement>) => {
-    // e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     // await signOTP(inputs);
+    const inputs = {
+      phoneNumber: '',
+      pinCode: otp.join("")
+    };
     console.log('handle submit')
     onSignOTP(inputs);
     // try {
@@ -78,7 +82,7 @@ const SignOTPage = ({ errorOnSignOTP, onSignOTP } : Props) => {
         <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
           <Heading>Enter the OTP</Heading>
           <Text>Type the OTP you've received on WhatsApp</Text>
-          <form className="mt-8 space-y-6 sm:mx-auto sm:w-full sm:max-w-md">
+          <form className="mt-8 space-y-6 sm:mx-auto sm:w-full sm:max-w-md" onSubmit={handleSubmit}>
             <Fieldset>
               <FieldGroup className='flex items-center justify-between'>
                 {otp.map((digit, index)=>(
