@@ -2,6 +2,7 @@ import { Outlet, useNavigate } from "react-router-dom"
 import AppNavbar from "./AppNavbar"
 import { useCurrentUserContext } from "contexts/CurrentUserContext";
 import { useEffect } from "react";
+import HomeLayout from "./HomeLayout";
 
 const AppContent = () => {
 
@@ -17,11 +18,15 @@ const AppContent = () => {
       navigate("/onboarding");
     } else {
       // TODO change it to currentUser.company.id
-      navigate(`/c/${currentUser.id}`)
+      navigate(`/c/${currentUser.preferences.company.id}`)
     }
   }, [currentUser, navigate]);
 
   console.log("into app-content")
+  if (currentUser?.preferences.onboardingStep === -1) {
+    return <HomeLayout />
+  }
+
   return (
     <>
       <AppNavbar />
