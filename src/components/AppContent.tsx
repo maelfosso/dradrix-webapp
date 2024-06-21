@@ -17,12 +17,10 @@ const AppContent = () => {
     if (currentUser.preferences.onboardingStep != -1) {
       navigate("/onboarding");
     } else {
-      // TODO change it to currentUser.company.id
       navigate(`/c/${currentUser.preferences.company.id}`)
     }
   }, [currentUser, navigate]);
 
-  console.log("into app-content")
   if (currentUser?.preferences.onboardingStep === -1) {
     return <HomeLayout />
   }

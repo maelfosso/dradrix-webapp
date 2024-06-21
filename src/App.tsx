@@ -2,10 +2,8 @@ import { QueryClient } from '@tanstack/react-query';
 import './App.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import AppLayout from 'components/AppLayout';
-import LandingPage from 'pages/LandingPage';
 import AuthPage from 'pages/AuthPage';
 import PrivateRoute from 'components/PrivateRoute';
-import MonitoringPage from 'pages/MonitoringPage';
 import OnboardingPage, { OnboardingProvider } from 'pages/OnboardingPage';
 import HomePage from 'pages/HomePage';
 
@@ -25,10 +23,10 @@ function App() {
       path: "/",
       element: <AppLayout queryClient={queryClient}/>,
       children: [
-        {
-          index: true,
-          element: <LandingPage />
-        },
+        // {
+        //   index: true,
+        //   element: <LandingPage />
+        // },
         {
           path: "sign-in",
           element: <AuthPage />,

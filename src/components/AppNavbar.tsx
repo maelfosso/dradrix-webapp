@@ -1,6 +1,4 @@
-import { UserCircleIcon } from '@heroicons/react/20/solid';
 import { useCurrentUserContext } from 'contexts/CurrentUserContext';
-import { UserType } from 'models/auth';
 import { Link } from './common/Link';
 import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from './common/Navbar';
 
@@ -14,11 +12,11 @@ const AppNavbar = () => {
         <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Tschwaa</span>
       </Link>
       <NavbarSpacer />
-      <NavbarSection>
+      { !currentUser && <NavbarSection>
         <NavbarItem href="/search" aria-label="Search">
           Log in
         </NavbarItem>
-      </NavbarSection>
+      </NavbarSection>}
     </Navbar>
   )
 }
