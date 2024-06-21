@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom"
-import Navbar from "./Navbar"
+import AppNavbar from "./AppNavbar"
 
 const AppContent = () => {
   return (
     <>
-      <Navbar />
+      <AppNavbar />
       <Outlet />
     </>
   )
