@@ -6,7 +6,7 @@ import LandingPage from 'pages/LandingPage';
 import AuthPage from 'pages/AuthPage';
 import PrivateRoute from 'components/PrivateRoute';
 import MonitoringPage from 'pages/MonitoringPage';
-import OnboardingPage from 'pages/OnboardingPage';
+import OnboardingPage, { OnboardingProvider } from 'pages/OnboardingPage';
 
 function App() {
   const queryClient = new QueryClient({
@@ -37,13 +37,13 @@ function App() {
           children: [
             {
               path: "onboarding",
-              element: <OnboardingPage />
+              element: <OnboardingProvider><OnboardingPage /></OnboardingProvider>
             },
-            {
-              path: "monitoring",
-              element: <MonitoringPage />
-              // children: []
-            }
+            // {
+            //   path: "monitoring",
+            //   element: <MonitoringPage />
+            //   // children: []
+            // }
           ]
         }
       ]

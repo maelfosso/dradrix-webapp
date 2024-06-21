@@ -18,7 +18,7 @@ export function Legend({ className, ...props }: { className?: string } & Omit<He
       {...props}
       className={clsx(
         className,
-        'text-base/6 font-semibold text-zinc-950 data-[disabled]:opacity-50 sm:text-sm/6 dark:text-white'
+        'text-lg/6 font-semibold text-zinc-950 data-[disabled]:opacity-50 sm:text-base/6 dark:text-white'
       )}
     />
   )

@@ -1,10 +1,18 @@
+type UserPreferences = {
+  company: {
+    id: string
+    name: string
+  }
+  onboardingStep: number
+}
+
 export type UserType = {
   id: number,
   name: string,
   email: string,
-  phone: string,
+  phoneNumber: string,
 
-  currentOnboardingStep: number
+  preferences: UserPreferences
 }
 
 export type SignInInputs = {

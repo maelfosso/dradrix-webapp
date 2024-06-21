@@ -29,9 +29,16 @@ export default function useAuth() {
     ));
   
   useEffect(() => {
+    console.log('[useAuth] currentUser ', currentUser);
     if (currentUser) {
       setCurrentUser(currentUser);
-      navigate("/monitoring");
+      
+      if (currentUser.preferences.onboardingStep != -1) {
+        navigate("/onboarding");
+      } else {
+        // TODO change it to currentUser.company.id
+        navigate(`/c/${currentUser.id}`)
+      }
     }
   }, [currentUser, navigate, setCurrentUser]);
 

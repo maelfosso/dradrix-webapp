@@ -6,15 +6,20 @@ import SignOTPage from "../components/auth/SignOTP";
 import useAuth, { AuthStep } from "hooks/useAuth";
 
 const AuthPage = () => {
-  const { currentUser } = useCurrentUserContext();
-  const navigate = useNavigate();
+  // const { currentUser } = useCurrentUserContext();
+  // const navigate = useNavigate();
   const { step, signIn, signOTP, error } = useAuth();
 
-  useEffect(() => {
-    if (currentUser) {
-      navigate("/monitoring");
-    }
-  }, [currentUser, navigate]);
+  // useEffect(() => {
+  //   if (currentUser) {
+  //     if (currentUser.preferences.onboardingStep != -1) {
+  //       navigate("/onboarding");
+  //     } else {
+  //       // TODO change it to currentUser.company.id
+  //       navigate(`/c/${currentUser.id}`)
+  //     }
+  //   }
+  // }, [currentUser, navigate]);
 
   return (
     <div>

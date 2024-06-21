@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getCurrentUserQuery } from "api/auth";
 import { useQuery } from "@tanstack/react-query";
 
+// TODO must be deleted
 export default function useCurrentUser() {
   const [currentUser, setCurrentUser] = useState<UserType|null>(null);
 
