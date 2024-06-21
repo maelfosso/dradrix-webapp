@@ -4,6 +4,7 @@ import { Field, Fieldset, Label } from "components/common/Fieldset";
 import { Heading, Subheading } from "components/common/Heading";
 import { Input } from "components/common/Input";
 import { Link } from "components/common/Link";
+import { Text } from "components/common/Text";
 import { SignInInputs } from "models/auth";
 import React, { useState } from "react";
 
@@ -23,25 +24,25 @@ const SignInPage = ({ errorOnSignIn, onSignIn } : Props) => {
   }
 
   return (
-    <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="flex flex-col items-center justify-center h-[calc(100vh_-_60px)] py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
           <Heading>Sign in to your account</Heading>
-          <form className="space-y-6" action="#" method="POST" onSubmit={handleSubmit}>
-            { errorOnSignIn && <AlertDanger description={errorOnSignIn} /> }
-            <Fieldset className="mt-6">
+          <Text>Enter your phone number, please</Text>
+          <form className="mt-8 space-y-6 sm:mx-auto sm:w-full sm:max-w-md" onSubmit={handleSubmit}>
+            <Fieldset>
               <Field>
-                <Label>Your phone number</Label>
+                {/* <Label>Your phone number</Label> */}
                 <Input
                   id="phone_number"
                   name="phone_number"
+                  placeholder="Your phone number"
                   type="tel"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputs({...inputs, phoneNumber: e.target.value})}
                   className="block w-full"
                   required
                 />
               </Field>
-
             </Fieldset>
 
             <Button type="submit" className="w-full">Sign in</Button>
