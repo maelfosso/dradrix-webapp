@@ -6,6 +6,7 @@ import LandingPage from 'pages/LandingPage';
 import AuthPage from 'pages/AuthPage';
 import PrivateRoute from 'components/PrivateRoute';
 import MonitoringPage from 'pages/MonitoringPage';
+import OnboardingPage from 'pages/OnboardingPage';
 
 function App() {
   const queryClient = new QueryClient({
@@ -34,6 +35,10 @@ function App() {
         {
           element: <PrivateRoute />,
           children: [
+            {
+              path: "onboarding",
+              element: <OnboardingPage />
+            },
             {
               path: "monitoring",
               element: <MonitoringPage />
