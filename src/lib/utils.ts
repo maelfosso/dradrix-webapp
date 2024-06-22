@@ -8,6 +8,22 @@ export const randomId = () => Math.random().toString(36).substring(2, 5);
 export const getCountries = () => {
   return [
     {
+      name: 'Cameroon',
+      code: 'CM',
+      flagUrl: '/flags/ca.svg',
+      regions: [
+        'Extreme-Nord',
+        'Nord',
+        'Adamaoud',
+        'Centre',
+        'Sud',
+        'Sud-Ouest',
+        'Nord-Ouest',
+        'Littoral',
+        'Est',
+      ],
+    },
+    {
       name: 'Canada',
       code: 'CA',
       flagUrl: '/flags/ca.svg',
