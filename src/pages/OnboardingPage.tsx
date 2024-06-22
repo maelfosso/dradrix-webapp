@@ -64,9 +64,9 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
   const { currentUser } =  useCurrentUserContext();
 
   const [profile, setProfile] = useState({
-    firstName: '',
-    lastName: '',
-    email: ''
+    firstName: currentUser?.firstName || '',
+    lastName: currentUser?.lastName || '',
+    email: currentUser?.email || ''
   });
   const [organization, setOrganization] = useState({
     name: '',

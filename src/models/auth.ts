@@ -8,7 +8,8 @@ type UserPreferences = {
 
 export type UserType = {
   id: number,
-  name: string,
+  firstName: string,
+  lastName: string,
   email: string,
   phoneNumber: string,
 
