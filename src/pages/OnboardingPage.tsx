@@ -41,7 +41,13 @@ export const OnboardingContext = createContext<OnboardingContextType>({
     name: '',
     bio: '',
     email: '',
-    address: '', // {}
+    address: {
+      street: '',
+      city: '',
+      region: '',
+      postalCode: '',
+      country: ''
+    },
   },
   setOrganization: () => undefined,
   error: '',
@@ -66,7 +72,13 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
     name: '',
     bio: '',
     email: '',
-    address: ''
+    address: {
+      street: '',
+      city: '',
+      region: '',
+      postalCode: '',
+      country: ''
+    }
   })
   const [error, setError] = useState('');
   const [stepIndex, setStepIndex] = useState(currentUser?.preferences.onboardingStep ?? 0)

@@ -16,7 +16,7 @@ export const Address = () => {
   let [country, setCountry] = useState(countries[0])
 
   return (
-    <div className="grid grid-cols-2 gap-6">
+    <FieldGroup className="grid grid-cols-2">
       <Input
         aria-label="Street Address"
         name="address"
@@ -49,7 +49,7 @@ export const Address = () => {
           </ListboxOption>
         ))}
       </Listbox>
-    </div>
+    </FieldGroup>
   )
 }
 
@@ -75,14 +75,8 @@ const OrganizationInformation = () => {
             <Input type="email" name="email" placeholder="info@ddx.com" />
           </Field>
           <Field>
-            <Label>Country</Label>
-            <Select name="country">
-              <option>Cameroon</option>
-              <option>France</option>
-              <option>Canada</option>
-              <option>United States</option>
-            </Select>
-            {/* <Description>We currently only ship to North America.</Description> */}
+            <Label>Address</Label>
+            <Address />
           </Field>
         </FieldGroup>
       </Fieldset>

@@ -4,11 +4,19 @@ export type Profile = {
   email: string
 }
 
+export type Address = {
+  street: string
+  city: string
+  region: string
+  postalCode: string
+  country: string
+}
+
 export type Organization = {
   name: string
   bio: string
   email: string
-  address: string
+  address: Address
 }
 
 export type OnboardingStep = {
