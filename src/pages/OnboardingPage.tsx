@@ -1,3 +1,5 @@
+import { useMutation } from "@tanstack/react-query";
+import { setProfileMutation } from "api/onboarding";
 import { Button } from "components/common/Button";
 import Container from "components/common/Container";
 import { Heading } from "components/common/Heading";
@@ -7,6 +9,7 @@ import OrganizationInformation from "components/onboarding/OrganizationInformati
 import ProfileInformation from "components/onboarding/ProfileInformation";
 import { useCurrentUserContext } from "contexts/CurrentUserContext";
 import { createContext, useContext, useMemo, useState } from "react";
+import { OnboardingContextType, Profile, Organization } from "models/onboarding";
 
 
 const steps = [
@@ -27,22 +30,23 @@ const steps = [
   }
 ]
 
-export const OnboardingContext = createContext({
+export const OnboardingContext = createContext<OnboardingContextType>({
   profile: {
     firstName: '',
     lastName: '',
     email: ''
   },
-  setProfile: () => {},
+  setProfile: () => undefined,
   organization: {
     name: '',
     bio: '',
     email: '',
-    address: {}
+    address: '', // {}
   },
-  setOrganization: () => {},
+  setOrganization: () => undefined,
+  error: '',
   stepIndex: 0,
-  currentStep: {},
+  currentStep: steps[0],
   handlePrevious: () => {},
   handleNext: () => {}
 });
@@ -62,12 +66,37 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
     name: '',
     bio: '',
     email: '',
-    address: {}
+    address: ''
   })
+  const [error, setError] = useState('');
   const [stepIndex, setStepIndex] = useState(currentUser?.preferences.onboardingStep ?? 0)
   const currentStep = useMemo(() => {
     return steps[stepIndex];
   }, [stepIndex])
+
+  const { mutate: mutateProfile } = useMutation(setProfileMutation({
+    onSuccess: (done: boolean) => {
+      // sessionStorage.setItem(SS_AUTH_PN_KEY, phoneNumber);
+      // setStep(AuthStep.OTP);
+      setStepIndex(stepIndex + 1);
+    },
+    onError: (error: Error) => {
+      // setError(processError(error).error)
+      console.log("[Onboarding] set-profile: ", error);
+      setError(error.message);
+    }
+  }));
+
+  // const { mutate: mutateSignOTP } = useMutation(signOTPMutation({
+  //   onSuccess: (data: UserType) => {
+  //     sessionStorage.removeItem(SS_AUTH_PN_KEY);
+  //     sessionStorage.removeItem(SS_AUTH_STEP_KEY);
+  //     setCurrentUserContext();
+  //   },
+  //   onError: (error: Error) => {
+  //     setError(processError(error).error)
+  //   }
+  // }));
 
   const handlePrevious = () => {
     if (stepIndex <= 0) {
@@ -85,6 +114,7 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
     switch (stepIndex) {
       case 0:
         console.log("profile step: ", profile)
+        mutateProfile(profile)
         break;
     
       case 1:
@@ -98,8 +128,6 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
       default:
         break;
     }
-
-    setStepIndex(stepIndex + 1);
   }
 
   const value = useMemo(
@@ -108,6 +136,7 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
       setProfile,
       organization,
       setOrganization,
+      error,
       stepIndex,
       currentStep,
       handlePrevious,
@@ -118,6 +147,7 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
       setProfile,
       organization,
       setOrganization,
+      error,
       stepIndex,
       currentStep,
       handlePrevious,
