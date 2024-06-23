@@ -8,7 +8,7 @@ import EndOfOnboarding from "components/onboarding/EndOfOnboarding";
 import OrganizationInformation from "components/onboarding/OrganizationInformation";
 import ProfileInformation from "components/onboarding/ProfileInformation";
 import { createContext, useContext, useMemo, useState } from "react";
-import { OnboardingContextType, Profile, Organization } from "models/onboarding";
+import { OnboardingContextType } from "models/onboarding";
 import { useAuthContext } from "contexts/AuthContext";
 
 
