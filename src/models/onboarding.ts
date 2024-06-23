@@ -35,4 +35,5 @@ export type OnboardingContextType = {
   currentStep: OnboardingStep;
   handlePrevious: () => void;
   handleNext: () => void;
+  routingId: string | undefined;
 }

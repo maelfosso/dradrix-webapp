@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { setOrganizationMutation, setProfileMutation } from "api/onboarding";
+import { OrganizationMutationResponse, setOrganizationMutation, setProfileMutation } from "api/onboarding";
 import { Button } from "components/common/Button";
 import Container from "components/common/Container";
 import { Heading } from "components/common/Heading";
@@ -54,7 +54,8 @@ export const OnboardingContext = createContext<OnboardingContextType>({
   stepIndex: 0,
   currentStep: steps[0],
   handlePrevious: () => {},
-  handleNext: () => {}
+  handleNext: () => {},
+  routingId: undefined
 });
 
 export const useOnboardingContext = () => useContext(OnboardingContext);
@@ -85,24 +86,23 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
   const currentStep = useMemo(() => {
     return steps[stepIndex];
   }, [stepIndex])
+  const [routingId, setRoutingId] = useState<string|undefined>(undefined);
 
   const { mutate: mutateProfile } = useMutation(setProfileMutation({
     onSuccess: (done: boolean) => {
       setStepIndex(stepIndex + 1);
     },
     onError: (error: Error) => {
-      // setError(processError(error).error)
-      console.log("[Onboarding] set-profile: ", error);
       setError(error.message);
     }
   }));
 
   const { mutate: mutateOrganization } = useMutation(setOrganizationMutation({
-    onSuccess: (done: boolean) => {
+    onSuccess: (response: OrganizationMutationResponse) => {
       setStepIndex(stepIndex + 1);
+      setRoutingId(response.id);
     },
     onError: (error: Error) => {
-      console.log("[Onboarding] set-organization: ", error);
       setError(error.message);
     }
   }));
@@ -122,17 +122,14 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
 
     switch (stepIndex) {
       case 0:
-        console.log("profile step: ", profile)
         mutateProfile(profile);
         break;
     
       case 1:
-        console.log("organization step: ", organization);
         mutateOrganization(organization);
         break;
 
       case 2:
-        console.log("last step")
         break;
 
       default:
@@ -150,7 +147,8 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
       stepIndex,
       currentStep,
       handlePrevious,
-      handleNext
+      handleNext,
+      routingId
     }),
     [
       profile,
@@ -161,7 +159,8 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
       stepIndex,
       currentStep,
       handlePrevious,
-      handleNext
+      handleNext,
+      routingId
     ]
   );
 
@@ -182,53 +181,53 @@ const OnboardingPage = () => {
   } = useOnboardingContext();
 
   return (
-    <Container className="w-969">
-      {/* <div className="flex flex-col items-center justify-center h-[calc(100vh_-_60px)]"> */}
-      <Heading>Onboarding</Heading>
+    <Container>
+      { stepIndex < steps.length - 1 && <Heading>Onboarding</Heading>}
       { currentStep.component }
-      <Navbar>
-        <Button
-          plain 
-          className={`${stepIndex <= 0 && 'hidden'}`}
-          onClick={() => handlePrevious()}
-        >Previous</Button>
-        <NavbarSpacer />
-        <NavbarSection>
-          <p className="text-sm font-medium">
-            Step {stepIndex + 1} of {steps.length}
-          </p>
-          <ol role="list" className="ml-8 flex items-center space-x-5">
-            {steps.map((step, index) => (
-              <li key={step.id}>
-                {index < stepIndex ? (
-                  <div className="block h-2.5 w-2.5 rounded-full bg-indigo-600 hover:bg-indigo-900">
-                    <span className="sr-only">{step.title}</span>
-                  </div>
-                ) : stepIndex == index ? (
-                  <div className="relative flex items-center justify-center" aria-current="step">
-                    <span className="absolute flex h-5 w-5 p-px" aria-hidden="true">
-                      <span className="h-full w-full rounded-full bg-indigo-200" />
-                    </span>
-                    <span className="relative block h-2.5 w-2.5 rounded-full bg-indigo-600" aria-hidden="true" />
-                    <span className="sr-only">{step.title}</span>
-                  </div>
-                ) : (
-                  <div className="block h-2.5 w-2.5 rounded-full bg-gray-200 hover:bg-gray-400">
-                    <span className="sr-only">{step.title}</span>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ol>
-        </NavbarSection>
-        <NavbarSpacer />
-        <Button
-          plain
-          className={`${stepIndex >= steps.length - 1 && 'hidden'}`}
-          onClick={() => handleNext()}
-        >Next</Button>
-      </Navbar>
-  {/* </div> */}
+      { stepIndex < steps.length - 1 && (
+        <Navbar>
+          <Button
+            plain
+            className={`${stepIndex <= 0 && 'hidden'}`}
+            onClick={() => handlePrevious()}
+          >Previous</Button>
+          <NavbarSpacer />
+          <NavbarSection>
+            <p className="text-sm font-medium">
+              Step {stepIndex + 1} of {steps.length}
+            </p>
+            <ol role="list" className="ml-8 flex items-center space-x-5">
+              {steps.map((step, index) => (
+                <li key={step.id}>
+                  {index < stepIndex ? (
+                    <div className="block h-2.5 w-2.5 rounded-full bg-indigo-600 hover:bg-indigo-900">
+                      <span className="sr-only">{step.title}</span>
+                    </div>
+                  ) : stepIndex == index ? (
+                    <div className="relative flex items-center justify-center" aria-current="step">
+                      <span className="absolute flex h-5 w-5 p-px" aria-hidden="true">
+                        <span className="h-full w-full rounded-full bg-indigo-200" />
+                      </span>
+                      <span className="relative block h-2.5 w-2.5 rounded-full bg-indigo-600" aria-hidden="true" />
+                      <span className="sr-only">{step.title}</span>
+                    </div>
+                  ) : (
+                    <div className="block h-2.5 w-2.5 rounded-full bg-gray-200 hover:bg-gray-400">
+                      <span className="sr-only">{step.title}</span>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </NavbarSection>
+          <NavbarSpacer />
+          <Button
+            plain
+            className={`${stepIndex >= steps.length - 1 && 'hidden'}`}
+            onClick={() => handleNext()}
+          >Next</Button>
+        </Navbar>
+      )}
     </Container>
   )
 }

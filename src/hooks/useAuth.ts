@@ -32,12 +32,12 @@ export default function useAuth() {
     console.log('[useAuth] currentUser ', currentUser);
     if (currentUser) {
       setCurrentUser(currentUser);
-      
+
       if (currentUser.preferences.onboardingStep != -1) {
         navigate("/onboarding");
       } else {
         // TODO change it to currentUser.company.id
-        navigate(`/c/${currentUser.id}`)
+        navigate(`/c/${currentUser.preferences.organization.id}`)
       }
     }
   }, [currentUser, navigate, setCurrentUser]);
