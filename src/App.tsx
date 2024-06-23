@@ -8,20 +8,11 @@ import OnboardingPage, { OnboardingProvider } from 'pages/OnboardingPage';
 import HomePage from 'pages/HomePage';
 
 function App() {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-        staleTime: 0,
-      },
-      mutations: {}
-    }
-  });
 
   const routes = createBrowserRouter([
     {
       path: "/",
-      element: <AppLayout queryClient={queryClient}/>,
+      element: <AppLayout />,
       children: [
         // {
         //   index: true,
