@@ -1,45 +1,48 @@
-import { QueryClient } from '@tanstack/react-query';
 import './App.css'
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import AppLayout from 'components/AppLayout';
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import AuthPage from 'pages/AuthPage';
 import PrivateRoute from 'components/PrivateRoute';
 import OnboardingPage, { OnboardingProvider } from 'pages/OnboardingPage';
+import AuthLayout from 'components/layout/AuthLayout';
+import VisitorLayout from 'components/layout/VisitorLayout';
+import NotReadyUserLayout from 'components/layout/NotReadyUserLayout';
+import MainLayout from 'components/layout/MainLayout';
+import LandingPage from 'pages/LandingPage';
 import HomePage from 'pages/HomePage';
 
 function App() {
 
-  const routes = createBrowserRouter([
-    {
-      path: "/",
-      element: <AppLayout />,
-      children: [
-        // {
-        //   index: true,
-        //   element: <LandingPage />
-        // },
-        {
-          path: "sign-in",
-          element: <AuthPage />,
-        },
-        {
-          element: <PrivateRoute />,
-          children: [
-            {
-              path: "onboarding",
-              element: <OnboardingProvider><OnboardingPage /></OnboardingProvider>
-            },
-            {
-              path: "c/:organizationId",
-              element: <HomePage />
-              // children: []
-            }
-          ]
-        }
-      ]
-    }
-  ])
+  const routes = createBrowserRouter(
+    createRoutesFromElements(
+      <Route
+        element={<AuthLayout />}
+      >
+        <Route element={<VisitorLayout />}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/sign-in" element={<AuthPage />}/>
+        </Route>
+
+        <Route element={<PrivateRoute />}>
+          <Route element={<NotReadyUserLayout />}>
+            <Route
+              path="/onboarding"
+              element={
+                <OnboardingProvider>
+                  <OnboardingPage></OnboardingPage>
+                </OnboardingProvider>
+              }
+            />
+          </Route>
+
+          <Route element={<MainLayout />}>
+            <Route path="/c/:organizationId" element={<HomePage />} />
+          </Route>
+        </Route>
+      </Route>
+    )
+  )
 
   return <RouterProvider router={routes} />
 }
+
 export default App

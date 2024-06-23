@@ -1,9 +1,19 @@
 import { AuthenticationStep, useAuthContext } from "contexts/AuthContext";
 import SignInPage from "../components/auth/SignIn";
 import SignOTPage from "../components/auth/SignOTP";
+import { Navigate } from "react-router-dom";
 
 const AuthPage = () => {
-  const { authenticationStep, signIn, signOTP, error } = useAuthContext();
+  const { authenticationStep, signIn, signOTP, error, isAuthenticated, authenticatedUser } = useAuthContext();
+
+  if (isAuthenticated) {
+    return (
+      <Navigate
+        to={`/c/${authenticatedUser?.preferences.organization.id}`}
+        replace
+      />
+    );
+  }
 
   return (
     <div>

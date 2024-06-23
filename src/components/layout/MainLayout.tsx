@@ -1,9 +1,9 @@
 import { Outlet, useLocation } from "react-router-dom";
-import { SidebarLayout } from "./common/SidebarLayout";
-import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from "./common/Navbar";
-import { Dropdown, DropdownButton, DropdownDivider, DropdownItem, DropdownLabel, DropdownMenu } from "./common/Dropdown";
-import { Avatar } from "./common/Avatar";
-import { Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarHeading, SidebarItem, SidebarLabel, SidebarSection, SidebarSpacer } from "./common/Sidebar";
+import { SidebarLayout } from "../common/SidebarLayout";
+import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from "../common/Navbar";
+import { Dropdown, DropdownButton, DropdownDivider, DropdownItem, DropdownLabel, DropdownMenu } from "../common/Dropdown";
+import { Avatar } from "../common/Avatar";
+import { Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarHeading, SidebarItem, SidebarLabel, SidebarSection, SidebarSpacer } from "../common/Sidebar";
 import { ArrowRightStartOnRectangleIcon, ChevronDownIcon, ChevronUpIcon, Cog6ToothIcon, Cog8ToothIcon, HomeIcon, LightBulbIcon, PlusIcon, QuestionMarkCircleIcon, ShieldCheckIcon, SparklesIcon, Square2StackIcon, TicketIcon, UserCircleIcon } from "@heroicons/react/20/solid";
 
 function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
@@ -31,7 +31,7 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
   )
 }
 
-const HomeLayout = () => {
+const MainLayout = () => {
   const { pathname } = useLocation();
 
   return (
@@ -149,4 +149,4 @@ const HomeLayout = () => {
   )
 }
 
-export default HomeLayout;
+export default MainLayout;

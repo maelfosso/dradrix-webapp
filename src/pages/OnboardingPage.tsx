@@ -7,9 +7,9 @@ import { Navbar, NavbarSection, NavbarSpacer } from "components/common/Navbar";
 import EndOfOnboarding from "components/onboarding/EndOfOnboarding";
 import OrganizationInformation from "components/onboarding/OrganizationInformation";
 import ProfileInformation from "components/onboarding/ProfileInformation";
-import { useAuthContext } from "contexts/AuthContext";
 import { createContext, useContext, useMemo, useState } from "react";
 import { OnboardingContextType, Profile, Organization } from "models/onboarding";
+import { useAuthContext } from "contexts/AuthContext";
 
 
 const steps = [
@@ -62,12 +62,12 @@ export const useOnboardingContext = () => useContext(OnboardingContext);
 
 export const OnboardingProvider = ({ children }: { children: React.ReactNode }) => {
   
-  const { currentUser } =  useAuthContext();
+  const { authenticatedUser } =  useAuthContext();
 
   const [profile, setProfile] = useState({
-    firstName: currentUser?.firstName || '',
-    lastName: currentUser?.lastName || '',
-    email: currentUser?.email || ''
+    firstName: authenticatedUser?.firstName || '',
+    lastName: authenticatedUser?.lastName || '',
+    email: authenticatedUser?.email || ''
   });
   const [organization, setOrganization] = useState({
     name: '',
@@ -82,7 +82,7 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
     }
   })
   const [error, setError] = useState('');
-  const [stepIndex, setStepIndex] = useState(currentUser?.preferences.onboardingStep ?? 0)
+  const [stepIndex, setStepIndex] = useState(authenticatedUser?.preferences.onboardingStep ?? 0)
   const currentStep = useMemo(() => {
     return steps[stepIndex];
   }, [stepIndex])

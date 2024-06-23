@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { getAuthQuery, signInMutation, signOTPMutation } from "api/auth";
 import Spinner from "components/common/Spinner";
 import { SignInInputs, SignOTPInputs, UserType } from "models/auth";
@@ -49,6 +50,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     localStorage.getItem(SS_AUTH_PN_KEY) ? AuthenticationStep.OTP : AuthenticationStep.PHONE_NUMBER
   );
   const [authenticatedUser, setAuthenticatedUser] = useState<UserType|null>(null);
+  const navigate = useNavigate();
 
   const {isPending: isPendingAuth, data} =
     useQuery(getAuthQuery());
@@ -56,8 +58,19 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   useEffect(() => {
     if (data) {
       setAuthenticatedUser(data)
+      setIsAuthenticated(!!data);
     }
   }, [data])
+
+  useEffect(() => {
+    if (!authenticatedUser) return;
+
+    if (authenticatedUser.preferences.onboardingStep != -1) {
+      navigate("/onboarding");
+    } else {
+      navigate(`/c/${authenticatedUser.preferences.organization.id}`);
+    }
+  }, [authenticatedUser])
 
   const { mutate: mutateSignIn } = useMutation(signInMutation({
     onSuccess: (phoneNumber: string) => {
@@ -73,9 +86,9 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     onSuccess: (data: UserType) => {
       localStorage.removeItem(SS_AUTH_PN_KEY);
       localStorage.removeItem(SS_AUTH_STEP_KEY);
-      // setAuthContext();
 
       setIsAuthenticated(true);
+      setAuthenticatedUser(data);
     },
     onError: (error: Error) => {
       // setError(processError(error).error)
@@ -83,7 +96,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   }));
 
   const signOTP = async (signOTPInputs: SignOTPInputs) => {
-    console.log('[useAuth] signOTP', signOTPInputs);
     mutateSignOTP({
       ...signOTPInputs,
       phoneNumber: localStorage.getItem(SS_AUTH_PN_KEY)!
@@ -97,6 +109,8 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const signOut = async () => {
     setAuthenticatedUser(null);
     setIsAuthenticated(false);
+
+    navigate('/', { replace: true })
   }
 
   const value = useMemo(
@@ -115,11 +129,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       authenticatedUser,
       setAuthenticatedUser,
       isAuthenticated,
-      signIn,
-      signOTP,
-      signOut,
-      error,
-      setError
+      error
     ]
   );
 

@@ -71,6 +71,7 @@ export const NavbarItem = forwardRef(function NavbarItem(
       {'href' in props ? (
         <Link
           {...props}
+          to={props.href!}
           className={classes}
           data-current={current ? 'true' : undefined}
           ref={ref as React.ForwardedRef<HTMLAnchorElement>}
