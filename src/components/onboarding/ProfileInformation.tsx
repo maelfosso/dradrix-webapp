@@ -1,7 +1,6 @@
 import { Field, FieldGroup, Fieldset, Label, Legend } from "components/common/Fieldset";
-import { Subheading } from "components/common/Heading";
 import { Input } from "components/common/Input";
-import { Strong, Text } from "components/common/Text";
+import { Text } from "components/common/Text";
 import { useOnboardingContext } from "pages/OnboardingPage";
 
 const ProfileInformation = () => {

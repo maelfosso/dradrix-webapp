@@ -1,5 +1,5 @@
 type UserPreferences = {
-  company: {
+  organization: {
     id: string
     name: string
   }

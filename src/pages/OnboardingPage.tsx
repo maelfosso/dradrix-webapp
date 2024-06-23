@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { setProfileMutation } from "api/onboarding";
+import { setOrganizationMutation, setProfileMutation } from "api/onboarding";
 import { Button } from "components/common/Button";
 import Container from "components/common/Container";
 import { Heading } from "components/common/Heading";
@@ -88,8 +88,6 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
 
   const { mutate: mutateProfile } = useMutation(setProfileMutation({
     onSuccess: (done: boolean) => {
-      // sessionStorage.setItem(SS_AUTH_PN_KEY, phoneNumber);
-      // setStep(AuthStep.OTP);
       setStepIndex(stepIndex + 1);
     },
     onError: (error: Error) => {
@@ -99,16 +97,15 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
     }
   }));
 
-  // const { mutate: mutateSignOTP } = useMutation(signOTPMutation({
-  //   onSuccess: (data: UserType) => {
-  //     sessionStorage.removeItem(SS_AUTH_PN_KEY);
-  //     sessionStorage.removeItem(SS_AUTH_STEP_KEY);
-  //     setCurrentUserContext();
-  //   },
-  //   onError: (error: Error) => {
-  //     setError(processError(error).error)
-  //   }
-  // }));
+  const { mutate: mutateOrganization } = useMutation(setOrganizationMutation({
+    onSuccess: (done: boolean) => {
+      setStepIndex(stepIndex + 1);
+    },
+    onError: (error: Error) => {
+      console.log("[Onboarding] set-organization: ", error);
+      setError(error.message);
+    }
+  }));
 
   const handlePrevious = () => {
     if (stepIndex <= 0) {
@@ -126,11 +123,12 @@ export const OnboardingProvider = ({ children }: { children: React.ReactNode }) 
     switch (stepIndex) {
       case 0:
         console.log("profile step: ", profile)
-        mutateProfile(profile)
+        mutateProfile(profile);
         break;
     
       case 1:
-        console.log("organization step: ", organization)
+        console.log("organization step: ", organization);
+        mutateOrganization(organization);
         break;
 
       case 2:

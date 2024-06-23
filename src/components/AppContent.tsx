@@ -17,7 +17,7 @@ const AppContent = () => {
     if (currentUser.preferences.onboardingStep != -1) {
       navigate("/onboarding");
     } else {
-      navigate(`/c/${currentUser.preferences.company.id}`)
+      navigate(`/c/${currentUser.preferences.organization.id}`)
     }
   }, [currentUser, navigate]);
 

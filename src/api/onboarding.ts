@@ -12,9 +12,9 @@ export const setProfileMutation = (options: UseMutationOptions<boolean, Error, P
   ...options
 });
 
-export const setOrganizationMutation = (options: UseMutationOptions<string, Error, Organization>) => ({
+export const setOrganizationMutation = (options: UseMutationOptions<boolean, Error, Organization>) => ({
   mutationKey: [ONBOARDING_ORGANIZATION],
-  mutationFn:  (inputs: Organization) => fetchApiResponse<string, Organization>(ONBOARDING_ORGANIZATION, "POST", inputs),
+  mutationFn:  (inputs: Organization) => fetchApiResponse<boolean, Organization>(ONBOARDING_ORGANIZATION, "POST", inputs),
   ...options
 });
 

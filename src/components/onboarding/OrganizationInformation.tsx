@@ -1,19 +1,19 @@
-import { Button } from "components/common/Button";
-import { Checkbox, CheckboxField } from "components/common/Checkbox";
-import { Divider } from "components/common/Divider";
 import { Field, FieldGroup, Fieldset, Label, Legend } from "components/common/Fieldset";
-import { Heading, Subheading } from "components/common/Heading";
 import { Input } from "components/common/Input";
 import { Listbox, ListboxLabel, ListboxOption } from "components/common/Listbox";
-import { Select } from "components/common/Select";
 import { Text } from "components/common/Text";
 import { Textarea } from "components/common/Textarea";
 import { getCountries } from "lib/utils";
+import { useOnboardingContext } from "pages/OnboardingPage";
 import { useState } from "react";
 
 export const Address = () => {
   let countries = getCountries()
   let [country, setCountry] = useState(countries[0])
+  const {
+    organization,
+    setOrganization
+  } = useOnboardingContext();
 
   return (
     <FieldGroup className="grid grid-cols-2">
@@ -22,23 +22,79 @@ export const Address = () => {
         name="address"
         placeholder="Street Address"
         className="col-span-2"
+        value={organization.address.street}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOrganization({
+          ...organization,
+          address: {
+            ...organization.address,
+            street: e.target.value
+          }}
+        )}
       />
-      <Input aria-label="City" name="city" placeholder="City" className="col-span-2" />
-      <Listbox aria-label="Region" name="region" placeholder="Region">
+      <Input
+        aria-label="City"
+        name="city"
+        placeholder="City"
+        className="col-span-2"
+        value={organization.address.city}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOrganization({
+          ...organization,
+          address: {
+            ...organization.address,
+            city: e.target.value
+          }}
+        )}
+      />
+      <Listbox
+        aria-label="Region"
+        name="region"
+        placeholder="Region"
+        value={organization.address.region}
+        onChange={(region) => {
+          setOrganization({
+            ...organization,
+            address: {
+              ...organization.address,
+              region: region
+            }
+          })
+        }}
+      >
         {country.regions.map((region) => (
           <ListboxOption key={region} value={region}>
             <ListboxLabel>{region}</ListboxLabel>
           </ListboxOption>
         ))}
       </Listbox>
-      <Input aria-label="Postal code" name="postal_code" placeholder="Postal Code" />
+      <Input
+        aria-label="Postal code"
+        name="postal_code"
+        placeholder="Postal Code"
+        value={organization.address.postalCode}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOrganization({
+          ...organization,
+          address: {
+            ...organization.address,
+            postalCode: e.target.value
+          }}
+        )}
+      />
       <Listbox
         aria-label="Country"
         name="country"
         placeholder="Country"
         by="code"
         value={country}
-        onChange={(country) => setCountry(country)}
+        onChange={(country) => {
+          setCountry(country);
+          setOrganization({
+            ...organization,
+            address: {
+              ...organization.address,
+              country: country.code
+            }
+          })
+        }}
         className="col-span-2"
       >
         {countries.map((country) => (
@@ -53,6 +109,10 @@ export const Address = () => {
 }
 
 const OrganizationInformation = () => {
+  const {
+    organization,
+    setOrganization
+  } = useOnboardingContext();
 
   return (
     <form method="post" className="mx-auto max-w-2xl">
@@ -63,15 +123,31 @@ const OrganizationInformation = () => {
         <FieldGroup>
           <Field>
             <Label>Organization Name</Label>
-            <Input type="text" name="name" placeholder="DDX LTD" />
+            <Input
+              type="text"
+              name="name"
+              placeholder="DDX LTD"
+              value={organization.name}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOrganization({...organization, name: e.target.value})}
+            />
           </Field>
           <Field>
             <Label>Organization Bio</Label>
-            <Textarea name="bio" />
+            <Textarea
+              name="bio"
+              value={organization.bio}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setOrganization({...organization, bio: e.target.value})}
+            />
           </Field>
           <Field>
             <Label>Email</Label>
-            <Input type="email" name="email" placeholder="info@ddx.com" />
+            <Input
+              type="email"
+              name="email"
+              placeholder="info@ddx.com"
+              value={organization.email}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOrganization({...organization, email: e.target.value})}
+            />
           </Field>
           <Field>
             <Label>Address</Label>

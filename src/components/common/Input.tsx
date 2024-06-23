@@ -54,6 +54,7 @@ export const Input = forwardRef(function Input(
       <Headless.Input
         ref={ref}
         {...props}
+        autoComplete='off'
         className={clsx([
           className,
           // Date classes
