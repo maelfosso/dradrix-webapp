@@ -7,7 +7,7 @@ import { Navbar, NavbarSection, NavbarSpacer } from "components/common/Navbar";
 import EndOfOnboarding from "components/onboarding/EndOfOnboarding";
 import OrganizationInformation from "components/onboarding/OrganizationInformation";
 import ProfileInformation from "components/onboarding/ProfileInformation";
-import { useCurrentUserContext } from "contexts/CurrentUserContext";
+import { useAuthContext } from "contexts/AuthContext";
 import { createContext, useContext, useMemo, useState } from "react";
 import { OnboardingContextType, Profile, Organization } from "models/onboarding";
 
@@ -62,7 +62,7 @@ export const useOnboardingContext = () => useContext(OnboardingContext);
 
 export const OnboardingProvider = ({ children }: { children: React.ReactNode }) => {
   
-  const { currentUser } =  useCurrentUserContext();
+  const { currentUser } =  useAuthContext();
 
   const [profile, setProfile] = useState({
     firstName: currentUser?.firstName || '',

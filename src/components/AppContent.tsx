@@ -1,13 +1,13 @@
 import { Outlet, useNavigate } from "react-router-dom"
 import AppNavbar from "./AppNavbar"
-import { useCurrentUserContext } from "contexts/CurrentUserContext";
+import { useAuthContext } from "contexts/AuthContext";
 import { useEffect } from "react";
 import HomeLayout from "./HomeLayout";
 import Spinner from "./common/Spinner";
 
 const AppContent = () => {
 
-  const { currentUser } = useCurrentUserContext();
+  const { currentUser } = useAuthContext();
   const navigate = useNavigate();
 
   useEffect(() => {

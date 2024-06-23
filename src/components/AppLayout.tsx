@@ -1,12 +1,12 @@
-import CurrentUserContextProvider from "contexts/CurrentUserContext";
+import AuthContextProvider from "contexts/AuthContext";
 import AppContent from "./AppContent";
 
 const AppLayout = () => {
 
   return (
-    <CurrentUserContextProvider>
+    <AuthContextProvider>
       <AppContent />
-    </CurrentUserContextProvider>
+    </AuthContextProvider>
   )
 }
 

@@ -1,9 +1,9 @@
-import { useCurrentUserContext } from 'contexts/CurrentUserContext';
+import { useAuthContext } from 'contexts/AuthContext';
 import { Link } from './common/Link';
 import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from './common/Navbar';
 
 const AppNavbar = () => {
-  const { currentUser } = useCurrentUserContext();
+  const { currentUser } = useAuthContext();
 
   return (
     <Navbar className="px-4 lg:px-6 py-2.5">
