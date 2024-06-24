@@ -21,6 +21,7 @@ const api = axios.create({
 });
 
 const redirectToSignIn = () => {
+  console.log('redirectToSignIn', window.location.pathname)
   if (window.location) {
     if (window.location.pathname.includes("/sign-in")) return;
     

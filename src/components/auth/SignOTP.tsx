@@ -1,3 +1,8 @@
+import { Button } from "components/common/Button";
+import { FieldGroup, Fieldset } from "components/common/Fieldset";
+import { Heading } from "components/common/Heading";
+import { Input } from "components/common/Input";
+import { Text } from "components/common/Text";
 import { SignOTPInputs } from "models/auth";
 import { useEffect, useRef, useState } from "react"
 
@@ -46,16 +51,20 @@ const SignOTPage = ({ errorOnSignOTP, onSignOTP } : Props) => {
     //   setOtpError(null)
     // }
     if (otp.join("").length === NUMBER_OF_DIGITS) {
-      handleSubmit({
-        phoneNumber: '',
-        pinCode: otp.join("")
-      });
+      // handleSubmit({
+      //   phoneNumber: '',
+      //   pinCode: otp.join("")
+      // });
     }
    }, [otp]);
 
-  const handleSubmit = async (inputs: SignOTPInputs) => { // } (e: React.FormEvent<HTMLFormElement>) => {
-    // e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     // await signOTP(inputs);
+    const inputs = {
+      phoneNumber: '',
+      pinCode: otp.join("")
+    };
     console.log('handle submit')
     onSignOTP(inputs);
     // try {
@@ -68,34 +77,33 @@ const SignOTPage = ({ errorOnSignOTP, onSignOTP } : Props) => {
   }
 
   return (
-    <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="flex flex-col py-12 items-center justify-center h-[calc(100vh_-_60px)] sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        {/* <div className="px-4 sm:px-0"> */}
-        <h2 className='mt-6 text-center text-3xl font-bold tracking-tight text-gray-900'>
-          Enter <br />One Time Password (OTP)
-        </h2>
+        <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
+          <Heading>Enter the OTP</Heading>
+          <Text>Type the OTP you've received on WhatsApp</Text>
+          <form className="mt-8 space-y-6 sm:mx-auto sm:w-full sm:max-w-md" onSubmit={handleSubmit}>
+            <Fieldset>
+              <FieldGroup className='flex items-center justify-between'>
+                {otp.map((digit, index)=>(
+                  <Input
+                    key={index}
+                    type="text"
+                    value={digit}
+                    maxLength={1}
+                    onChange={(e)=> handleChange(e.target.value, index)}
+                    onKeyUp={(e)=> handleBackspaceAndEnter(e, index)}
+                    ref={(reference) => (otpBoxReference.current[index] = reference)}
+                    className="!text-center !text-3xl !m-0 !w-16 !h-16"
+                  />
+                ))}
+              </FieldGroup>
+            </Fieldset>
+
+            <Button type="submit" className="w-full">Submit</Button>
+          </form>
+        </div>
       </div>
-
-        {/* <OTPInputValidation NUMBER_OF_DIGITS={4} /> */}
-        <article className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="flex flex-col items-center bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
-            <p className="text-base mt-6 mb-4">Type the OTP you've received on WhatsApp</p>
-          
-            <div className='flex items-center gap-4'>
-              {otp.map((digit, index)=>(
-                <input key={index} value={digit} maxLength={1}  
-                  onChange={(e)=> handleChange(e.target.value, index)}
-                  onKeyUp={(e)=> handleBackspaceAndEnter(e, index)}
-                  ref={(reference) => (otpBoxReference.current[index] = reference)}
-                  className={`border text-center text-5xl w-20 h-20 p-3 rounded-md block focus:border-2 focus:outline-none appearance-none`}
-                />
-              ))}
-            </div>
-
-            <p className={`text-lg text-white mt-4 ${errorOnSignOTP ? 'error-show' : ''}`}>{errorOnSignOTP}</p>
-          </div>
-        </article>
-      {/* </div> */}
     </div>
   )
 }

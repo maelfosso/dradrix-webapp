@@ -1,24 +1,23 @@
-import React, { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { useCurrentUserContext } from "contexts/CurrentUserContext";
+import { AuthenticationStep, useAuthContext } from "contexts/AuthContext";
 import SignInPage from "../components/auth/SignIn";
 import SignOTPage from "../components/auth/SignOTP";
-import useAuth, { AuthStep } from "hooks/useAuth";
+import { Navigate } from "react-router-dom";
 
 const AuthPage = () => {
-  const { currentUser } = useCurrentUserContext();
-  const navigate = useNavigate();
-  const { step, signIn, signOTP, error } = useAuth();
+  const { authenticationStep, signIn, signOTP, error, isAuthenticated, authenticatedUser } = useAuthContext();
 
-  useEffect(() => {
-    if (currentUser) {
-      navigate("/monitoring");
-    }
-  }, [currentUser, navigate]);
+  if (isAuthenticated) {
+    return (
+      <Navigate
+        to={`/c/${authenticatedUser?.preferences.organization.id}`}
+        replace
+      />
+    );
+  }
 
   return (
     <div>
-      { step === AuthStep.PHONE_NUMBER
+      { authenticationStep === AuthenticationStep.PHONE_NUMBER
         ? <SignInPage errorOnSignIn={error} onSignIn={signIn} />
         : <SignOTPage errorOnSignOTP={error} onSignOTP={signOTP} />
       }

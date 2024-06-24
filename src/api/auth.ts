@@ -19,7 +19,7 @@ export const signOTPMutation = (options: UseMutationOptions<UserType, Error, Sig
   ...options
 });
 
-export const getCurrentUserQuery = (options?: UseQueryOptionsWithoutQueryFnKey<UserType>) => ({
+export const getAuthQuery = (options?: UseQueryOptionsWithoutQueryFnKey<UserType>) => ({
   queryKey: [AUTH_USER],
   queryFn: async () => fetchApiResponse<UserType>(AUTH_USER, "GET"),
   ...options
