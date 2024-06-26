@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { getAuthQuery, signInMutation, signOTPMutation } from "api/auth";
+import { SignInMutationResponse, getAuthQuery, signInMutation, signOTPMutation } from "api/auth";
 import Spinner from "components/common/Spinner";
 import { SignInInputs, SignOTPInputs, UserType } from "models/auth";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
@@ -73,8 +73,8 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   }, [authenticatedUser])
 
   const { mutate: mutateSignIn } = useMutation(signInMutation({
-    onSuccess: (phoneNumber: string) => {
-      localStorage.setItem(SS_AUTH_PN_KEY, phoneNumber);
+    onSuccess: (response: SignInMutationResponse) => {
+      localStorage.setItem(SS_AUTH_PN_KEY, response.phoneNumber);
       setAuthenticationStep(AuthenticationStep.OTP);
     },
     onError: (error: Error) => {

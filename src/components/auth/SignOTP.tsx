@@ -65,7 +65,6 @@ const SignOTPage = ({ errorOnSignOTP, onSignOTP } : Props) => {
       phoneNumber: '',
       pinCode: otp.join("")
     };
-    console.log('handle submit')
     onSignOTP(inputs);
     // try {
     //   await signUp(inputs);
