@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { SignInMutationResponse, getAuthQuery, signInMutation, signOTPMutation } from "api/auth";
+import { SignInMutationResponse, SignOTPMutationResponse, getAuthQuery, signInMutation, signOTPMutation } from "api/auth";
 import Spinner from "components/common/Spinner";
 import { SignInInputs, SignOTPInputs, UserType } from "models/auth";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
@@ -83,12 +83,12 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   }));
 
   const { mutate: mutateSignOTP } = useMutation(signOTPMutation({
-    onSuccess: (data: UserType) => {
+    onSuccess: (data: SignOTPMutationResponse) => {
       localStorage.removeItem(SS_AUTH_PN_KEY);
       localStorage.removeItem(SS_AUTH_STEP_KEY);
 
       setIsAuthenticated(true);
-      setAuthenticatedUser(data);
+      setAuthenticatedUser(data.user);
     },
     onError: (error: Error) => {
       // setError(processError(error).error)

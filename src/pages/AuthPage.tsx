@@ -6,13 +6,22 @@ import { Navigate } from "react-router-dom";
 const AuthPage = () => {
   const { authenticationStep, signIn, signOTP, error, isAuthenticated, authenticatedUser } = useAuthContext();
 
-  if (isAuthenticated) {
-    return (
-      <Navigate
-        to={`/c/${authenticatedUser?.preferences.organization.id}`}
-        replace
-      />
-    );
+  if (isAuthenticated && authenticatedUser) {
+    if (authenticatedUser.preferences.onboardingStep != -1) {
+      return (
+        <Navigate
+          to="/onboarding"
+          replace
+        />
+      );
+    } else {
+      return (
+        <Navigate
+          to={`/c/${authenticatedUser.preferences.organization.id}`}
+          replace
+        />
+      );
+    }
   }
 
   return (

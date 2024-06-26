@@ -16,9 +16,12 @@ export const signInMutation = (options: UseMutationOptions<SignInMutationRespons
   ...options
 });
 
-export const signOTPMutation = (options: UseMutationOptions<UserType, Error, SignOTPInputs>) => ({
+export type SignOTPMutationResponse = {
+  user: UserType
+}
+export const signOTPMutation = (options: UseMutationOptions<SignOTPMutationResponse, Error, SignOTPInputs>) => ({
   mutationKey: [AUTH_OTP_CHECK],
-  mutationFn:  (inputs: SignOTPInputs) => fetchApiResponse<UserType, SignOTPInputs>(AUTH_OTP_CHECK, "POST", inputs),
+  mutationFn:  (inputs: SignOTPInputs) => fetchApiResponse<SignOTPMutationResponse, SignOTPInputs>(AUTH_OTP_CHECK, "POST", inputs),
   ...options
 });
 
