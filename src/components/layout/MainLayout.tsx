@@ -104,10 +104,10 @@ const MainLayout = () => {
             </SidebarSection>
 
             <SidebarSection className="max-lg:hidden">
-              <SidebarHeading>Current Activities</SidebarHeading>
-              {/* {events.map((event) => (
-                <SidebarItem key={event.id} href={event.url}>
-                  {event.name}
+              <SidebarHeading>Your activities</SidebarHeading>
+              {/* {activities.map((activity) => (
+                <SidebarItem key={activity.id} href={activity.url}>
+                  {activity.name}
                 </SidebarItem>
               ))} */}
             </SidebarSection>

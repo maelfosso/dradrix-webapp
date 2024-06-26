@@ -34,8 +34,8 @@ function App() {
             />
           </Route>
 
-          <Route element={<MainLayout />}>
-            <Route path="/c/:organizationId" element={<HomePage />} />
+          <Route path="/c/:organizationId" element={<MainLayout />}>
+            <Route index element={<HomePage />} />
           </Route>
         </Route>
       </Route>
