@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { SidebarLayout } from "../common/SidebarLayout";
 import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from "../common/Navbar";
 import { Dropdown, DropdownButton, DropdownDivider, DropdownItem, DropdownLabel, DropdownMenu } from "../common/Dropdown";
@@ -36,10 +36,17 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
 
 const MainLayout = () => {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+
   const { authenticatedUser } = useAuthContext();
   const userInitials = useMemo(() => {
     return `${authenticatedUser?.firstName[0]}${authenticatedUser?.lastName[0]}`
   }, [authenticatedUser]);
+
+  const handleCreateActivity = () => {
+    const activityId = '67b6e3e7632b38b71ef0c419';
+    navigate(`a/${activityId}/edit`)
+  }
 
   return (
     <SidebarLayout
@@ -109,7 +116,7 @@ const MainLayout = () => {
                 <div className="flex items-center justify-between">
                   <span>YOUR ACTIVITIES</span>
 
-                  <Button plain className="cursor-pointer">
+                  <Button plain className="cursor-pointer" onClick={() => handleCreateActivity()}>
                     <PlusIcon />
                   </Button>
                 </div>

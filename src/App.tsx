@@ -9,6 +9,7 @@ import NotReadyUserLayout from 'components/layout/NotReadyUserLayout';
 import MainLayout from 'components/layout/MainLayout';
 import LandingPage from 'pages/LandingPage';
 import HomePage from 'pages/HomePage';
+import EditActivityPage from 'pages/a/EditActivityPage';
 
 function App() {
 
@@ -36,6 +37,7 @@ function App() {
 
           <Route path="/c/:organizationId" element={<MainLayout />}>
             <Route index element={<HomePage />} />
+            <Route path="a/:activityId/edit" element={<EditActivityPage />} />
           </Route>
         </Route>
       </Route>
