@@ -7,6 +7,7 @@ import { Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarHeading, Sid
 import { ArrowRightStartOnRectangleIcon, ChevronDownIcon, ChevronUpIcon, Cog6ToothIcon, Cog8ToothIcon, HomeIcon, LightBulbIcon, PlusIcon, QuestionMarkCircleIcon, ShieldCheckIcon, SparklesIcon, Square2StackIcon, TicketIcon, UserCircleIcon } from "@heroicons/react/20/solid";
 import { useAuthContext } from "contexts/AuthContext";
 import { useMemo } from "react";
+import { Button } from "components/common/Button";
 
 function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
   return (
@@ -104,7 +105,15 @@ const MainLayout = () => {
             </SidebarSection>
 
             <SidebarSection className="max-lg:hidden">
-              <SidebarHeading>Your activities</SidebarHeading>
+              <SidebarHeading>
+                <div className="flex items-center justify-between">
+                  <span>YOUR ACTIVITIES</span>
+
+                  <Button plain className="cursor-pointer">
+                    <PlusIcon />
+                  </Button>
+                </div>
+              </SidebarHeading>
               {/* {activities.map((activity) => (
                 <SidebarItem key={activity.id} href={activity.url}>
                   {activity.name}
