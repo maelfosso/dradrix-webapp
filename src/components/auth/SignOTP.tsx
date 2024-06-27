@@ -83,7 +83,7 @@ const SignOTPage = ({ errorOnSignOTP, onSignOTP } : Props) => {
           <Text>Type the OTP you've received on WhatsApp</Text>
           <form className="mt-8 space-y-6 sm:mx-auto sm:w-full sm:max-w-md" onSubmit={handleSubmit}>
             <Fieldset>
-              <FieldGroup className='flex items-center justify-between space-y-0'>
+              <div className='flex items-center justify-between space-x-2'>
                 {otp.map((digit, index)=>(
                   <Input
                     key={index}
@@ -93,11 +93,11 @@ const SignOTPage = ({ errorOnSignOTP, onSignOTP } : Props) => {
                     onChange={(e)=> handleChange(e.target.value, index)}
                     onKeyUp={(e)=> handleBackspaceAndEnter(e, index)}
                     ref={(reference) => (otpBoxReference.current[index] = reference)}
-                    wrapperClassName="w-16 h-16 m-0"
+                    wrapperClassName="w-16 h-16"
                     className="text-center sm:text-3xl h-full"
                   />
                 ))}
-              </FieldGroup>
+              </div>
             </Fieldset>
 
             <Button type="submit" className="w-full">Submit</Button>
