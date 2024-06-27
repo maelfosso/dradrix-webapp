@@ -21,7 +21,7 @@ export const Address = () => {
         aria-label="Street Address"
         name="address"
         placeholder="Street Address"
-        className="col-span-2"
+        wrapperClassName="col-span-2"
         value={organization.address.street}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOrganization({
           ...organization,
@@ -35,7 +35,7 @@ export const Address = () => {
         aria-label="City"
         name="city"
         placeholder="City"
-        className="col-span-2"
+        wrapperClassName="col-span-2"
         value={organization.address.city}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOrganization({
           ...organization,

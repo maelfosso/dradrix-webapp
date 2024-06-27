@@ -38,7 +38,6 @@ const SignInPage = ({ errorOnSignIn, onSignIn } : Props) => {
                   placeholder="Your phone number"
                   type="tel"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputs({...inputs, phoneNumber: e.target.value})}
-                  className="block w-full"
                   required
                 />
               </Field>

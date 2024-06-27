@@ -24,10 +24,12 @@ type DateType = (typeof dateTypes)[number]
 
 export const Input = forwardRef(function Input(
   {
-    className,
+    wrapperClassName: className,
+    className: innerClassName,
     ...props
   }: {
-    className?: string
+    wrapperClassName?: string,
+    className?: string,
     type?: 'email' | 'number' | 'password' | 'search' | 'tel' | 'text' | 'url' | DateType
   } & Omit<Headless.InputProps, 'className'>,
   ref: React.ForwardedRef<HTMLInputElement>
@@ -36,7 +38,6 @@ export const Input = forwardRef(function Input(
     <span
       data-slot="control"
       className={clsx([
-        className,
         // Basic layout
         'relative block w-full',
         // Background color + shadow applied to inset pseudo element, so shadow blends with border in light mode
@@ -49,6 +50,7 @@ export const Input = forwardRef(function Input(
         'has-[[data-disabled]]:opacity-50 before:has-[[data-disabled]]:bg-zinc-950/5 before:has-[[data-disabled]]:shadow-none',
         // Invalid state
         'before:has-[[data-invalid]]:shadow-red-500/10',
+        className,
       ])}
     >
       <Headless.Input
@@ -56,7 +58,6 @@ export const Input = forwardRef(function Input(
         {...props}
         autoComplete='off'
         className={clsx([
-          className,
           // Date classes
           props.type &&
             dateTypes.includes(props.type) && [
@@ -89,6 +90,7 @@ export const Input = forwardRef(function Input(
           'data-[disabled]:border-zinc-950/20 dark:data-[hover]:data-[disabled]:border-white/15 data-[disabled]:dark:border-white/15 data-[disabled]:dark:bg-white/[2.5%]',
           // System icons
           'dark:[color-scheme:dark]',
+          innerClassName,
         ])}
       />
     </span>
