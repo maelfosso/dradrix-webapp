@@ -61,7 +61,7 @@ const EditActivityPage = () => {
         <Fieldset>
           <Legend>Fields</Legend>
           <FieldGroup className="space-y-0">
-            <AddItem key='add-item-0' place={'top'} position={0} onClick={(position, type) => handleAddItem(position, type)} />
+            <AddItem key='add-item-0' place={'bottom'} position={0} onClick={(position, type) => handleAddItem(position, type)} />
             { fields.map((field, index) => (
               <>
                 <ActivityField
@@ -110,6 +110,7 @@ const ActivityFieldText = ({title, setTitle}: ActivityFieldTextProps) => {
 
   return (
     <EditInput
+      className="border border-black"
       value={title}
       setValue={setTitle}
       name="" placeholder="Enter the name of the field" />
@@ -209,9 +210,9 @@ const EditInput = ({
         className={cn(
           "sm:pr-36",
           onHover && !onFocus && "bg-gray-200",
-          onFocus
-          ? 'border border-zinc-950/10 data-[hover]:border-zinc-950/20 dark:border-white/10 dark:data-[hover]:border-white/20'
-          : 'border-none',
+          // onFocus
+          // ? 'border border-zinc-950/10 data-[hover]:border-zinc-950/20 dark:border-white/10 dark:data-[hover]:border-white/20'
+          // : 'border-none',
           className,
         )}
         value={value}
@@ -311,32 +312,34 @@ const AddItem = ({
   position,
   onClick
 }: AddItemProps) => {
+  const [visible, setVisible] = useState(false);
+
   const handleClickOnType = (type: string) => {
     onClick(position, type);
+    setVisible(false);
   }
 
-  const [visible, setVisible] = useState(false);
   return (
     <div
       className={cn(
-        "-ml-10",
-        place === 'top'
-          ? "-mb-2"
-          : "-mt-8"
+        "-ml-10 h-1",
+        // place === 'top'
+        //   ? "-mb-2"
+        //   : "-mt-8"
       )}
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(false)}
     >
       <div
         className={cn(
-          "flex items-center",
+          "relative h-fit items-center",
           visible
-            ? "visible"
-            : "invisible"
+            ? "flex"
+            : "hidden"
         )}
       >
         <Dropdown>
-          <DropdownButton aria-label="More options">
+          <DropdownButton className="absolute" aria-label="More options">
             <EllipsisHorizontalIcon />
           </DropdownButton>
           <DropdownMenu>
