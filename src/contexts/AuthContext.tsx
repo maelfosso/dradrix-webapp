@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { SignInMutationResponse, SignOTPMutationResponse, getAuthQuery, signInMutation, signOTPMutation } from "api/auth";
 import Spinner from "components/common/Spinner";
 import { SignInInputs, SignOTPInputs, UserType } from "models/auth";
@@ -44,13 +44,16 @@ const SS_AUTH_PN_KEY = 'auth/phone-number';
 const SS_AUTH_STEP_KEY = 'auth/step';
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  const redirectUrl = state?.redirectUrl ;
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState<string>('');
   const [authenticationStep, setAuthenticationStep] = useState<AuthenticationStep>(
     localStorage.getItem(SS_AUTH_PN_KEY) ? AuthenticationStep.OTP : AuthenticationStep.PHONE_NUMBER
   );
   const [authenticatedUser, setAuthenticatedUser] = useState<UserType|null>(null);
-  const navigate = useNavigate();
 
   const {isPending: isPendingAuth, data} =
     useQuery(getAuthQuery());
@@ -68,7 +71,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     if (authenticatedUser.preferences.onboardingStep != -1) {
       navigate("/onboarding");
     } else {
-      navigate(`/c/${authenticatedUser.preferences.organization.id}`);
+      navigate(redirectUrl || `/c/${authenticatedUser.preferences.organization.id}`);
     }
   }, [authenticatedUser])
 
