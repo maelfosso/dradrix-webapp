@@ -16,6 +16,10 @@ const styles = {
     // Icon
     '[&>[data-slot=icon]]:-mx-0.5 [&>[data-slot=icon]]:my-0.5 [&>[data-slot=icon]]:size-5 [&>[data-slot=icon]]:shrink-0 [&>[data-slot=icon]]:text-[--btn-icon] [&>[data-slot=icon]]:sm:my-1 [&>[data-slot=icon]]:sm:size-4 forced-colors:[--btn-icon:ButtonText] forced-colors:data-[hover]:[--btn-icon:ButtonText]',
   ],
+  circle: [
+    // Shape
+    'rounded-full'
+  ],
   solid: [
     // Optical border, implemented as the button background to avoid corner artifacts
     'border-transparent bg-[--btn-border]',
@@ -159,21 +163,22 @@ const styles = {
 }
 
 type ButtonProps = (
-  | { color?: keyof typeof styles.colors; outline?: never; plain?: never }
-  | { color?: never; outline: true; plain?: never }
-  | { color?: never; outline?: never; plain: true }
+  | { color?: keyof typeof styles.colors; outline?: never; plain?: never; circle?: never }
+  | { color?: never; outline: true; plain?: never; circle?: never }
+  | { color?: never; outline?: never; plain: true; circle?: never }
+  | { color?: never; outline?: never; plain?: never; circle: true }
 ) & { className?: string; children: React.ReactNode } & (
     | Omit<Headless.ButtonProps, 'className'>
     | Omit<React.ComponentPropsWithoutRef<typeof Link>, 'className'>
   )
 
 export const Button = forwardRef(function Button(
-  { color, outline, plain, className, children, ...props }: ButtonProps,
+  { color, outline, plain, circle, className, children, ...props }: ButtonProps,
   ref: React.ForwardedRef<HTMLElement>
 ) {
   let classes = cn(
     styles.base,
-    outline ? styles.outline : plain ? styles.plain : cn(styles.solid, styles.colors[color ?? 'dark/zinc']),
+    outline ? styles.outline : plain ? styles.plain : circle ? styles.circle : cn(styles.solid, color && styles.colors[color]), // ?? 'dark/zinc']),
     className,
   )
 

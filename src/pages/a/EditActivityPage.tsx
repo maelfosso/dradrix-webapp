@@ -22,7 +22,7 @@ const EditActivityPage = () => {
   const [fields, setFields] = useState<ActivityField[]>([]);
 
   useEffect(() => {
-    console.log('Fields: ', fields);
+    // console.log('Fields: ', fields);
   }, [fields])
 
   const handleAddItem = (position: number, type: string) => {
@@ -60,7 +60,7 @@ const EditActivityPage = () => {
         <Divider className="my-4" />
         <Fieldset>
           <Legend>Fields</Legend>
-          <FieldGroup className="space-y-0">
+          <FieldGroup className="space-y-0 ">
             <AddItem key='add-item-0' place={'bottom'} position={0} onClick={(position, type) => handleAddItem(position, type)} />
             { fields.map((field, index) => (
               <>
@@ -308,50 +308,60 @@ interface AddItemProps {
   onClick: (position: number, type: string) => void;
 }
 const AddItem = ({
-  place,
   position,
   onClick
 }: AddItemProps) => {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setVisible(menuOpen);
+  }, [menuOpen])
 
   const handleClickOnType = (type: string) => {
     onClick(position, type);
-    setVisible(false);
   }
 
   return (
     <div
-      className={cn(
-        "-ml-10 h-1",
-        // place === 'top'
-        //   ? "-mb-2"
-        //   : "-mt-8"
-      )}
+      className="relative h-3 bg-transparent flex flex-col items-center justify-center cursor-pointer"
       onMouseEnter={() => setVisible(true)}
-      onMouseLeave={() => setVisible(false)}
+      onMouseLeave={() => setVisible(menuOpen || !visible)}
     >
-      <div
-        className={cn(
-          "relative h-fit items-center",
-          visible
-            ? "flex"
-            : "hidden"
-        )}
-      >
-        <Dropdown>
-          <DropdownButton className="absolute" aria-label="More options">
-            <EllipsisHorizontalIcon />
-          </DropdownButton>
-          <DropdownMenu>
-            <DropdownItem onClick={() => handleClickOnType('text')}>Text</DropdownItem>
-            <DropdownItem>Number</DropdownItem>
-            <DropdownItem>Date</DropdownItem>
-            <DropdownItem>Hour</DropdownItem>
-            <DropdownItem>Multiple choices</DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-        <hr className="bg-black w-full h-1" />
-      </div>
+      {visible && (
+        <>
+          <hr className="w-full h-0.5 bg-indigo-600"/>
+          <div className="absolute top-0 -left-8 bottom-0 z-50 flex items-center justify-center">
+            <Dropdown>
+              {({ open }) => {
+                useEffect(() => {
+                  setMenuOpen(open);
+                }, [open])
+
+                return (
+                  <>
+                    <DropdownButton
+                      aria-label="More options"
+                      circle
+                      className="bg-indigo-600 text-white cursor-pointer"
+                      onClick={() => setMenuOpen(!menuOpen)}
+                    >
+                      <PlusIcon />
+                    </DropdownButton>
+                    <DropdownMenu>
+                      <DropdownItem onClick={() => handleClickOnType('text')}>Text</DropdownItem>
+                      <DropdownItem>Number</DropdownItem>
+                      <DropdownItem>Date</DropdownItem>
+                      <DropdownItem>Hour</DropdownItem>
+                      <DropdownItem>Multiple choices</DropdownItem>
+                    </DropdownMenu>
+                  </>
+                )
+              }}
+            </Dropdown>
+          </div>
+        </>
+      )}
     </div>
   )
 }
