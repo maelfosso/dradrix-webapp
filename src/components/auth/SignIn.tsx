@@ -43,7 +43,7 @@ const SignInPage = ({ errorOnSignIn, onSignIn } : Props) => {
               </Field>
             </Fieldset>
 
-            <Button type="submit" className="w-full">Sign in</Button>
+            <Button type="submit" className="w-full" color="dark/white">Sign in</Button>
           </form>
         </div>
       </div>

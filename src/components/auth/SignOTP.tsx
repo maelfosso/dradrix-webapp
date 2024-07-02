@@ -100,7 +100,7 @@ const SignOTPage = ({ errorOnSignOTP, onSignOTP } : Props) => {
               </div>
             </Fieldset>
 
-            <Button type="submit" className="w-full">Submit</Button>
+            <Button type="submit" className="w-full" color="dark/white">Submit</Button>
           </form>
         </div>
       </div>

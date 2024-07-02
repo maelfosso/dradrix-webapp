@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { getMonitoredActivities } from "api/monitoring";
+import { getAllActivities } from "api/monitoring";
 import Spinner from "components/common/Spinner";
 import MonitoredActivities from "components/monitoring/MonitoredActivities";
 import NothingMonitored from "components/monitoring/NothingMonitored";
 
 const MonitoringPage = () => {
   const {isPending, data, error } =
-    useQuery(getMonitoredActivities());
+    useQuery(getAllActivities());
 
   if (isPending) {
     return <Spinner />
