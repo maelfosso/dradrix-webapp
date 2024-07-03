@@ -1,4 +1,6 @@
 import { EllipsisHorizontalIcon, PlusIcon } from "@heroicons/react/20/solid";
+import { useMutation } from "@tanstack/react-query";
+import { updateActivityMutation } from "api/activities";
 import { Button } from "components/common/Button";
 import { Divider } from "components/common/Divider";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components/common/Dropdown";
@@ -9,6 +11,7 @@ import { Strong } from "components/common/Text";
 import { Textarea } from "components/common/Textarea";
 import useAutosizeTextArea from "hooks/useAutosizeTextArea";
 import { ChangeEvent, FocusEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import { cn } from "utils/css";
 
 interface ActivityField {
@@ -17,13 +20,31 @@ interface ActivityField {
 }
 
 const EditActivityPage = () => {
-  const [title, setTitle] = useState<string>('')
+  let { organizationId, activityId } = useParams();
+
+  const [name, setName] = useState<string>('')
   const [description, setDescription] = useState<string>('');
   const [fields, setFields] = useState<ActivityField[]>([]);
 
-  useEffect(() => {
-    // console.log('Fields: ', fields);
-  }, [fields])
+  const {mutateAsync: updateActivityMutate} = useMutation(
+    updateActivityMutation(
+      organizationId!,
+      activityId!
+    )
+  );
+
+  const handleChangeName = async (newName: string) => {
+    try {
+      const data = await updateActivityMutate({
+        op: 'set',
+        field: 'name',
+        value: newName,
+      });
+
+      console.log(data);
+      setName(data.activity.name)
+    } catch (error) {}
+  }
 
   const handleAddItem = (position: number, type: string) => {
     setFields((oldFields) => [
@@ -33,7 +54,7 @@ const EditActivityPage = () => {
     ])
   }
 
-  const handleChangeTitle = (position: number, newTitle: string) => {
+  const handleChangeTitle = async (position: number, newTitle: string) => {
     const fieldAtPosition = fields[position];
 
     setFields((oldFields) => [
@@ -50,8 +71,9 @@ const EditActivityPage = () => {
         <Fieldset>
           <FieldGroup className="space-y-0">
             <EditInput
-              value={title}
-              setValue={(newValue) => setTitle(newValue)}
+              value={name}
+              setValue={(newValue) => setName(newValue)}
+              onEnter={() => handleChangeName(name)}
               className="sm:text-4xl" name="title" placeholder="Title"
             />
             <EditTextarea name="description" placeholder="Description" />
@@ -156,6 +178,7 @@ interface EditInputProps {
   className?: string;
   value: string;
   setValue: (newValue: string) => void;
+  onEnter: () => void;
   name: string;
   placeholder: string;
 }
@@ -163,6 +186,7 @@ const EditInput = ({
   className,
   value,
   setValue,
+  onEnter,
   ...props
 }: EditInputProps) => {
   // const [value, setValue] = useState<string>("");
@@ -179,6 +203,7 @@ const EditInput = ({
     // e.preventDefault();
 
     if (e.shiftKey && e.key === 'Enter') {
+      onEnter();
 
       e.currentTarget.blur();
       return

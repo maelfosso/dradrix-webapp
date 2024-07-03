@@ -6,7 +6,7 @@ import { Navigate, useLocation } from "react-router-dom";
 const AuthPage = () => {
   const { authenticationStep, signIn, signOTP, error, isAuthenticated, authenticatedUser } = useAuthContext();
   const { state } = useLocation();
-  const { redirectUrl } = state;
+  const redirectUrl = state?.redirectUrl;
 
   if (isAuthenticated && authenticatedUser) {
     if (authenticatedUser.preferences.onboardingStep != -1) {

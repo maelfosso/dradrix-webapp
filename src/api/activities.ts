@@ -20,10 +20,8 @@ export const getAllActivities = (
 interface CreateActivityMutationResponse {
   activity: Activity
 }
-interface CreateActivityMutationRequest {
-  // companyId: string
-}
-export const createActivityMutation = (companyId: string, options: UseMutationOptions<CreateActivityMutationResponse, Error, {}>) => ({
+interface CreateActivityMutationRequest {}
+export const createActivityMutation = (companyId: string, options?: UseMutationOptions<CreateActivityMutationResponse, Error, {}>) => ({
   mutationKey: [ORGANIZATIONS, companyId, ACTIVITIES],
   mutationFn: () => fetchApiResponse<CreateActivityMutationResponse, CreateActivityMutationRequest>(
     `${ORGANIZATIONS}/${companyId}/${ACTIVITIES}`,
@@ -33,6 +31,22 @@ export const createActivityMutation = (companyId: string, options: UseMutationOp
   ...options
 });
 
-export const updateActivity = () => ({
-
+interface UpdateActivityMutationResponse {
+  activity: Activity
+}
+interface UpdateActivityMutationRequest {
+  op: string
+	field: string
+	value: any;
+	position?: number;
+}
+export const updateActivityMutation = (organizationId: string, activityId: string, options?: UseMutationOptions<UpdateActivityMutationResponse, Error, UpdateActivityMutationRequest>) => ({
+  mutationKey: [ORGANIZATIONS, organizationId, ACTIVITIES, activityId],
+  mutationFn: (data: UpdateActivityMutationRequest) => fetchApiResponse<UpdateActivityMutationResponse, UpdateActivityMutationRequest>(
+    `${ORGANIZATIONS}/${organizationId}/${ACTIVITIES}/${activityId}`,
+    "PATCH",
+    data,
+  ),
+  ...options
 });
+
