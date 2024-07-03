@@ -46,12 +46,36 @@ const EditActivityPage = () => {
     } catch (error) {}
   }
 
-  const handleAddItem = (position: number, type: string) => {
-    setFields((oldFields) => [
-      ...oldFields.slice(0, position),
-      { type, title: `Field-${position}` },
-      ...oldFields.slice(position)
-    ])
+  const handleChangeDescription = async (newDescription: string) => {
+    try {
+      const data = await updateActivityMutate({
+        op: 'set',
+        field: 'description',
+        value: newDescription,
+      });
+
+      console.log(data);
+      setDescription(data.activity.description)
+    } catch (error) {}
+  }
+
+  const handleAddItem = async (position: number, type: string) => {
+    try {
+      const data = await updateActivityMutate({
+        op: "add",
+        field: "fields",
+        value: {
+          type
+        },
+        position
+      })
+      console.log(data.activity);
+      setFields((oldFields) => [
+        ...oldFields.slice(0, position),
+        { type, title: `Field-${position}` },
+        ...oldFields.slice(position)
+      ])
+    } catch (error) {}
   }
 
   const handleChangeTitle = async (position: number, newTitle: string) => {
@@ -76,7 +100,12 @@ const EditActivityPage = () => {
               onEnter={() => handleChangeName(name)}
               className="sm:text-4xl" name="title" placeholder="Title"
             />
-            <EditTextarea name="description" placeholder="Description" />
+            <EditTextarea
+              name="description" placeholder="Description"
+              value={description}
+              setValue={(newValue) => setDescription(newValue)}
+              onEnter={() => handleChangeDescription(description)}
+            />
           </FieldGroup>
         </Fieldset>
         <Divider className="my-4" />
@@ -255,12 +284,20 @@ const EditInput = ({
 }
 
 interface EditTextareaProps {
+  className?: string;
+  value: string;
+  setValue: (newValue: string) => void;
+  onEnter: () => void;
   name: string;
   placeholder: string;
 }
-const EditTextarea = (props: EditTextareaProps) => {
+const EditTextarea = ({
+  value,
+  setValue,
+  onEnter,
+  ...props
+}: EditTextareaProps) => {
   const ref = useRef<HTMLTextAreaElement>(null);
-  const [value, setValue] = useState<string>("");
   const [onHover, setOnHover] = useState<boolean>(false);
   const [onFocus, setOnFocus] = useState<boolean>(false);
 
@@ -277,7 +314,7 @@ const EditTextarea = (props: EditTextareaProps) => {
     // e.preventDefault();
 
     if (e.shiftKey && e.key === 'Enter') {
-
+      onEnter()
       e.currentTarget.blur();
       return
     }
