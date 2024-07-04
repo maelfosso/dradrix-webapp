@@ -6,14 +6,31 @@ import { UseMutationOptions } from "@tanstack/react-query";
 export const ORGANIZATIONS = "organizations";
 export const ACTIVITIES = "activities";
 
+interface GetActivityResponse {
+  activity: Activity
+}
+
+export const getActivity = (
+  organizationId: string,
+  activityId: string,
+  options?: UseQueryOptionsWithoutQueryFnKey<GetActivityResponse>
+) =>  ({
+  queryKey: [],
+  queryFn: async () => fetchApiResponse<GetActivityResponse>(
+    `${ORGANIZATIONS}/${organizationId}/${ACTIVITIES}/${activityId}`, "GET"),
+  ...options
+});
+
 interface GetAllActivitiesResponse {
   activities: Activity[]
 }
 export const getAllActivities = (
+  organizationId: string,
   options?: UseQueryOptionsWithoutQueryFnKey<GetAllActivitiesResponse>
 ) =>  ({
-  queryKey: [],
-  queryFn: async () => fetchApiResponse<GetAllActivitiesResponse>(ACTIVITIES, "GET"),
+  queryKey: [ORGANIZATIONS, organizationId, ACTIVITIES],
+  queryFn: async () => fetchApiResponse<GetAllActivitiesResponse>(
+    `${ORGANIZATIONS}/${organizationId}/${ACTIVITIES}`, "GET"),
   ...options
 });
 
