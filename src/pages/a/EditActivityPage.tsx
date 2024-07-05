@@ -1,3 +1,4 @@
+import { Transition } from "@headlessui/react";
 import { CalendarDaysIcon, ClockIcon, Cog6ToothIcon, DocumentTextIcon, HashtagIcon, ListBulletIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getActivity, updateActivityMutation } from "api/activities";
@@ -230,15 +231,26 @@ interface ActivityFieldTextProps {
 }
 const ActivityFieldText = ({field, onEnter, onDelete}: ActivityFieldTextProps) => {
   const [value, setValue] = useState<string>(field.name)
+  const [onHover, setOnHover] = useState<boolean>(false);
 
   return (
-    <EditInput
-      icon={<DocumentTextIcon />}
-      value={value}
-      setValue={setValue}
-      onEnter={() => onEnter(value)}
-      onDelete={() => onDelete()}
-    />
+    <div className="flex"
+      onMouseEnter={() => setOnHover(true)}
+      onMouseLeave={() => setOnHover(false)}
+    >
+      <EditInput
+        className="grow-1"
+        icon={<DocumentTextIcon />}
+        value={value}
+        setValue={setValue}
+        onEnter={() => onEnter(value)}
+        onDelete={() => onDelete()}
+      />
+      { onHover && <div className="">
+        <Button plain><Cog6ToothIcon /></Button>
+        <Button plain onClick={() => onDelete()}><TrashIcon /></Button>
+      </div> }
+    </div>
   )
 }
 
@@ -323,7 +335,7 @@ interface EditKeyboardUsageProps {
   onHover: boolean,
   onFocus: boolean,
 
-  onDelete: () => void;
+  onDelete?: () => void;
 }
 const EditKeyboardUsage = ({
   onHover,
@@ -331,36 +343,31 @@ const EditKeyboardUsage = ({
 
   onDelete
 }: EditKeyboardUsageProps) => {
+  console.log('[EditKeyboardUsage] ', onHover, onFocus);
   return (
     <div className={cn(
-      "m-0 p-0 absolute right-0 top-0 bottom-0 items-center justify-center",
+      "flex m-0 p-0  right-0 top-0 bottom-0 items-center justify-center",
       onHover || onFocus ? 'flex' : 'hidden'
     )}>
-      <div className="flex-col">
-        <Description
-          className={cn(
-            "sm:text-xs",
-            onHover && !onFocus
-              ? 'block'
-              : 'hidden'
-          )}
-        >Click to edit</Description>
-        <Description
-          className={cn(
-            "flex-col items-start justify-center sm:text-xs",
-            !onHover && onFocus
-              ? 'flex'
-              : 'hidden'
-          )}
-        >
-          <span><Strong>Shift+Enter</Strong> to save.</span>
-          <span><Strong>Esc</Strong> to cancel.</span>
-        </Description>
-      </div>
-      <span className="isolate inline-flex">
-        <Button plain><Cog6ToothIcon /></Button>
-        <Button plain onClick={() => onDelete()}><TrashIcon /></Button>
-      </span>
+      <Description
+        className={cn(
+          "w-max sm:text-xs",
+          onHover && !onFocus
+            ? 'block'
+            : 'hidden'
+        )}
+      >Click to edit</Description>
+      <Description
+        className={cn(
+          "w-max flex-col items-start justify-center sm:text-xs",
+          !onHover && onFocus
+            ? 'flex'
+            : 'hidden'
+        )}
+      >
+        <span><Strong>Shift+Enter</Strong> to save.</span>
+        <span><Strong>Esc</Strong> to cancel.</span>
+      </Description>
     </div>
   )
 }
@@ -384,7 +391,6 @@ const EditInput = ({
   onDelete,
   ...props
 }: EditInputProps) => {
-  // const [value, setValue] = useState<string>("");
   const [onHover, setOnHover] = useState<boolean>(false);
   const [onFocus, setOnFocus] = useState<boolean>(false);
 
@@ -425,7 +431,7 @@ const EditInput = ({
 
   return (
     <Field className={cn(
-      "relative flex items-center border border-transparent rounded-lg",
+      "relative flex grow items-center border border-transparent rounded-lg",
       onHover && !onFocus
         && 'bg-gray-200 data-[hover]:border-zinc-950/20 dark:border-white/10 dark:data-[hover]:border-white/20',
       onFocus && 'border-gray-200'
@@ -450,7 +456,6 @@ const EditInput = ({
       />
       <EditKeyboardUsage
         onHover={onHover} onFocus={onFocus}
-        onDelete={() => onDelete()}
       />
     </Field>
   )
@@ -559,7 +564,7 @@ const AddItem = ({
 
   return (
     <div
-      className="relative h-3 bg-transparent flex flex-col items-center justify-center cursor-pointer"
+      className="relative h-2 bg-transparent flex flex-col items-center justify-center cursor-pointer"
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(menuOpen || !visible)}
     >
