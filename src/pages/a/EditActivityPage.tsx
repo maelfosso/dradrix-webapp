@@ -1,32 +1,45 @@
-import { EllipsisHorizontalIcon, PlusIcon } from "@heroicons/react/20/solid";
-import { useMutation } from "@tanstack/react-query";
-import { updateActivityMutation } from "api/activities";
+import { Cog6ToothIcon, DocumentTextIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getActivity, updateActivityMutation } from "api/activities";
 import { Button } from "components/common/Button";
 import { Divider } from "components/common/Divider";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components/common/Dropdown";
 import { Description, Field, FieldGroup, Fieldset, Legend } from "components/common/Fieldset";
 import { Heading } from "components/common/Heading"
-import { Input } from "components/common/Input";
+import { Input, InputGroup } from "components/common/Input";
+import Spinner from "components/common/Spinner";
 import { Strong } from "components/common/Text";
 import { Textarea } from "components/common/Textarea";
 import useAutosizeTextArea from "hooks/useAutosizeTextArea";
+import { ActivityField } from "models/monitoring";
 import { ChangeEvent, FocusEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { cn } from "utils/css";
 
-interface ActivityField {
-  type: string
-  title: string
+const DEFAULT_ACTIVITY_FIELD_VALUE: ActivityField = {
+  id: false,
+  code: '',
+  name: '',
+  description: '',
+  type: 'text'
 }
-
 const EditActivityPage = () => {
   let { organizationId, activityId } = useParams();
+
 
   const [name, setName] = useState<string>('')
   const [description, setDescription] = useState<string>('');
   const [fields, setFields] = useState<ActivityField[]>([]);
 
-  const {mutateAsync: updateActivityMutate} = useMutation(
+  const {isPending, data} = useQuery(getActivity(organizationId!, activityId!));
+  useEffect(() => {
+    if (data?.activity) {
+      setName(data.activity.name)
+      setDescription(data.activity.description)
+      setFields(data.activity.fields)
+    }
+  }, [data?.activity]);
+  const {mutateAsync: mutateUpdateActivity} = useMutation(
     updateActivityMutation(
       organizationId!,
       activityId!
@@ -35,7 +48,7 @@ const EditActivityPage = () => {
 
   const handleChangeName = async (newName: string) => {
     try {
-      const data = await updateActivityMutate({
+      const data = await mutateUpdateActivity({
         op: 'set',
         field: 'name',
         value: newName,
@@ -48,7 +61,7 @@ const EditActivityPage = () => {
 
   const handleChangeDescription = async (newDescription: string) => {
     try {
-      const data = await updateActivityMutate({
+      const data = await mutateUpdateActivity({
         op: 'set',
         field: 'description',
         value: newDescription,
@@ -61,7 +74,7 @@ const EditActivityPage = () => {
 
   const handleAddItem = async (position: number, type: string) => {
     try {
-      const data = await updateActivityMutate({
+      const data = await mutateUpdateActivity({
         op: "add",
         field: "fields",
         value: {
@@ -72,20 +85,26 @@ const EditActivityPage = () => {
       console.log(data.activity);
       setFields((oldFields) => [
         ...oldFields.slice(0, position),
-        { type, title: `Field-${position}` },
+        { ...DEFAULT_ACTIVITY_FIELD_VALUE, type },
         ...oldFields.slice(position)
       ])
     } catch (error) {}
   }
 
-  const handleChangeTitle = async (position: number, newTitle: string) => {
+  const handleChangeFieldName = async (position: number, newName: string) => {
     const fieldAtPosition = fields[position];
 
     setFields((oldFields) => [
       ...oldFields.slice(0, position),
-      { ...fieldAtPosition, title: newTitle },
+      { ...fieldAtPosition, name: newName },
       ...oldFields.slice(position + 1)
     ])
+  }
+
+  if (isPending) {
+    return (
+      <Spinner />
+    )
   }
 
   return (
@@ -98,7 +117,7 @@ const EditActivityPage = () => {
               value={name}
               setValue={(newValue) => setName(newValue)}
               onEnter={() => handleChangeName(name)}
-              className="sm:text-4xl" name="title" placeholder="Title"
+              className="sm:text-4xl" name="name" placeholder="Name"
             />
             <EditTextarea
               name="description" placeholder="Description"
@@ -115,10 +134,10 @@ const EditActivityPage = () => {
             <AddItem key='add-item-0' place={'bottom'} position={0} onClick={(position, type) => handleAddItem(position, type)} />
             { fields.map((field, index) => (
               <>
-                <ActivityField
-                  key={`field-${index}`}
+                <ActivityFieldContent
+                  key={`field-${field.type}-${index}`}
                   {...field}
-                  onChangeTitle={(newTitle) => handleChangeTitle(index, newTitle)}
+                  onChangeName={(newName) => handleChangeFieldName(index, newName)}
                 />
                 <AddItem
                   key={`add-item-${index + 1}`}
@@ -137,16 +156,16 @@ const EditActivityPage = () => {
 
 export default EditActivityPage;
 
-interface ActivityFieldProps {
+interface ActivityFieldContentProps {
   type: string,
-  title: string,
-  onChangeTitle: (newTitle: string) => void
+  name: string,
+  onChangeName: (newName: string) => void
 }
-const ActivityField = ({ type, title, onChangeTitle }: ActivityFieldProps) => {
+const ActivityFieldContent = ({ type, name, onChangeName }: ActivityFieldContentProps) => {
 
   switch(type) {
     case 'text':
-      return <ActivityFieldText title={title} setTitle={onChangeTitle} />
+      return <ActivityFieldText name={name} setName={onChangeName} />
 
     default:
       return <></>
@@ -154,17 +173,18 @@ const ActivityField = ({ type, title, onChangeTitle }: ActivityFieldProps) => {
 }
 
 interface ActivityFieldTextProps {
-  title: string
-  setTitle: (newValue: string) => void;
+  name: string
+  setName: (newValue: string) => void;
 }
-const ActivityFieldText = ({title, setTitle}: ActivityFieldTextProps) => {
+const ActivityFieldText = ({name, setName}: ActivityFieldTextProps) => {
 
   return (
     <EditInput
-      className="border border-black"
-      value={title}
-      setValue={setTitle}
-      name="" placeholder="Enter the name of the field" />
+      value={name}
+      setValue={setName}
+      onEnter={() => undefined}
+      name="" placeholder="Enter the name of the field"
+    />
   )
 }
 
@@ -178,27 +198,34 @@ const EditKeyboardUsage = ({
 }: EditKeyboardUsageProps) => {
   return (
     <div className={cn(
-      "flex m-0 p-0 absolute right-0 top-0 bottom-0 flex-col items-center justify-center",
+      "m-0 p-0 absolute right-0 top-0 bottom-0 items-center justify-center",
       onHover || onFocus ? 'flex' : 'hidden'
     )}>
-      <Description
-        className={cn(
-          onHover && !onFocus
-            ? 'block'
-            : 'hidden'
-        )}
-      >Click to edit</Description>
-      <Description
-        className={cn(
-          "flex-col items-start justify-center",
-          !onHover && onFocus
-            ? 'flex'
-            : 'hidden'
-        )}
-      >
-        <span><Strong>Shift+Enter</Strong> to save.</span>
-        <span><Strong>Esc</Strong> to cancel.</span>
-      </Description>
+      <div className="flex-col">
+        <Description
+          className={cn(
+            "sm:text-xs",
+            onHover && !onFocus
+              ? 'block'
+              : 'hidden'
+          )}
+        >Click to edit</Description>
+        <Description
+          className={cn(
+            "flex-col items-start justify-center sm:text-xs",
+            !onHover && onFocus
+              ? 'flex'
+              : 'hidden'
+          )}
+        >
+          <span><Strong>Shift+Enter</Strong> to save.</span>
+          <span><Strong>Esc</Strong> to cancel.</span>
+        </Description>
+      </div>
+      <span className="isolate inline-flex">
+        <Button plain><Cog6ToothIcon /></Button>
+        <Button plain><TrashIcon /></Button>
+      </span>
     </div>
   )
 }
@@ -258,15 +285,17 @@ const EditInput = ({
   }
 
   return (
-    <Field className="relative">
+    <Field className={cn(
+      "relative flex border border-transparent rounded-lg",
+      onHover && !onFocus
+        && 'bg-gray-200 data-[hover]:border-zinc-950/20 dark:border-white/10 dark:data-[hover]:border-white/20',
+      onFocus && 'border-gray-200'
+    )}>
       <Input
-        wrapperClassName="border-none before:shadow-none before:rounded-none sm:after:focus-within:ring-0"
+        wrapperClassName="border-none before:shadow-none before:rounded-none before:bg-transparent sm:after:focus-within:ring-0"
         className={cn(
-          "sm:pr-36",
-          onHover && !onFocus && "bg-gray-200",
-          // onFocus
-          // ? 'border border-zinc-950/10 data-[hover]:border-zinc-950/20 dark:border-white/10 dark:data-[hover]:border-white/20'
-          // : 'border-none',
+          "border-none sm:pr-36 hover:bg-none before:bg-none",
+          "border-none before:shadow-none before:rounded-none sm:after:focus-within:ring-0",
           className,
         )}
         value={value}
@@ -278,6 +307,10 @@ const EditInput = ({
         onMouseLeave={() => handleHover(false)}
         {...props}
       />
+      {/* <span className="isolate inline-flex">
+        <Button plain><TrashIcon /></Button>
+        <Button plain><Cog6ToothIcon /></Button>
+      </span> */}
       <EditKeyboardUsage onHover={onHover} onFocus={onFocus} />
     </Field>
   )
