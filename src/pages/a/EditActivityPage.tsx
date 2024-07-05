@@ -1,4 +1,4 @@
-import { Cog6ToothIcon, DocumentTextIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
+import { CalendarDaysIcon, ClockIcon, Cog6ToothIcon, DocumentTextIcon, HashtagIcon, ListBulletIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getActivity, updateActivityMutation } from "api/activities";
 import { Button } from "components/common/Button";
@@ -6,7 +6,7 @@ import { Divider } from "components/common/Divider";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components/common/Dropdown";
 import { Description, Field, FieldGroup, Fieldset, Legend } from "components/common/Fieldset";
 import { Heading } from "components/common/Heading"
-import { Input, InputGroup } from "components/common/Input";
+import { Input } from "components/common/Input";
 import Spinner from "components/common/Spinner";
 import { Strong } from "components/common/Text";
 import { Textarea } from "components/common/Textarea";
@@ -167,6 +167,18 @@ const ActivityFieldContent = ({ type, name, onChangeName }: ActivityFieldContent
     case 'text':
       return <ActivityFieldText name={name} setName={onChangeName} />
 
+    case 'number':
+      return <ActivityFieldNumber name={name} setName={onChangeName} />
+
+    case 'date':
+      return <ActivityFieldDate name={name} setName={onChangeName} />
+
+    case 'time':
+      return <ActivityFieldTime name={name} setName={onChangeName} />
+
+    case 'multiple-choice':
+      return <ActivityFieldMC name={name} setName={onChangeName} />
+
     default:
       return <></>
   }
@@ -180,6 +192,75 @@ const ActivityFieldText = ({name, setName}: ActivityFieldTextProps) => {
 
   return (
     <EditInput
+      icon={<DocumentTextIcon />}
+      value={name}
+      setValue={setName}
+      onEnter={() => undefined}
+      name="" placeholder="Enter the name of the field"
+    />
+  )
+}
+
+interface ActivityFieldNumberProps {
+  name: string
+  setName: (newValue: string) => void;
+}
+const ActivityFieldNumber = ({name, setName}: ActivityFieldNumberProps) => {
+
+  return (
+    <EditInput
+      icon={<HashtagIcon />}
+      value={name}
+      setValue={setName}
+      onEnter={() => undefined}
+      name="" placeholder="Enter the name of the field"
+    />
+  )
+}
+
+interface ActivityFieldDateProps {
+  name: string
+  setName: (newValue: string) => void;
+}
+const ActivityFieldDate = ({name, setName}: ActivityFieldDateProps) => {
+
+  return (
+    <EditInput
+      icon={<CalendarDaysIcon />}
+      value={name}
+      setValue={setName}
+      onEnter={() => undefined}
+      name="" placeholder="Enter the name of the field"
+    />
+  )
+}
+
+interface ActivityFieldTimeProps {
+  name: string
+  setName: (newValue: string) => void;
+}
+const ActivityFieldTime = ({name, setName}: ActivityFieldTimeProps) => {
+
+  return (
+    <EditInput
+      icon={<ClockIcon />}
+      value={name}
+      setValue={setName}
+      onEnter={() => undefined}
+      name="" placeholder="Enter the name of the field"
+    />
+  )
+}
+
+interface ActivityFieldMCProps {
+  name: string
+  setName: (newValue: string) => void;
+}
+const ActivityFieldMC = ({name, setName}: ActivityFieldMCProps) => {
+
+  return (
+    <EditInput
+      icon={<ListBulletIcon />}
       value={name}
       setValue={setName}
       onEnter={() => undefined}
@@ -231,6 +312,7 @@ const EditKeyboardUsage = ({
 }
 
 interface EditInputProps {
+  icon?: JSX.Element;
   className?: string;
   value: string;
   setValue: (newValue: string) => void;
@@ -239,6 +321,7 @@ interface EditInputProps {
   placeholder: string;
 }
 const EditInput = ({
+  icon,
   className,
   value,
   setValue,
@@ -286,11 +369,12 @@ const EditInput = ({
 
   return (
     <Field className={cn(
-      "relative flex border border-transparent rounded-lg",
+      "relative flex items-center border border-transparent rounded-lg",
       onHover && !onFocus
         && 'bg-gray-200 data-[hover]:border-zinc-950/20 dark:border-white/10 dark:data-[hover]:border-white/20',
       onFocus && 'border-gray-200'
     )}>
+      { icon && <span className="w-5 h-5">{ icon }</span>}
       <Input
         wrapperClassName="border-none before:shadow-none before:rounded-none before:bg-transparent sm:after:focus-within:ring-0"
         className={cn(
@@ -307,10 +391,6 @@ const EditInput = ({
         onMouseLeave={() => handleHover(false)}
         {...props}
       />
-      {/* <span className="isolate inline-flex">
-        <Button plain><TrashIcon /></Button>
-        <Button plain><Cog6ToothIcon /></Button>
-      </span> */}
       <EditKeyboardUsage onHover={onHover} onFocus={onFocus} />
     </Field>
   )
@@ -445,10 +525,10 @@ const AddItem = ({
                     </DropdownButton>
                     <DropdownMenu>
                       <DropdownItem onClick={() => handleClickOnType('text')}>Text</DropdownItem>
-                      <DropdownItem>Number</DropdownItem>
-                      <DropdownItem>Date</DropdownItem>
-                      <DropdownItem>Hour</DropdownItem>
-                      <DropdownItem>Multiple choices</DropdownItem>
+                      <DropdownItem onClick={() => handleClickOnType('number')}>Number</DropdownItem>
+                      <DropdownItem onClick={() => handleClickOnType('date')}>Date</DropdownItem>
+                      <DropdownItem onClick={() => handleClickOnType('time')}>Hour</DropdownItem>
+                      <DropdownItem onClick={() => handleClickOnType('multiple-choice')}>Multiple choices</DropdownItem>
                     </DropdownMenu>
                   </>
                 )

@@ -4,7 +4,7 @@ import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from "../common/Navba
 import { Dropdown, DropdownButton, DropdownDivider, DropdownItem, DropdownLabel, DropdownMenu } from "../common/Dropdown";
 import { Avatar } from "../common/Avatar";
 import { Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarHeading, SidebarItem, SidebarLabel, SidebarSection, SidebarSpacer } from "../common/Sidebar";
-import { ArrowRightStartOnRectangleIcon, ChevronDownIcon, ChevronUpIcon, Cog6ToothIcon, Cog8ToothIcon, HomeIcon, LightBulbIcon, PlusIcon, QuestionMarkCircleIcon, ShieldCheckIcon, SparklesIcon, Square2StackIcon, TicketIcon, UserCircleIcon } from "@heroicons/react/20/solid";
+import { ArrowRightStartOnRectangleIcon, ChevronDownIcon, ChevronUpIcon, Cog6ToothIcon, Cog8ToothIcon, HomeIcon, LightBulbIcon, PlusIcon, QuestionMarkCircleIcon, ShieldCheckIcon, SparklesIcon, Square2StackIcon, TicketIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { useAuthContext } from "contexts/AuthContext";
 import { useMemo } from "react";
 import { Button } from "components/common/Button";
@@ -112,15 +112,23 @@ const MainLayout = () => {
 
           <SidebarBody>
             <SidebarSection>
-              <SidebarItem href="/" current={pathname === '/'}>
+              <SidebarItem href="/" current={pathname === '/'} className="data-[slot=icon]:*:fill-none">
                 <HomeIcon />
                 <SidebarLabel>Home</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/activities" current={pathname.startsWith('/activities')}>
+              <SidebarItem
+                href="/activities"
+                current={pathname.startsWith('/activities')}
+                className="data-[slot=icon]:*:fill-none"
+              >
                 <Square2StackIcon />
                 <SidebarLabel>Activities</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/settings" current={pathname.startsWith('/settings')}>
+              <SidebarItem
+                href="/settings"
+                current={pathname.startsWith('/settings')}
+                className="data-[slot=icon]:*:fill-none"
+              >
                 <Cog6ToothIcon />
                 <SidebarLabel>Settings</SidebarLabel>
               </SidebarItem>
@@ -146,11 +154,11 @@ const MainLayout = () => {
             <SidebarSpacer />
 
             <SidebarSection>
-              <SidebarItem href="#">
+              <SidebarItem href="#" className="data-[slot=icon]:*:fill-none">
                 <QuestionMarkCircleIcon />
                 <SidebarLabel>Support</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="#">
+              <SidebarItem href="#" className="data-[slot=icon]:*:fill-none">
                 <SparklesIcon />
                 <SidebarLabel>Changelog</SidebarLabel>
               </SidebarItem>
