@@ -46,6 +46,52 @@ const EditActivityPage = () => {
     )
   );
 
+  const handleSetUpdate = async (field: string, value: any, position?: number) => {
+    try {
+      const data = await mutateUpdateActivity({
+        op: 'set',
+        field: position ? `fields.${position}.${field}` : field,
+        value: value,
+      });
+
+      console.log(data);
+      setName(data.activity.name)
+    } catch (error) {}
+  }
+
+  const handleAddUpdate = async (position: number, type: string) => {
+    try {
+      const data = await mutateUpdateActivity({
+        op: "add",
+        field: "fields",
+        value: {
+          type
+        },
+        position
+      })
+      console.log(data.activity);
+      setFields((oldFields) => [
+        ...oldFields.slice(0, position),
+        { ...DEFAULT_ACTIVITY_FIELD_VALUE, type },
+        ...oldFields.slice(position)
+      ])
+    } catch (error) {}
+  }
+
+  const handleRemoveUpdate = async (position: number) => {
+    try {
+      const data = await mutateUpdateActivity({
+        op: "remove",
+        field: "fields",
+        position
+      })
+      console.log(data.activity);
+      setFields((oldFields) => [
+        ...oldFields.slice(0, position).concat(oldFields.slice(position + 1))
+      ])
+    } catch (error) {}
+  }
+
   const handleChangeName = async (newName: string) => {
     try {
       const data = await mutateUpdateActivity({
@@ -72,33 +118,23 @@ const EditActivityPage = () => {
     } catch (error) {}
   }
 
-  const handleAddItem = async (position: number, type: string) => {
+  const handleChangeFieldName = async (position: number, newName: string) => {
+    const fieldAtPosition = fields[position];
+
     try {
       const data = await mutateUpdateActivity({
-        op: "add",
-        field: "fields",
-        value: {
-          type
-        },
-        position
+        op: "set",
+        field: `fields.${position}.name`, // "fields",
+        value: newName,
       })
       console.log(data.activity);
       setFields((oldFields) => [
         ...oldFields.slice(0, position),
-        { ...DEFAULT_ACTIVITY_FIELD_VALUE, type },
-        ...oldFields.slice(position)
+        { ...fieldAtPosition, name: newName },
+        ...oldFields.slice(position + 1)
       ])
     } catch (error) {}
-  }
 
-  const handleChangeFieldName = async (position: number, newName: string) => {
-    const fieldAtPosition = fields[position];
-
-    setFields((oldFields) => [
-      ...oldFields.slice(0, position),
-      { ...fieldAtPosition, name: newName },
-      ...oldFields.slice(position + 1)
-    ])
   }
 
   if (isPending) {
@@ -131,19 +167,21 @@ const EditActivityPage = () => {
         <Fieldset>
           <Legend>Fields</Legend>
           <FieldGroup className="space-y-0 ">
-            <AddItem key='add-item-0' place={'bottom'} position={0} onClick={(position, type) => handleAddItem(position, type)} />
+            <AddItem key='add-item-0' place={'bottom'} position={0} onClick={(position, type) => handleAddUpdate(position, type)} />
             { fields.map((field, index) => (
               <>
                 <ActivityFieldContent
                   key={`field-${field.type}-${index}`}
-                  {...field}
-                  onChangeName={(newName) => handleChangeFieldName(index, newName)}
+
+                  field={field}
+                  onEnter={(newValue) => handleSetUpdate('name', newValue, index)}
+                  onDelete={() => handleRemoveUpdate(index)}
                 />
                 <AddItem
                   key={`add-item-${index + 1}`}
                   place={'bottom'}
                   position={index + 1}
-                  onClick={(position, type) => handleAddItem(position, type)}
+                  onClick={(position, type) => handleAddUpdate(position, type)}
                 />
               </>
             ))}
@@ -157,27 +195,28 @@ const EditActivityPage = () => {
 export default EditActivityPage;
 
 interface ActivityFieldContentProps {
-  type: string,
-  name: string,
-  onChangeName: (newName: string) => void
+  field: ActivityField;
+  onEnter: (newValue: string) => void;
+  onDelete: () => void;
 }
-const ActivityFieldContent = ({ type, name, onChangeName }: ActivityFieldContentProps) => {
+const ActivityFieldContent = ({ field, onEnter, onDelete }: ActivityFieldContentProps) => {
+  const { type } = field;
 
   switch(type) {
     case 'text':
-      return <ActivityFieldText name={name} setName={onChangeName} />
+      return <ActivityFieldText field={field} onEnter={onEnter} onDelete={onDelete} />
 
     case 'number':
-      return <ActivityFieldNumber name={name} setName={onChangeName} />
+      return <ActivityFieldNumber field={field} onEnter={onEnter} onDelete={onDelete} />
 
     case 'date':
-      return <ActivityFieldDate name={name} setName={onChangeName} />
+      return <ActivityFieldDate field={field} onEnter={onEnter} onDelete={onDelete} />
 
     case 'time':
-      return <ActivityFieldTime name={name} setName={onChangeName} />
+      return <ActivityFieldTime field={field} onEnter={onEnter} onDelete={onDelete} />
 
     case 'multiple-choice':
-      return <ActivityFieldMC name={name} setName={onChangeName} />
+      return <ActivityFieldMC field={field} onEnter={onEnter} onDelete={onDelete} />
 
     default:
       return <></>
@@ -185,97 +224,112 @@ const ActivityFieldContent = ({ type, name, onChangeName }: ActivityFieldContent
 }
 
 interface ActivityFieldTextProps {
-  name: string
-  setName: (newValue: string) => void;
+  field: ActivityField;
+  onEnter: (newValue: string) => void;
+  onDelete: () => void;
 }
-const ActivityFieldText = ({name, setName}: ActivityFieldTextProps) => {
+const ActivityFieldText = ({field, onEnter, onDelete}: ActivityFieldTextProps) => {
+  const [value, setValue] = useState<string>(field.name)
 
   return (
     <EditInput
       icon={<DocumentTextIcon />}
-      value={name}
-      setValue={setName}
-      onEnter={() => undefined}
-      name="" placeholder="Enter the name of the field"
+      value={value}
+      setValue={setValue}
+      onEnter={() => onEnter(value)}
+      onDelete={() => onDelete()}
     />
   )
 }
 
 interface ActivityFieldNumberProps {
-  name: string
-  setName: (newValue: string) => void;
+  field: ActivityField;
+  onEnter: (newValue: string) => void;
+  onDelete: () => void;
 }
-const ActivityFieldNumber = ({name, setName}: ActivityFieldNumberProps) => {
+const ActivityFieldNumber = ({field, onEnter, onDelete}: ActivityFieldNumberProps) => {
+  const [value, setValue] = useState<string>(field.name);
 
   return (
     <EditInput
       icon={<HashtagIcon />}
-      value={name}
-      setValue={setName}
-      onEnter={() => undefined}
-      name="" placeholder="Enter the name of the field"
+      value={value}
+      setValue={setValue}
+      onEnter={() => onEnter(value)}
+      onDelete={onDelete}
+      placeholder="Enter the name of the field"
     />
   )
 }
 
 interface ActivityFieldDateProps {
-  name: string
-  setName: (newValue: string) => void;
+  field: ActivityField;
+  onEnter: (newValue: string) => void;
+  onDelete: () => void;
 }
-const ActivityFieldDate = ({name, setName}: ActivityFieldDateProps) => {
+const ActivityFieldDate = ({field, onEnter, onDelete}: ActivityFieldDateProps) => {
+  const [value, setValue] = useState<string>(field.name);
 
   return (
     <EditInput
       icon={<CalendarDaysIcon />}
-      value={name}
-      setValue={setName}
-      onEnter={() => undefined}
-      name="" placeholder="Enter the name of the field"
+      value={value}
+      setValue={setValue}
+      onEnter={() => onEnter(value)}
+      onDelete={() => onDelete()}
     />
   )
 }
 
 interface ActivityFieldTimeProps {
-  name: string
-  setName: (newValue: string) => void;
+  field: ActivityField;
+  onEnter: (newValue: string) => void;
+  onDelete: () => void;
 }
-const ActivityFieldTime = ({name, setName}: ActivityFieldTimeProps) => {
+const ActivityFieldTime = ({field, onEnter, onDelete}: ActivityFieldTimeProps) => {
+  const [value, setValue] = useState<string>(field.name)
 
   return (
     <EditInput
       icon={<ClockIcon />}
-      value={name}
-      setValue={setName}
-      onEnter={() => undefined}
-      name="" placeholder="Enter the name of the field"
+      value={value}
+      setValue={setValue}
+      onEnter={() => onEnter(value)}
+      onDelete={() => onDelete()}
     />
   )
 }
 
 interface ActivityFieldMCProps {
-  name: string
-  setName: (newValue: string) => void;
+  field: ActivityField;
+  onEnter: (newValue: string) => void;
+  onDelete: () => void;
 }
-const ActivityFieldMC = ({name, setName}: ActivityFieldMCProps) => {
+const ActivityFieldMC = ({field, onEnter, onDelete}: ActivityFieldMCProps) => {
+  const [value, setValue] = useState<string>(field.name)
 
   return (
     <EditInput
       icon={<ListBulletIcon />}
-      value={name}
-      setValue={setName}
-      onEnter={() => undefined}
-      name="" placeholder="Enter the name of the field"
+      value={value}
+      setValue={setValue}
+      onEnter={() => onEnter(value)}
+      onDelete={() => onDelete()}
     />
   )
 }
 
 interface EditKeyboardUsageProps {
   onHover: boolean,
-  onFocus: boolean
+  onFocus: boolean,
+
+  onDelete: () => void;
 }
 const EditKeyboardUsage = ({
   onHover,
-  onFocus
+  onFocus,
+
+  onDelete
 }: EditKeyboardUsageProps) => {
   return (
     <div className={cn(
@@ -305,7 +359,7 @@ const EditKeyboardUsage = ({
       </div>
       <span className="isolate inline-flex">
         <Button plain><Cog6ToothIcon /></Button>
-        <Button plain><TrashIcon /></Button>
+        <Button plain onClick={() => onDelete()}><TrashIcon /></Button>
       </span>
     </div>
   )
@@ -315,17 +369,19 @@ interface EditInputProps {
   icon?: JSX.Element;
   className?: string;
   value: string;
+  placeholder?: string;
   setValue: (newValue: string) => void;
   onEnter: () => void;
-  name: string;
-  placeholder: string;
+  onDelete?: () => void;
 }
 const EditInput = ({
   icon,
   className,
   value,
+  placeholder,
   setValue,
   onEnter,
+  onDelete,
   ...props
 }: EditInputProps) => {
   // const [value, setValue] = useState<string>("");
@@ -383,6 +439,7 @@ const EditInput = ({
           className,
         )}
         value={value}
+        placeholder={placeholder || "Type here..."}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         onFocus={handleFocus}
@@ -391,7 +448,10 @@ const EditInput = ({
         onMouseLeave={() => handleHover(false)}
         {...props}
       />
-      <EditKeyboardUsage onHover={onHover} onFocus={onFocus} />
+      <EditKeyboardUsage
+        onHover={onHover} onFocus={onFocus}
+        onDelete={() => onDelete()}
+      />
     </Field>
   )
 }

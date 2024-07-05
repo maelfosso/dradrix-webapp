@@ -54,7 +54,7 @@ interface UpdateActivityMutationResponse {
 interface UpdateActivityMutationRequest {
   op: string
 	field: string
-	value: any;
+	value?: any;
 	position?: number;
 }
 export const updateActivityMutation = (organizationId: string, activityId: string, options?: UseMutationOptions<UpdateActivityMutationResponse, Error, UpdateActivityMutationRequest>) => ({
