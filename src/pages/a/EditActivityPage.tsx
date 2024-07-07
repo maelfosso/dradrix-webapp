@@ -7,6 +7,7 @@ import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components
 import { Description, Field, FieldGroup, Fieldset, Legend } from "components/common/Fieldset";
 import { Heading, Subheading } from "components/common/Heading"
 import { Input } from "components/common/Input";
+import { Listbox, ListboxLabel, ListboxOption } from "components/common/Listbox";
 import { Popover, PopoverButton, PopoverPanel } from "components/common/Popover";
 import Spinner from "components/common/Spinner";
 import { Switch } from "components/common/Switch";
@@ -216,6 +217,32 @@ const EditActivityPage = () => {
 
 export default EditActivityPage;
 
+const ActivityFieldType = ({ type }: { type: string }) => {
+  const [value, setValue] = useState(type);
+
+  return (
+    <Listbox showIndicator={false} name="type" value={value} onChange={(newValue) => setValue(newValue)}
+      className="w-auto p-0 m-o min-h-0 before:shadow-none"
+      selectedOptionClassName="sm:min-h-fit sm:pl-0 sm:pr-0 sm:border-none"
+    >
+      <ListboxOption value="text">
+        <DocumentTextIcon />
+      </ListboxOption>
+      <ListboxOption value="number">
+        <HashtagIcon />
+      </ListboxOption>
+      <ListboxOption value="date">
+        <CalendarDaysIcon />
+      </ListboxOption>
+      <ListboxOption value="time">
+        <ClockIcon />
+      </ListboxOption>
+      <ListboxOption value="multiple-choice">
+        <ListBulletIcon />
+      </ListboxOption>
+    </Listbox>
+  )
+}
 interface ActivityFieldProps {
   field: ActivityField;
   onEnter: (newValue: string) => void;
@@ -262,7 +289,7 @@ const ActivityFieldText = ({field, onEnter, onDelete}: ActivityFieldTextProps) =
       <EditInput
         className="grow-1"
         placeholder="Enter the name of the field"
-        icon={<DocumentTextIcon />}
+        icon={<ActivityFieldType type={field.type} />}
         value={value}
         setValue={setValue}
         onEnter={() => onEnter(value)}
@@ -291,7 +318,7 @@ const ActivityFieldNumber = ({field, onEnter, onDelete}: ActivityFieldNumberProp
 
   return (
     <EditInput
-      icon={<HashtagIcon />}
+      icon={<ActivityFieldType type={field.type} />}
       value={value}
       setValue={setValue}
       onEnter={() => onEnter(value)}
@@ -311,7 +338,7 @@ const ActivityFieldDate = ({field, onEnter, onDelete}: ActivityFieldDateProps) =
 
   return (
     <EditInput
-      icon={<CalendarDaysIcon />}
+      icon={<ActivityFieldType type={field.type} />}
       value={value}
       setValue={setValue}
       onEnter={() => onEnter(value)}
@@ -330,7 +357,7 @@ const ActivityFieldTime = ({field, onEnter, onDelete}: ActivityFieldTimeProps) =
 
   return (
     <EditInput
-      icon={<ClockIcon />}
+      icon={<ActivityFieldType type={field.type} />}
       value={value}
       setValue={setValue}
       onEnter={() => onEnter(value)}
@@ -349,7 +376,7 @@ const ActivityFieldMC = ({field, onEnter, onDelete}: ActivityFieldMCProps) => {
 
   return (
     <EditInput
-      icon={<ListBulletIcon />}
+      icon={<ActivityFieldType type={field.type} />}
       value={value}
       setValue={setValue}
       onEnter={() => onEnter(value)}
@@ -516,7 +543,7 @@ const EditInput = ({
         && 'bg-gray-200 data-[hover]:border-zinc-950/20 dark:border-white/10 dark:data-[hover]:border-white/20',
       onFocus && 'border-gray-200'
     )}>
-      { icon && <span className="w-5 h-5">{ icon }</span>}
+      { icon }
       <Input
         wrapperClassName="border-none before:shadow-none before:rounded-none before:bg-transparent sm:after:focus-within:ring-0"
         className={cn(
@@ -669,11 +696,26 @@ const AddItem = ({
                       <PlusIcon />
                     </DropdownButton>
                     <DropdownMenu>
-                      <DropdownItem onClick={() => handleClickOnType('text')}>Text</DropdownItem>
-                      <DropdownItem onClick={() => handleClickOnType('number')}>Number</DropdownItem>
-                      <DropdownItem onClick={() => handleClickOnType('date')}>Date</DropdownItem>
-                      <DropdownItem onClick={() => handleClickOnType('time')}>Hour</DropdownItem>
-                      <DropdownItem onClick={() => handleClickOnType('multiple-choice')}>Multiple choices</DropdownItem>
+                      <DropdownItem onClick={() => handleClickOnType('text')}>
+                        <DocumentTextIcon />
+                        Text
+                      </DropdownItem>
+                      <DropdownItem onClick={() => handleClickOnType('number')}>
+                        <HashtagIcon />
+                        Number
+                      </DropdownItem>
+                      <DropdownItem onClick={() => handleClickOnType('date')}>
+                        <CalendarDaysIcon />
+                        Date
+                      </DropdownItem>
+                      <DropdownItem onClick={() => handleClickOnType('time')}>
+                        <ClockIcon />
+                        Hour
+                      </DropdownItem>
+                      <DropdownItem onClick={() => handleClickOnType('multiple-choice')}>
+                        <ListBulletIcon />
+                        Multiple choices
+                      </DropdownItem>
                     </DropdownMenu>
                   </>
                 )
