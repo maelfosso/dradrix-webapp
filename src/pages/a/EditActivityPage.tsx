@@ -1,4 +1,3 @@
-import { Transition } from "@headlessui/react";
 import { CalendarDaysIcon, ClockIcon, Cog6ToothIcon, DocumentTextIcon, HashtagIcon, ListBulletIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getActivity, updateActivityMutation } from "api/activities";
@@ -8,6 +7,7 @@ import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components
 import { Description, Field, FieldGroup, Fieldset, Legend } from "components/common/Fieldset";
 import { Heading } from "components/common/Heading"
 import { Input } from "components/common/Input";
+import { Popover, PopoverButton, PopoverPanel } from "components/common/Popover";
 import Spinner from "components/common/Spinner";
 import { Strong } from "components/common/Text";
 import { Textarea } from "components/common/Textarea";
@@ -240,16 +240,25 @@ const ActivityFieldText = ({field, onEnter, onDelete}: ActivityFieldTextProps) =
     >
       <EditInput
         className="grow-1"
+        placeholder="Enter the name of the field"
         icon={<DocumentTextIcon />}
         value={value}
         setValue={setValue}
         onEnter={() => onEnter(value)}
         onDelete={() => onDelete()}
       />
-      { onHover && <div className="">
-        <Button plain><Cog6ToothIcon /></Button>
+      <div className="flex">
+        <Popover className="relative">
+          <PopoverButton plain><Cog6ToothIcon /></PopoverButton>
+          <PopoverPanel anchor="bottom" className="flex flex-col">
+            <a href="/analytics">Analytics</a>
+            <a href="/engagement">Engagement</a>
+            <a href="/security">Security</a>
+            <a href="/integrations">Integrations</a>
+          </PopoverPanel>
+        </Popover>
         <Button plain onClick={() => onDelete()}><TrashIcon /></Button>
-      </div> }
+      </div>
     </div>
   )
 }
@@ -339,14 +348,12 @@ interface EditKeyboardUsageProps {
 }
 const EditKeyboardUsage = ({
   onHover,
-  onFocus,
-
-  onDelete
+  onFocus
 }: EditKeyboardUsageProps) => {
   console.log('[EditKeyboardUsage] ', onHover, onFocus);
   return (
     <div className={cn(
-      "flex m-0 p-0  right-0 top-0 bottom-0 items-center justify-center",
+      "flex m-0 p-0 absolute right-0 top-0 bottom-0 items-center justify-center",
       onHover || onFocus ? 'flex' : 'hidden'
     )}>
       <Description
