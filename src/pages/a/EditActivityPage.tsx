@@ -5,17 +5,38 @@ import { Button } from "components/common/Button";
 import { Divider } from "components/common/Divider";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components/common/Dropdown";
 import { Description, Field, FieldGroup, Fieldset, Legend } from "components/common/Fieldset";
-import { Heading } from "components/common/Heading"
+import { Heading, Subheading } from "components/common/Heading"
 import { Input } from "components/common/Input";
 import { Popover, PopoverButton, PopoverPanel } from "components/common/Popover";
 import Spinner from "components/common/Spinner";
-import { Strong } from "components/common/Text";
+import { Switch } from "components/common/Switch";
+import { Strong, Text } from "components/common/Text";
 import { Textarea } from "components/common/Textarea";
 import useAutosizeTextArea from "hooks/useAutosizeTextArea";
-import { ActivityField } from "models/monitoring";
+// import { ActivityField } from "models/monitoring";
 import { ChangeEvent, FocusEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { cn } from "utils/css";
+
+export type ActivityFieldOptions = {
+  multiple: boolean;
+}
+
+export type ActivityField = {
+  name: string;
+  description: string;
+  type: string;
+  id: boolean;
+  code: string;
+  options: ActivityFieldOptions;
+}
+
+export type Activity = {
+  id: string;
+  name: string;
+  description: string
+  fields: ActivityField[];
+};
 
 const DEFAULT_ACTIVITY_FIELD_VALUE: ActivityField = {
   id: false,
@@ -154,7 +175,7 @@ const EditActivityPage = () => {
               value={name}
               setValue={(newValue) => setName(newValue)}
               onEnter={() => handleChangeName(name)}
-              className="sm:text-4xl" name="name" placeholder="Name"
+              className="sm:text-4xl" placeholder="Name"
             />
             <EditTextarea
               name="description" placeholder="Description"
@@ -171,7 +192,7 @@ const EditActivityPage = () => {
             <AddItem key='add-item-0' place={'bottom'} position={0} onClick={(position, type) => handleAddUpdate(position, type)} />
             { fields.map((field, index) => (
               <>
-                <ActivityFieldContent
+                <ActivityField
                   key={`field-${field.type}-${index}`}
 
                   field={field}
@@ -195,12 +216,12 @@ const EditActivityPage = () => {
 
 export default EditActivityPage;
 
-interface ActivityFieldContentProps {
+interface ActivityFieldProps {
   field: ActivityField;
   onEnter: (newValue: string) => void;
   onDelete: () => void;
 }
-const ActivityFieldContent = ({ field, onEnter, onDelete }: ActivityFieldContentProps) => {
+const ActivityField = ({ field, onEnter, onDelete }: ActivityFieldProps) => {
   const { type } = field;
 
   switch(type) {
@@ -251,10 +272,7 @@ const ActivityFieldText = ({field, onEnter, onDelete}: ActivityFieldTextProps) =
         <Popover className="relative">
           <PopoverButton plain><Cog6ToothIcon /></PopoverButton>
           <PopoverPanel anchor="bottom" className="flex flex-col">
-            <a href="/analytics">Analytics</a>
-            <a href="/engagement">Engagement</a>
-            <a href="/security">Security</a>
-            <a href="/integrations">Integrations</a>
+            <ActivityFieldOptions />
           </PopoverPanel>
         </Popover>
         <Button plain onClick={() => onDelete()}><TrashIcon /></Button>
@@ -340,6 +358,61 @@ const ActivityFieldMC = ({field, onEnter, onDelete}: ActivityFieldMCProps) => {
   )
 }
 
+
+interface ActivityFieldOptionsProps {
+
+}
+const ActivityFieldOptions = () => {
+  return (
+    <form onSubmit={() => {}} className="p-2 mx-auto max-w-4xl">
+      <Heading>Options</Heading>
+      <Divider className="my-4" />
+
+      <Fieldset className="flex flex-col gap-y-4">
+      <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+        <div>
+          <Subheading>References</Subheading>
+          <Text>Its value is the primary key from another activity. Kindly select the referencing activity.</Text>
+        </div>
+        <div>
+          <Input aria-label="Reference activity" name="reference" />
+        </div>
+      </section>
+
+      <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+        <div>
+          <Subheading>Default value</Subheading>
+          {/* <Text>The primary key. The unique identifier.</Text> */}
+        </div>
+        <div>
+          <Input aria-label="Default value" name="defaultValue" />
+        </div>
+      </section>
+
+      <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+        <div>
+          <Subheading>Multiple</Subheading>
+          <Text>Can have multiple values. They will be separated by ``;`</Text>
+        </div>
+        <div>
+          <Switch aria-label="Key" name="key" />
+        </div>
+      </section>
+
+      <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+        <div>
+          <Subheading>Key</Subheading>
+          <Text>The primary key. The unique identifier.</Text>
+        </div>
+        <div>
+          <Switch aria-label="Key" name="key" />
+          {/* <Input aria-label="Organization Name" name="name" defaultValue="Catalyst" /> */}
+        </div>
+      </section>
+      </Fieldset>
+    </form>
+  )
+}
 interface EditKeyboardUsageProps {
   onHover: boolean,
   onFocus: boolean,
@@ -350,7 +423,7 @@ const EditKeyboardUsage = ({
   onHover,
   onFocus
 }: EditKeyboardUsageProps) => {
-  console.log('[EditKeyboardUsage] ', onHover, onFocus);
+  // console.log('[EditKeyboardUsage] ', onHover, onFocus);
   return (
     <div className={cn(
       "flex m-0 p-0 absolute right-0 top-0 bottom-0 items-center justify-center",
