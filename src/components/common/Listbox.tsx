@@ -1,6 +1,5 @@
 import * as Headless from '@headlessui/react'
 import clsx from 'clsx'
-import { Button } from './Button'
 import { Fragment } from 'react'
 
 export function Listbox<T>({
@@ -21,15 +20,9 @@ export function Listbox<T>({
   'aria-label'?: string
   children?: React.ReactNode
 } & Omit<Headless.ListboxProps<typeof Fragment, T>, 'multiple'>) {
-  const styles = {
-    icon: [
-      'w-auto'
-    ]
-  }
   return (
     <Headless.Listbox {...props} multiple={false}>
       <Headless.ListboxButton
-        // as={Button}
         autoFocus={autoFocus}
         data-slot="control"
         aria-label={ariaLabel}

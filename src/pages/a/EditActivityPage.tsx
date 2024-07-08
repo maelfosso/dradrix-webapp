@@ -7,61 +7,58 @@ import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components
 import { Description, Field, FieldGroup, Fieldset, Legend } from "components/common/Fieldset";
 import { Heading, Subheading } from "components/common/Heading"
 import { Input } from "components/common/Input";
-import { Listbox, ListboxLabel, ListboxOption } from "components/common/Listbox";
+import { Listbox, ListboxOption } from "components/common/Listbox";
 import { Popover, PopoverButton, PopoverPanel } from "components/common/Popover";
 import Spinner from "components/common/Spinner";
 import { Switch } from "components/common/Switch";
 import { Strong, Text } from "components/common/Text";
 import { Textarea } from "components/common/Textarea";
 import useAutosizeTextArea from "hooks/useAutosizeTextArea";
-// import { ActivityField } from "models/monitoring";
-import { ChangeEvent, FocusEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { Activity as IActivity, ActivityField as IActivityField, DEFAULT_ACTIVITY_VALUE } from "models/monitoring";
+import { ChangeEvent, createContext, FocusEvent, KeyboardEvent, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { cn } from "utils/css";
 
-export type ActivityFieldOptions = {
-  multiple: boolean;
+
+interface ActivityContextProps {
+  activity: IActivity,
+  setActivity: (activity: IActivity) => void,
+  handleSetUpdate: (field: string, value: any, position?: number) => void,
+  handleAddUpdate: (position: number, type: string) => void,
+  handleRemoveUpdate: (position: number) => void
+}
+const ActivityContext = createContext<ActivityContextProps>({
+  activity: DEFAULT_ACTIVITY_VALUE,
+  setActivity: () => {},
+  handleSetUpdate: () => {},
+  handleAddUpdate: () => {},
+  handleRemoveUpdate: () => {}
+})
+
+export const useActivityContext = () => {
+  const context = useContext(ActivityContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an ActivityProvider');
+  }
+  return context;
 }
 
-export type ActivityField = {
-  name: string;
-  description: string;
-  type: string;
-  id: boolean;
-  code: string;
-  options: ActivityFieldOptions;
-}
 
-export type Activity = {
-  id: string;
-  name: string;
-  description: string
-  fields: ActivityField[];
-};
-
-const DEFAULT_ACTIVITY_FIELD_VALUE: ActivityField = {
-  id: false,
-  code: '',
-  name: '',
-  description: '',
-  type: 'text'
+interface ActivityContextProviderProps {
+  children: JSX.Element
 }
-const EditActivityPage = () => {
+export const ActivityContextProvider = ({ children }: ActivityContextProviderProps) => {
   let { organizationId, activityId } = useParams();
 
-
-  const [name, setName] = useState<string>('')
-  const [description, setDescription] = useState<string>('');
-  const [fields, setFields] = useState<ActivityField[]>([]);
+  const [activity, setActivity] = useState<IActivity>(DEFAULT_ACTIVITY_VALUE);
 
   const {isPending, data} = useQuery(getActivity(organizationId!, activityId!));
   useEffect(() => {
     if (data?.activity) {
-      setName(data.activity.name)
-      setDescription(data.activity.description)
-      setFields(data.activity.fields)
+      setActivity(data.activity);
     }
   }, [data?.activity]);
+
   const {mutateAsync: mutateUpdateActivity} = useMutation(
     updateActivityMutation(
       organizationId!,
@@ -78,7 +75,8 @@ const EditActivityPage = () => {
       });
 
       console.log(data);
-      setName(data.activity.name)
+      // setName(data.activity.name)
+      setActivity(data.activity);
     } catch (error) {}
   }
 
@@ -93,11 +91,12 @@ const EditActivityPage = () => {
         position
       })
       console.log(data.activity);
-      setFields((oldFields) => [
-        ...oldFields.slice(0, position),
-        { ...DEFAULT_ACTIVITY_FIELD_VALUE, type },
-        ...oldFields.slice(position)
-      ])
+      // setFields((oldFields) => [
+      //   ...oldFields.slice(0, position),
+      //   { ...DEFAULT_ACTIVITY_FIELD_VALUE, type },
+      //   ...oldFields.slice(position)
+      // ])
+      setActivity(data.activity);
     } catch (error) {}
   }
 
@@ -109,56 +108,28 @@ const EditActivityPage = () => {
         position
       })
       console.log(data.activity);
-      setFields((oldFields) => [
-        ...oldFields.slice(0, position).concat(oldFields.slice(position + 1))
-      ])
+      setActivity(data.activity);
+      // setFields((oldFields) => [
+      //   ...oldFields.slice(0, position).concat(oldFields.slice(position + 1))
+      // ])
     } catch (error) {}
   }
 
-  const handleChangeName = async (newName: string) => {
-    try {
-      const data = await mutateUpdateActivity({
-        op: 'set',
-        field: 'name',
-        value: newName,
-      });
-
-      console.log(data);
-      setName(data.activity.name)
-    } catch (error) {}
-  }
-
-  const handleChangeDescription = async (newDescription: string) => {
-    try {
-      const data = await mutateUpdateActivity({
-        op: 'set',
-        field: 'description',
-        value: newDescription,
-      });
-
-      console.log(data);
-      setDescription(data.activity.description)
-    } catch (error) {}
-  }
-
-  const handleChangeFieldName = async (position: number, newName: string) => {
-    const fieldAtPosition = fields[position];
-
-    try {
-      const data = await mutateUpdateActivity({
-        op: "set",
-        field: `fields.${position}.name`, // "fields",
-        value: newName,
-      })
-      console.log(data.activity);
-      setFields((oldFields) => [
-        ...oldFields.slice(0, position),
-        { ...fieldAtPosition, name: newName },
-        ...oldFields.slice(position + 1)
-      ])
-    } catch (error) {}
-
-  }
+  const value = useMemo(
+    () => ({
+      activity,
+      setActivity,
+      handleSetUpdate,
+      handleAddUpdate,
+      handleRemoveUpdate,
+    }), [
+      activity,
+      setActivity,
+      handleSetUpdate,
+      handleAddUpdate,
+      handleRemoveUpdate
+    ]
+  );
 
   if (isPending) {
     return (
@@ -167,22 +138,32 @@ const EditActivityPage = () => {
   }
 
   return (
+    <ActivityContext.Provider value={value}>
+      { children }
+    </ActivityContext.Provider>
+  )
+}
+
+const EditActivityPage = () => {
+  const { activity, setActivity, handleSetUpdate, handleAddUpdate } = useActivityContext();
+
+  return (
     <>
       <Heading>Edit activity</Heading>
       <form  onSubmit={e => { e.preventDefault(); }}>
         <Fieldset>
           <FieldGroup className="space-y-0">
             <EditInput
-              value={name}
-              setValue={(newValue) => setName(newValue)}
-              onEnter={() => handleChangeName(name)}
-              className="sm:text-4xl" placeholder="Name"
+              value={activity.name}
+              setValue={(newValue) => setActivity({ ...activity, name: newValue })}
+              onEnter={() => handleSetUpdate('name', activity.name)}
+              className="sm:text-4xl" placeholder="Name of the activity"
             />
             <EditTextarea
-              name="description" placeholder="Description"
-              value={description}
-              setValue={(newValue) => setDescription(newValue)}
-              onEnter={() => handleChangeDescription(description)}
+              name="description" placeholder="Describe your activity"
+              value={activity.description}
+              setValue={(newValue) => setActivity({ ...activity, description: newValue })}
+              onEnter={() => handleSetUpdate('description', activity.description)}
             />
           </FieldGroup>
         </Fieldset>
@@ -191,14 +172,12 @@ const EditActivityPage = () => {
           <Legend>Fields</Legend>
           <FieldGroup className="space-y-0 ">
             <AddItem key='add-item-0' place={'bottom'} position={0} onClick={(position, type) => handleAddUpdate(position, type)} />
-            { fields.map((field, index) => (
+            { activity.fields.map((field, index) => (
               <>
                 <ActivityField
                   key={`field-${field.type}-${index}`}
-
+                  position={index}
                   field={field}
-                  onEnter={(newValue) => handleSetUpdate('name', newValue, index)}
-                  onDelete={() => handleRemoveUpdate(index)}
                 />
                 <AddItem
                   key={`add-item-${index + 1}`}
@@ -222,8 +201,8 @@ const ActivityFieldType = ({ type }: { type: string }) => {
 
   return (
     <Listbox showIndicator={false} name="type" value={value} onChange={(newValue) => setValue(newValue)}
-      className="w-auto p-0 m-o min-h-0 before:shadow-none"
-      selectedOptionClassName="sm:min-h-fit sm:pl-0 sm:pr-0 sm:border-none"
+      className="!w-auto p-0 m-0 min-h-0 before:shadow-none"
+      selectedOptionClassName="sm:min-h-fit sm:!p-1 sm:border-none"
     >
       <ListboxOption value="text">
         <DocumentTextIcon />
@@ -244,41 +223,14 @@ const ActivityFieldType = ({ type }: { type: string }) => {
   )
 }
 interface ActivityFieldProps {
-  field: ActivityField;
-  onEnter: (newValue: string) => void;
-  onDelete: () => void;
+  field: IActivityField;
+  position: number;
 }
-const ActivityField = ({ field, onEnter, onDelete }: ActivityFieldProps) => {
-  const { type } = field;
+const ActivityField = ({ field, position }: ActivityFieldProps) => {
+  const { handleRemoveUpdate, handleSetUpdate } = useActivityContext();
 
-  switch(type) {
-    case 'text':
-      return <ActivityFieldText field={field} onEnter={onEnter} onDelete={onDelete} />
-
-    case 'number':
-      return <ActivityFieldNumber field={field} onEnter={onEnter} onDelete={onDelete} />
-
-    case 'date':
-      return <ActivityFieldDate field={field} onEnter={onEnter} onDelete={onDelete} />
-
-    case 'time':
-      return <ActivityFieldTime field={field} onEnter={onEnter} onDelete={onDelete} />
-
-    case 'multiple-choice':
-      return <ActivityFieldMC field={field} onEnter={onEnter} onDelete={onDelete} />
-
-    default:
-      return <></>
-  }
-}
-
-interface ActivityFieldTextProps {
-  field: ActivityField;
-  onEnter: (newValue: string) => void;
-  onDelete: () => void;
-}
-const ActivityFieldText = ({field, onEnter, onDelete}: ActivityFieldTextProps) => {
-  const [value, setValue] = useState<string>(field.name)
+  const { type, name } = field;
+  const [value, setValue] = useState<string>(name)
   const [onHover, setOnHover] = useState<boolean>(false);
 
   return (
@@ -292,9 +244,9 @@ const ActivityFieldText = ({field, onEnter, onDelete}: ActivityFieldTextProps) =
         icon={<ActivityFieldType type={field.type} />}
         value={value}
         setValue={setValue}
-        onEnter={() => onEnter(value)}
-        onDelete={() => onDelete()}
+        onEnter={() => handleSetUpdate('name', value, position)}
       />
+
       <div className="flex">
         <Popover className="relative">
           <PopoverButton plain><Cog6ToothIcon /></PopoverButton>
@@ -302,93 +254,13 @@ const ActivityFieldText = ({field, onEnter, onDelete}: ActivityFieldTextProps) =
             <ActivityFieldOptions />
           </PopoverPanel>
         </Popover>
-        <Button plain onClick={() => onDelete()}><TrashIcon /></Button>
+        <Button plain onClick={() => handleRemoveUpdate(position)}><TrashIcon /></Button>
       </div>
     </div>
   )
 }
 
-interface ActivityFieldNumberProps {
-  field: ActivityField;
-  onEnter: (newValue: string) => void;
-  onDelete: () => void;
-}
-const ActivityFieldNumber = ({field, onEnter, onDelete}: ActivityFieldNumberProps) => {
-  const [value, setValue] = useState<string>(field.name);
-
-  return (
-    <EditInput
-      icon={<ActivityFieldType type={field.type} />}
-      value={value}
-      setValue={setValue}
-      onEnter={() => onEnter(value)}
-      onDelete={onDelete}
-      placeholder="Enter the name of the field"
-    />
-  )
-}
-
-interface ActivityFieldDateProps {
-  field: ActivityField;
-  onEnter: (newValue: string) => void;
-  onDelete: () => void;
-}
-const ActivityFieldDate = ({field, onEnter, onDelete}: ActivityFieldDateProps) => {
-  const [value, setValue] = useState<string>(field.name);
-
-  return (
-    <EditInput
-      icon={<ActivityFieldType type={field.type} />}
-      value={value}
-      setValue={setValue}
-      onEnter={() => onEnter(value)}
-      onDelete={() => onDelete()}
-    />
-  )
-}
-
-interface ActivityFieldTimeProps {
-  field: ActivityField;
-  onEnter: (newValue: string) => void;
-  onDelete: () => void;
-}
-const ActivityFieldTime = ({field, onEnter, onDelete}: ActivityFieldTimeProps) => {
-  const [value, setValue] = useState<string>(field.name)
-
-  return (
-    <EditInput
-      icon={<ActivityFieldType type={field.type} />}
-      value={value}
-      setValue={setValue}
-      onEnter={() => onEnter(value)}
-      onDelete={() => onDelete()}
-    />
-  )
-}
-
-interface ActivityFieldMCProps {
-  field: ActivityField;
-  onEnter: (newValue: string) => void;
-  onDelete: () => void;
-}
-const ActivityFieldMC = ({field, onEnter, onDelete}: ActivityFieldMCProps) => {
-  const [value, setValue] = useState<string>(field.name)
-
-  return (
-    <EditInput
-      icon={<ActivityFieldType type={field.type} />}
-      value={value}
-      setValue={setValue}
-      onEnter={() => onEnter(value)}
-      onDelete={() => onDelete()}
-    />
-  )
-}
-
-
-interface ActivityFieldOptionsProps {
-
-}
+interface ActivityFieldOptionsProps {}
 const ActivityFieldOptions = () => {
   return (
     <form onSubmit={() => {}} className="p-2 mx-auto max-w-4xl">
@@ -486,7 +358,6 @@ interface EditInputProps {
   placeholder?: string;
   setValue: (newValue: string) => void;
   onEnter: () => void;
-  onDelete?: () => void;
 }
 const EditInput = ({
   icon,
@@ -495,7 +366,6 @@ const EditInput = ({
   placeholder,
   setValue,
   onEnter,
-  onDelete,
   ...props
 }: EditInputProps) => {
   const [onHover, setOnHover] = useState<boolean>(false);
