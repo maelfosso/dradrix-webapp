@@ -1,4 +1,4 @@
-import { CalendarDaysIcon, ClockIcon, Cog6ToothIcon, DocumentTextIcon, HashtagIcon, ListBulletIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { CalendarDaysIcon, ClockIcon, Cog6ToothIcon, DocumentTextIcon, HashtagIcon, KeyIcon, ListBulletIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getActivity, updateActivityMutation } from "api/activities";
 import { Button } from "components/common/Button";
@@ -7,14 +7,14 @@ import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components
 import { Description, Field, FieldGroup, Fieldset, Legend } from "components/common/Fieldset";
 import { Heading, Subheading } from "components/common/Heading"
 import { Input } from "components/common/Input";
-import { Listbox, ListboxOption } from "components/common/Listbox";
+import { Listbox, ListboxLabel, ListboxOption } from "components/common/Listbox";
 import { Popover, PopoverButton, PopoverPanel } from "components/common/Popover";
 import Spinner from "components/common/Spinner";
 import { Switch } from "components/common/Switch";
 import { Strong, Text } from "components/common/Text";
 import { Textarea } from "components/common/Textarea";
 import useAutosizeTextArea from "hooks/useAutosizeTextArea";
-import { Activity as IActivity, ActivityField as IActivityField, DEFAULT_ACTIVITY_VALUE } from "models/monitoring";
+import { Activity as IActivity, ActivityField as IActivityField, DEFAULT_ACTIVITY_VALUE, ActivityFieldOptions as IActivityFieldOptions } from "models/monitoring";
 import { ChangeEvent, createContext, FocusEvent, KeyboardEvent, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { cn } from "utils/css";
@@ -68,9 +68,10 @@ export const ActivityContextProvider = ({ children }: ActivityContextProviderPro
 
   const handleSetUpdate = async (field: string, value: any, position?: number) => {
     try {
+      console.log('handleSetUpdate: ', position, position !== undefined ? `fields.${position}.${field}` : field)
       const data = await mutateUpdateActivity({
         op: 'set',
-        field: position ? `fields.${position}.${field}` : field,
+        field: position !== undefined ? `fields.${position}.${field}` : field,
         value: value,
       });
 
@@ -196,30 +197,40 @@ const EditActivityPage = () => {
 
 export default EditActivityPage;
 
-const ActivityFieldType = ({ type }: { type: string }) => {
-  const [value, setValue] = useState(type);
+interface ActivityFieldTypeProps {
+  id: boolean;
+  type: string;
+  position: number;
+  onChange: (field: string, value: any, position: number) => void;
+}
+const ActivityFieldType = ({ id, type, position, onChange }: ActivityFieldTypeProps) => {
 
   return (
-    <Listbox showIndicator={false} name="type" value={value} onChange={(newValue) => setValue(newValue)}
-      className="!w-auto p-0 m-0 min-h-0 before:shadow-none"
-      selectedOptionClassName="sm:min-h-fit sm:!p-1 sm:border-none"
-    >
-      <ListboxOption value="text">
-        <DocumentTextIcon />
-      </ListboxOption>
-      <ListboxOption value="number">
-        <HashtagIcon />
-      </ListboxOption>
-      <ListboxOption value="date">
-        <CalendarDaysIcon />
-      </ListboxOption>
-      <ListboxOption value="time">
-        <ClockIcon />
-      </ListboxOption>
-      <ListboxOption value="multiple-choice">
-        <ListBulletIcon />
-      </ListboxOption>
-    </Listbox>
+    <div className="relative inline-block">
+      <Listbox showIndicator={false} name="type" value={type} onChange={(newValue) => onChange('type', newValue, position)}
+        className="!w-auto p-0 m-0 min-h-0 before:shadow-none"
+        selectedOptionClassName="sm:min-h-fit sm:!p-1 sm:border-none"
+      >
+        <ListboxOption value="text">
+          <DocumentTextIcon />
+        </ListboxOption>
+        <ListboxOption value="number">
+          <HashtagIcon />
+        </ListboxOption>
+        <ListboxOption value="date">
+          <CalendarDaysIcon />
+        </ListboxOption>
+        <ListboxOption value="time">
+          <ClockIcon />
+        </ListboxOption>
+        <ListboxOption value="multiple-choice">
+          <ListBulletIcon />
+        </ListboxOption>
+      </Listbox>
+      {id && (
+        <KeyIcon className="absolute right-0 bottom-0 w-2 h-2 fill-green-400 stroke-green-400"/>
+      )}
+    </div>
   )
 }
 interface ActivityFieldProps {
@@ -229,7 +240,7 @@ interface ActivityFieldProps {
 const ActivityField = ({ field, position }: ActivityFieldProps) => {
   const { handleRemoveUpdate, handleSetUpdate } = useActivityContext();
 
-  const { type, name } = field;
+  const { type, name, id, options } = field;
   const [value, setValue] = useState<string>(name)
   const [onHover, setOnHover] = useState<boolean>(false);
 
@@ -241,7 +252,7 @@ const ActivityField = ({ field, position }: ActivityFieldProps) => {
       <EditInput
         className="grow-1"
         placeholder="Enter the name of the field"
-        icon={<ActivityFieldType type={field.type} />}
+        icon={<ActivityFieldType id={id} type={type} position={position} onChange={handleSetUpdate} />}
         value={value}
         setValue={setValue}
         onEnter={() => handleSetUpdate('name', value, position)}
@@ -251,7 +262,7 @@ const ActivityField = ({ field, position }: ActivityFieldProps) => {
         <Popover className="relative">
           <PopoverButton plain><Cog6ToothIcon /></PopoverButton>
           <PopoverPanel anchor="bottom" className="flex flex-col">
-            <ActivityFieldOptions />
+            <ActivityFieldOptions field={field} type={type} name={name} position={position} onUpdate={handleSetUpdate} />
           </PopoverPanel>
         </Popover>
         <Button plain onClick={() => handleRemoveUpdate(position)}><TrashIcon /></Button>
@@ -260,11 +271,33 @@ const ActivityField = ({ field, position }: ActivityFieldProps) => {
   )
 }
 
-interface ActivityFieldOptionsProps {}
-const ActivityFieldOptions = () => {
+interface ActivityFieldOptionsProps {
+  field: IActivityField;
+  type: string;
+  name: string;
+  position: number;
+  onUpdate: (field: string, value: any, position: number) => void;
+}
+const ActivityFieldOptions = ({
+  field,
+  type,
+  name,
+  position,
+  onUpdate
+}: ActivityFieldOptionsProps) => {
+  const { options, id } = field;
+
+  const [defaultValue, setDefaultValue] = useState<string | null >(options.defaultValue)
+  const [reference, setReference] = useState<string | null>(options.reference);
+
+  const handleUpdate = (field: string, value: any, position: number) => {
+    onUpdate(field, value, position);
+  }
+
+
   return (
     <form onSubmit={() => {}} className="p-2 mx-auto max-w-4xl">
-      <Heading>Options</Heading>
+      <Heading>Options <Text>{ name }</Text></Heading>
       <Divider className="my-4" />
 
       <Fieldset className="flex flex-col gap-y-4">
@@ -281,7 +314,6 @@ const ActivityFieldOptions = () => {
       <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
         <div>
           <Subheading>Default value</Subheading>
-          {/* <Text>The primary key. The unique identifier.</Text> */}
         </div>
         <div>
           <Input aria-label="Default value" name="defaultValue" />
@@ -294,7 +326,12 @@ const ActivityFieldOptions = () => {
           <Text>Can have multiple values. They will be separated by ``;`</Text>
         </div>
         <div>
-          <Switch aria-label="Key" name="key" />
+          <Switch
+            aria-label="Multiple"
+            name="multiple"
+            checked={options.multiple}
+            onChange={(checked) => handleUpdate('options.multiple', checked, position )}
+          />
         </div>
       </section>
 
@@ -304,7 +341,9 @@ const ActivityFieldOptions = () => {
           <Text>The primary key. The unique identifier.</Text>
         </div>
         <div>
-          <Switch aria-label="Key" name="key" />
+          <Switch aria-label="Key" name="key" checked={id}
+            onChange={(checked) => handleUpdate('id', checked, position )}
+          />
           {/* <Input aria-label="Organization Name" name="name" defaultValue="Catalyst" /> */}
         </div>
       </section>
@@ -322,7 +361,6 @@ const EditKeyboardUsage = ({
   onHover,
   onFocus
 }: EditKeyboardUsageProps) => {
-  // console.log('[EditKeyboardUsage] ', onHover, onFocus);
   return (
     <div className={cn(
       "flex m-0 p-0 absolute right-0 top-0 bottom-0 items-center justify-center",

@@ -80,7 +80,7 @@ export function Listbox<T>({
         }
       </Headless.ListboxButton>
       <Headless.Transition
-        leave="transition-opacity duration-100 ease-in pointer-events-none"
+        leave="transition-opacity duration-100 ease-in"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >

@@ -1,10 +1,14 @@
 
 export interface ActivityFieldOptions {
+  defaultValue: string | null;
+  reference: string | null;
   multiple: boolean;
 }
 
 export const DEFAULT_ACTIVITY_FIELD_OPTIONS_VALUE = {
-  multiple: false
+  multiple: false,
+  reference: null,
+  defaultValue: null
 }
 
 export interface ActivityField {

@@ -77,6 +77,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   const { mutate: mutateSignIn } = useMutation(signInMutation({
     onSuccess: (response: SignInMutationResponse) => {
+      console.log('Response sign-in', response);
       localStorage.setItem(SS_AUTH_PN_KEY, response.phoneNumber);
       setAuthenticationStep(AuthenticationStep.OTP);
     },
