@@ -17,8 +17,8 @@ export function Legend({ className, ...props }: { className?: string } & Omit<He
       data-slot="legend"
       {...props}
       className={cn(
+        'text-lg/6 font-semibold text-zinc-950 data-[disabled]:opacity-50 sm:text-base/6 dark:text-white',
         className,
-        'text-lg/6 font-semibold text-zinc-950 data-[disabled]:opacity-50 sm:text-base/6 dark:text-white'
       )}
     />
   )

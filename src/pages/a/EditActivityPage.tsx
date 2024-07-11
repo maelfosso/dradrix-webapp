@@ -175,27 +175,30 @@ const EditActivityPage = () => {
   }
   return (
     <>
-      <Heading>Edit activity</Heading>
-      <form  onSubmit={e => { e.preventDefault(); }}>
+      <Heading>Edit an activity</Heading>
+      <Divider className="my-6" />
+      <form className="grow" onSubmit={e => { e.preventDefault(); }}>
         <Fieldset>
           <FieldGroup className="space-y-0">
             <EditInput
               value={activity.name}
               setValue={(newValue) => setActivity({ ...activity, name: newValue })}
               onEnter={() => handleSetUpdate('name', activity.name)}
-              className="sm:text-4xl" placeholder="Name of the activity"
+              className="text-2xl/8 font-semibold text-zinc-950 sm:text-xl/8 dark:text-white" placeholder="Name of the activity"
             />
             <EditTextarea
-              name="description" placeholder="Describe your activity"
+              name="description"
+              placeholder="Describe your activity"
+              className="text-base/6 text-zinc-500 sm:text-sm/6 dark:text-zinc-400"
               value={activity.description}
               setValue={(newValue) => setActivity({ ...activity, description: newValue })}
               onEnter={() => handleSetUpdate('description', activity.description)}
             />
           </FieldGroup>
         </Fieldset>
-        <Divider className="my-4" />
-        <Fieldset>
-          <Legend>Fields</Legend>
+        <Fieldset className="mt-6">
+          <Legend className="text-base/7 font-semibold text-zinc-950 sm:text-sm/6 dark:text-white">Fields</Legend>
+          <Divider className="my-1" />
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable key={droppableId} droppableId={droppableId}>
             {provided => (
@@ -227,6 +230,12 @@ const EditActivityPage = () => {
           </DragDropContext>
         </Fieldset>
       </form>
+
+      <Divider className="my-10" soft />
+
+      <div className="flex justify-end gap-4">
+        <Button type="button" color="dark/white">Done</Button>
+      </div>
     </>
   )
 }
@@ -245,7 +254,7 @@ const ActivityFieldType = ({ primaryKey, type, position, onChange }: ActivityFie
     <div className="relative inline-block">
       <Listbox showIndicator={false} name="type" value={type} onChange={(newValue) => onChange('type', newValue, position)}
         className="!w-auto p-0 m-0 min-h-0 before:shadow-none"
-        selectedOptionClassName="sm:min-h-fit sm:!p-1 sm:border-none"
+        selectedOptionClassName="sm:min-h-fit sm:!p-0 sm:!mr-1 sm:border-none"
       >
         <ListboxOption value="text">
           <DocumentTextIcon />
@@ -490,10 +499,10 @@ const EditInput = ({
 
   return (
     <Field className={cn(
-      "relative flex grow items-center border border-transparent rounded-lg",
+      "relative flex grow items-center border border-transparent rounded-none",
       onHover && !onFocus
-        && 'bg-gray-200 data-[hover]:border-zinc-950/20 dark:border-white/10 dark:data-[hover]:border-white/20',
-      onFocus && 'border-gray-200'
+        && 'bg-gray-200  data-[hover]:border-zinc-950/20 dark:border-white/10 dark:data-[hover]:border-white/20',
+      onFocus && 'border-gray-200 border-none'
     )}>
       { icon }
       <Input
@@ -501,6 +510,7 @@ const EditInput = ({
         className={cn(
           "border-none sm:pr-36 hover:bg-none before:bg-none",
           "border-none before:shadow-none before:rounded-none sm:after:focus-within:ring-0",
+          "sm:pl-0",
           className,
         )}
         value={value}
@@ -532,6 +542,7 @@ const EditTextarea = ({
   value,
   setValue,
   onEnter,
+  className,
   ...props
 }: EditTextareaProps) => {
   const ref = useRef<HTMLTextAreaElement>(null);
@@ -581,11 +592,12 @@ const EditTextarea = ({
         ref={ref}
         wrapperClassName="border-none before:shadow-none before:rounded-none sm:after:focus-within:ring-0"
         className={cn(
-          "sm:pr-36 sm:text-xl",
+          "sm:pr-36 sm:pl-0 rounded-none",
           onHover && !onFocus && "bg-gray-200",
           onFocus
-            ? 'border border-zinc-950/10 data-[hover]:border-zinc-950/20 dark:border-white/10 dark:data-[hover]:border-white/20'
-            : 'border-none'
+            ? 'border-none border-zinc-950/10 data-[hover]:border-zinc-950/20 dark:border-white/10 dark:data-[hover]:border-white/20'
+            : 'border-none',
+          className,
         )}
         value={value}
         onChange={handleChange}
