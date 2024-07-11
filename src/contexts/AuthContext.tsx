@@ -41,7 +41,6 @@ interface AuthContextProviderProps {
 }
 
 const SS_AUTH_PN_KEY = 'auth/phone-number';
-const SS_AUTH_STEP_KEY = 'auth/step';
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const navigate = useNavigate();
@@ -77,7 +76,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   const { mutate: mutateSignIn } = useMutation(signInMutation({
     onSuccess: (response: SignInMutationResponse) => {
-      console.log('Response sign-in', response);
       localStorage.setItem(SS_AUTH_PN_KEY, response.phoneNumber);
       setAuthenticationStep(AuthenticationStep.OTP);
     },
@@ -89,7 +87,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const { mutate: mutateSignOTP } = useMutation(signOTPMutation({
     onSuccess: (data: SignOTPMutationResponse) => {
       localStorage.removeItem(SS_AUTH_PN_KEY);
-      localStorage.removeItem(SS_AUTH_STEP_KEY);
 
       setIsAuthenticated(true);
       setAuthenticatedUser(data.user);
