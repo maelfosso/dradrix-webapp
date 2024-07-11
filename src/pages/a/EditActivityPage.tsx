@@ -1,5 +1,6 @@
 import { CalendarDaysIcon, ClockIcon, Cog6ToothIcon, DocumentTextIcon, HashtagIcon, KeyIcon, ListBulletIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import { getActivity, updateActivityMutation } from "api/activities";
 import { Button } from "components/common/Button";
 import { Divider } from "components/common/Divider";
@@ -7,7 +8,7 @@ import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components
 import { Description, Field, FieldGroup, Fieldset, Legend } from "components/common/Fieldset";
 import { Heading, Subheading } from "components/common/Heading"
 import { Input } from "components/common/Input";
-import { Listbox, ListboxLabel, ListboxOption } from "components/common/Listbox";
+import { Listbox, ListboxOption } from "components/common/Listbox";
 import { Popover, PopoverButton, PopoverPanel } from "components/common/Popover";
 import Spinner from "components/common/Spinner";
 import { Switch } from "components/common/Switch";
@@ -15,7 +16,7 @@ import { Strong, Text } from "components/common/Text";
 import { Textarea } from "components/common/Textarea";
 import useAutosizeTextArea from "hooks/useAutosizeTextArea";
 import { Activity as IActivity, ActivityField as IActivityField, DEFAULT_ACTIVITY_VALUE, ActivityFieldOptions as IActivityFieldOptions } from "models/monitoring";
-import { ChangeEvent, createContext, FocusEvent, KeyboardEvent, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, createContext, FocusEvent, Fragment, KeyboardEvent, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { cn } from "utils/css";
 
@@ -68,15 +69,12 @@ export const ActivityContextProvider = ({ children }: ActivityContextProviderPro
 
   const handleSetUpdate = async (field: string, value: any, position?: number) => {
     try {
-      console.log('handleSetUpdate: ', position, position !== undefined ? `fields.${position}.${field}` : field)
       const data = await mutateUpdateActivity({
         op: 'set',
         field: position !== undefined ? `fields.${position}.${field}` : field,
         value: value,
       });
 
-      console.log(data);
-      // setName(data.activity.name)
       setActivity(data.activity);
     } catch (error) {}
   }
@@ -91,12 +89,7 @@ export const ActivityContextProvider = ({ children }: ActivityContextProviderPro
         },
         position
       })
-      console.log(data.activity);
-      // setFields((oldFields) => [
-      //   ...oldFields.slice(0, position),
-      //   { ...DEFAULT_ACTIVITY_FIELD_VALUE, type },
-      //   ...oldFields.slice(position)
-      // ])
+
       setActivity(data.activity);
     } catch (error) {}
   }
@@ -108,11 +101,8 @@ export const ActivityContextProvider = ({ children }: ActivityContextProviderPro
         field: "fields",
         position
       })
-      console.log(data.activity);
+
       setActivity(data.activity);
-      // setFields((oldFields) => [
-      //   ...oldFields.slice(0, position).concat(oldFields.slice(position + 1))
-      // ])
     } catch (error) {}
   }
 
@@ -145,9 +135,44 @@ export const ActivityContextProvider = ({ children }: ActivityContextProviderPro
   )
 }
 
+const reorder = (list: IActivityField[], startIndex: number, endIndex: number) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+  return result;
+};
+
 const EditActivityPage = () => {
   const { activity, setActivity, handleSetUpdate, handleAddUpdate } = useActivityContext();
+  const [droppableId, setDroppableId] = useState('hello');
 
+  useEffect(() => {
+    // change the id later here based on some conditions
+    // in my case when my data is loaded
+    if (activity.fields.length) {
+      setDroppableId('activity-fields');
+    }
+  }, [activity.fields.length]);
+
+  function handleDragEnd(result: DropResult) {
+    const { destination, source } = result;
+
+    if (!destination) {
+      return;
+    }
+
+    if (destination.index === source.index) {
+      return;
+    }
+
+    const fields = reorder(
+      activity.fields, // state.quotes,
+      source.index,
+      destination.index
+    );
+
+    handleSetUpdate("fields", fields);
+  }
   return (
     <>
       <Heading>Edit activity</Heading>
@@ -171,24 +196,35 @@ const EditActivityPage = () => {
         <Divider className="my-4" />
         <Fieldset>
           <Legend>Fields</Legend>
-          <FieldGroup className="space-y-0 ">
-            <AddItem key='add-item-0' place={'bottom'} position={0} onClick={(position, type) => handleAddUpdate(position, type)} />
-            { activity.fields.map((field, index) => (
-              <>
-                <ActivityField
-                  key={`field-${field.type}-${index}`}
-                  position={index}
-                  field={field}
-                />
-                <AddItem
-                  key={`add-item-${index + 1}`}
-                  place={'bottom'}
-                  position={index + 1}
-                  onClick={(position, type) => handleAddUpdate(position, type)}
-                />
-              </>
-            ))}
-          </FieldGroup>
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable key={droppableId} droppableId={droppableId}>
+            {provided => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className="space-y-0"
+              >
+                <AddItem key='add-item-0' place={'bottom'} position={0} onClick={(position, type) => handleAddUpdate(position, type)} />
+                { activity.fields.map((field, index) => (
+                  <Fragment key={field.id}>
+                    <ActivityField
+                      key={field.id}
+                      position={index}
+                      field={field}
+                    />
+                    <AddItem
+                      key={`add-item-${index + 1}`}
+                      place={'bottom'}
+                      position={index + 1}
+                      onClick={(position, type) => handleAddUpdate(position, type)}
+                    />
+                  </Fragment>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+            </Droppable>
+          </DragDropContext>
         </Fieldset>
       </form>
     </>
@@ -198,12 +234,12 @@ const EditActivityPage = () => {
 export default EditActivityPage;
 
 interface ActivityFieldTypeProps {
-  id: boolean;
+  primaryKey: boolean;
   type: string;
   position: number;
   onChange: (field: string, value: any, position: number) => void;
 }
-const ActivityFieldType = ({ id, type, position, onChange }: ActivityFieldTypeProps) => {
+const ActivityFieldType = ({ primaryKey, type, position, onChange }: ActivityFieldTypeProps) => {
 
   return (
     <div className="relative inline-block">
@@ -227,7 +263,7 @@ const ActivityFieldType = ({ id, type, position, onChange }: ActivityFieldTypePr
           <ListBulletIcon />
         </ListboxOption>
       </Listbox>
-      {id && (
+      {primaryKey && (
         <KeyIcon className="absolute right-0 bottom-0 w-2 h-2 fill-green-400 stroke-green-400"/>
       )}
     </div>
@@ -240,34 +276,42 @@ interface ActivityFieldProps {
 const ActivityField = ({ field, position }: ActivityFieldProps) => {
   const { handleRemoveUpdate, handleSetUpdate } = useActivityContext();
 
-  const { type, name, id, options } = field;
+  const { type, name, id, key, options } = field;
   const [value, setValue] = useState<string>(name)
   const [onHover, setOnHover] = useState<boolean>(false);
 
   return (
-    <div className="flex"
-      onMouseEnter={() => setOnHover(true)}
-      onMouseLeave={() => setOnHover(false)}
-    >
-      <EditInput
-        className="grow-1"
-        placeholder="Enter the name of the field"
-        icon={<ActivityFieldType id={id} type={type} position={position} onChange={handleSetUpdate} />}
-        value={value}
-        setValue={setValue}
-        onEnter={() => handleSetUpdate('name', value, position)}
-      />
+    <Draggable key={id} draggableId={id} index={position}>
+      {provided => (
+      <div
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+        {...provided.dragHandleProps}
+        className="flex"
+        onMouseEnter={() => setOnHover(true)}
+        onMouseLeave={() => setOnHover(false)}
+      >
+        <EditInput
+          className="grow-1"
+          placeholder="Enter the name of the field"
+          icon={<ActivityFieldType primaryKey={key} type={type} position={position} onChange={handleSetUpdate} />}
+          value={value}
+          setValue={setValue}
+          onEnter={() => handleSetUpdate('name', value, position)}
+        />
 
-      <div className="flex">
-        <Popover className="relative">
-          <PopoverButton plain><Cog6ToothIcon /></PopoverButton>
-          <PopoverPanel anchor="bottom" className="flex flex-col">
-            <ActivityFieldOptions field={field} type={type} name={name} position={position} onUpdate={handleSetUpdate} />
-          </PopoverPanel>
-        </Popover>
-        <Button plain onClick={() => handleRemoveUpdate(position)}><TrashIcon /></Button>
+        <div className="flex">
+          <Popover className="relative">
+            <PopoverButton plain><Cog6ToothIcon /></PopoverButton>
+            <PopoverPanel anchor="bottom" className="flex flex-col">
+              <ActivityFieldOptions field={field} type={type} name={name} position={position} onUpdate={handleSetUpdate} />
+            </PopoverPanel>
+          </Popover>
+          <Button plain onClick={() => handleRemoveUpdate(position)}><TrashIcon /></Button>
+        </div>
       </div>
-    </div>
+      )}
+    </Draggable>
   )
 }
 
@@ -285,7 +329,7 @@ const ActivityFieldOptions = ({
   position,
   onUpdate
 }: ActivityFieldOptionsProps) => {
-  const { options, id } = field;
+  const { options, key: id } = field;
 
   const [defaultValue, setDefaultValue] = useState<string | null >(options.defaultValue)
   const [reference, setReference] = useState<string | null>(options.reference);

@@ -12,16 +12,18 @@ export const DEFAULT_ACTIVITY_FIELD_OPTIONS_VALUE = {
 }
 
 export interface ActivityField {
+  id: string;
   name: string;
   description: string;
   type: string;
-  id: boolean;
+  key: boolean;
   code: string;
   options: ActivityFieldOptions;
 }
 
 export const DEFAULT_ACTIVITY_FIELD_VALUE: ActivityField = {
-  id: false,
+  id: '',
+  key: false,
   code: '',
   name: '',
   description: '',
