@@ -58,7 +58,7 @@ interface UpdateActivityMutationRequest {
 	position?: number;
 }
 export const updateActivityMutation = (organizationId: string, activityId: string, options?: UseMutationOptions<UpdateActivityMutationResponse, Error, UpdateActivityMutationRequest>) => ({
-  mutationKey: [ORGANIZATIONS, organizationId, ACTIVITIES, activityId],
+  mutationKey: [ORGANIZATIONS, organizationId, ACTIVITIES, activityId, 'update'],
   mutationFn: (data: UpdateActivityMutationRequest) => fetchApiResponse<UpdateActivityMutationResponse, UpdateActivityMutationRequest>(
     `${ORGANIZATIONS}/${organizationId}/${ACTIVITIES}/${activityId}`,
     "PATCH",
@@ -66,4 +66,22 @@ export const updateActivityMutation = (organizationId: string, activityId: strin
   ),
   ...options
 });
+
+interface DeleteActivityMutationRequest {}
+interface DeleteActivityMutationResponse {
+  deleted: boolean
+}
+export const deleteActivityMutation = (organizationId: string, activityId: string, options?: UseMutationOptions<DeleteActivityMutationResponse, Error, DeleteActivityMutationRequest>) => ({
+  mutationKey: [ORGANIZATIONS, organizationId, ACTIVITIES, activityId, 'delete'],
+  mutationFn: () => fetchApiResponse<DeleteActivityMutationResponse, DeleteActivityMutationRequest>(
+    `${ORGANIZATIONS}/${organizationId}/${ACTIVITIES}/${activityId}`,
+    "DELETE",
+  ),
+  ...options
+})
+
+export const deleteActivity = (organizationId: string, activityId: string) => fetchApiResponse<DeleteActivityMutationResponse, DeleteActivityMutationRequest>(
+  `${ORGANIZATIONS}/${organizationId}/${ACTIVITIES}/${activityId}`,
+  "DELETE",
+);
 

@@ -1,6 +1,6 @@
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
-import { useQuery } from "@tanstack/react-query";
-import { getAllActivities } from "api/activities";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { deleteActivity, deleteActivityMutation, getAllActivities } from "api/activities";
 import { Button } from "components/common/Button";
 import { Divider } from "components/common/Divider";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components/common/Dropdown";
@@ -14,6 +14,9 @@ import { useParams } from "react-router-dom";
 const ActivitiesPage = () => {
   let { organizationId } = useParams();
 
+  const {mutateAsync: mutateDeleteActivity} = useMutation({
+    mutationFn: (activityId: string) => deleteActivity(organizationId!, activityId)
+  });
   const {isPending, data} = useQuery(getAllActivities(organizationId!));
   const [activities, setActivities] = useState<Activity[]>([])
 
@@ -22,6 +25,15 @@ const ActivitiesPage = () => {
       setActivities(data.activities);
     }
   }, [data?.activities]);
+
+  const handleDeleteActivity = async (activityId: string) => {
+   try {
+    const data = await mutateDeleteActivity(activityId);
+    if (data.deleted) {
+      setActivities(activities.filter((activity) => activity.id !== activityId))
+    }
+   } catch (e) {}
+  }
 
   return (
     <>
@@ -64,7 +76,7 @@ const ActivitiesPage = () => {
                     <DropdownMenu anchor="bottom end">
                       <DropdownItem href={activity.id}>View</DropdownItem>
                       <DropdownItem href={`${activity.id}/edit`}>Edit</DropdownItem>
-                      <DropdownItem>Delete</DropdownItem>
+                      <DropdownItem onClick={() => handleDeleteActivity(activity.id)}>Delete</DropdownItem>
                     </DropdownMenu>
                   </Dropdown>
                 </div>
