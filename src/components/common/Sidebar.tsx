@@ -115,7 +115,7 @@ export const SidebarItem = forwardRef(function SidebarItem(
       )}
       {'href' in props ? (
         <Headless.CloseButton as={Fragment} ref={ref}>
-          <Link className={classes} {...props} data-current={current ? 'true' : undefined}>
+          <Link to={props.href} className={classes} {...props} data-current={current ? 'true' : undefined}>
             <TouchTarget>{children}</TouchTarget>
           </Link>
         </Headless.CloseButton>

@@ -70,7 +70,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     if (authenticatedUser.preferences.onboardingStep != -1) {
       navigate("/onboarding");
     } else {
-      navigate(redirectUrl || `/c/${authenticatedUser.preferences.organization.id}`);
+      navigate(redirectUrl || `/org/${authenticatedUser.preferences.organization.id}`);
     }
   }, [authenticatedUser])
 

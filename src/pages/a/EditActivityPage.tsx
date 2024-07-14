@@ -17,7 +17,7 @@ import { Textarea } from "components/common/Textarea";
 import useAutosizeTextArea from "hooks/useAutosizeTextArea";
 import { Activity as IActivity, ActivityField as IActivityField, DEFAULT_ACTIVITY_VALUE, ActivityFieldOptions as IActivityFieldOptions } from "models/monitoring";
 import { ChangeEvent, createContext, FocusEvent, Fragment, KeyboardEvent, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { cn } from "utils/css";
 
 
@@ -26,14 +26,16 @@ interface ActivityContextProps {
   setActivity: (activity: IActivity) => void,
   handleSetUpdate: (field: string, value: any, position?: number) => void,
   handleAddUpdate: (position: number, type: string) => void,
-  handleRemoveUpdate: (position: number) => void
+  handleRemoveUpdate: (position: number) => void,
+  handleEditDone: () => void,
 }
 const ActivityContext = createContext<ActivityContextProps>({
   activity: DEFAULT_ACTIVITY_VALUE,
   setActivity: () => {},
   handleSetUpdate: () => {},
   handleAddUpdate: () => {},
-  handleRemoveUpdate: () => {}
+  handleRemoveUpdate: () => {},
+  handleEditDone: () => {},
 })
 
 export const useActivityContext = () => {
@@ -50,6 +52,7 @@ interface ActivityContextProviderProps {
 }
 export const ActivityContextProvider = ({ children }: ActivityContextProviderProps) => {
   let { organizationId, activityId } = useParams();
+  const navigate = useNavigate();
 
   const [activity, setActivity] = useState<IActivity>(DEFAULT_ACTIVITY_VALUE);
 
@@ -106,6 +109,10 @@ export const ActivityContextProvider = ({ children }: ActivityContextProviderPro
     } catch (error) {}
   }
 
+  const handleEditDone = () => {
+    navigate(`/org/${organizationId}/activities`)
+  }
+
   const value = useMemo(
     () => ({
       activity,
@@ -113,12 +120,14 @@ export const ActivityContextProvider = ({ children }: ActivityContextProviderPro
       handleSetUpdate,
       handleAddUpdate,
       handleRemoveUpdate,
+      handleEditDone,
     }), [
       activity,
       setActivity,
       handleSetUpdate,
       handleAddUpdate,
-      handleRemoveUpdate
+      handleRemoveUpdate,
+      handleEditDone
     ]
   );
 
@@ -143,7 +152,8 @@ const reorder = (list: IActivityField[], startIndex: number, endIndex: number) =
 };
 
 const EditActivityPage = () => {
-  const { activity, setActivity, handleSetUpdate, handleAddUpdate } = useActivityContext();
+  const navigate = useNavigate();
+  const { activity, setActivity, handleSetUpdate, handleAddUpdate, handleEditDone } = useActivityContext();
   const [droppableId, setDroppableId] = useState('hello');
 
   useEffect(() => {
@@ -154,7 +164,7 @@ const EditActivityPage = () => {
     }
   }, [activity.fields.length]);
 
-  function handleDragEnd(result: DropResult) {
+  const handleDragEnd = (result: DropResult) => {
     const { destination, source } = result;
 
     if (!destination) {
@@ -173,22 +183,22 @@ const EditActivityPage = () => {
 
     handleSetUpdate("fields", fields);
   }
+
   return (
     <>
-      <Heading>Edit an activity</Heading>
-      <Divider className="my-6" />
       <form className="grow" onSubmit={e => { e.preventDefault(); }}>
         <Fieldset>
           <FieldGroup className="space-y-0">
             <EditInput
               value={activity.name}
+              placeholder="Name your activity here"
               setValue={(newValue) => setActivity({ ...activity, name: newValue })}
               onEnter={() => handleSetUpdate('name', activity.name)}
-              className="text-2xl/8 font-semibold text-zinc-950 sm:text-xl/8 dark:text-white" placeholder="Name of the activity"
+              className="text-2xl/8 font-semibold text-zinc-950 sm:text-xl/8 dark:text-white"
             />
             <EditTextarea
               name="description"
-              placeholder="Describe your activity"
+              placeholder="Describe your activity here"
               className="text-base/6 text-zinc-500 sm:text-sm/6 dark:text-zinc-400"
               value={activity.description}
               setValue={(newValue) => setActivity({ ...activity, description: newValue })}
@@ -234,7 +244,7 @@ const EditActivityPage = () => {
       <Divider className="my-10" soft />
 
       <div className="flex justify-end gap-4">
-        <Button type="button" color="dark/white">Done</Button>
+        <Button type="button" color="dark/white" className="cursor-pointer" onClick={() => handleEditDone()}>Done</Button>
       </div>
     </>
   )

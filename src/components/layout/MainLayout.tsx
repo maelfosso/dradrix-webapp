@@ -38,6 +38,7 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
 
 const MainLayout = () => {
   const { pathname } = useLocation();
+  console.log('[MainLayout] pathname', pathname);
   const navigate = useNavigate();
   let { organizationId } = useParams();
 
@@ -112,22 +113,26 @@ const MainLayout = () => {
 
           <SidebarBody>
             <SidebarSection>
-              <SidebarItem href="/" current={pathname === '/'} className="data-[slot=icon]:*:fill-none">
+              <SidebarItem
+                href=""
+                current={pathname === '/'}
+                className="sm:data-[slot=icon]:*:fill-none"
+              >
                 <HomeIcon />
                 <SidebarLabel>Home</SidebarLabel>
               </SidebarItem>
               <SidebarItem
-                href="/activities"
-                current={pathname.startsWith('/activities')}
-                className="data-[slot=icon]:*:fill-none"
+                href="activities"
+                current={pathname.indexOf('activities') !== -1}
+                className="sm:data-[slot=icon]:*:fill-none"
               >
                 <Square2StackIcon />
                 <SidebarLabel>Activities</SidebarLabel>
               </SidebarItem>
               <SidebarItem
-                href="/settings"
-                current={pathname.startsWith('/settings')}
-                className="data-[slot=icon]:*:fill-none"
+                href="settings"
+                current={pathname.indexOf('settings') !== -1}
+                className="sm:data-[slot=icon]:*:fill-none"
               >
                 <Cog6ToothIcon />
                 <SidebarLabel>Settings</SidebarLabel>

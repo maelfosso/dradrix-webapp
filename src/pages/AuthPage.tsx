@@ -17,7 +17,7 @@ const AuthPage = () => {
         />
       );
     } else {
-      const nextUrl = `/c/${authenticatedUser.preferences.organization.id}`;
+      const nextUrl = `/org/${authenticatedUser.preferences.organization.id}`;
 
       return (
         <Navigate
