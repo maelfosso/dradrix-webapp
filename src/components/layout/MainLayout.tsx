@@ -1,15 +1,14 @@
-import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { SidebarLayout } from "../common/SidebarLayout";
 import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from "../common/Navbar";
 import { Dropdown, DropdownButton, DropdownDivider, DropdownItem, DropdownLabel, DropdownMenu } from "../common/Dropdown";
 import { Avatar } from "../common/Avatar";
 import { Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarHeading, SidebarItem, SidebarLabel, SidebarSection, SidebarSpacer } from "../common/Sidebar";
-import { ArrowRightStartOnRectangleIcon, ChevronDownIcon, ChevronUpIcon, Cog6ToothIcon, Cog8ToothIcon, HomeIcon, LightBulbIcon, PlusIcon, QuestionMarkCircleIcon, ShieldCheckIcon, SparklesIcon, Square2StackIcon, TicketIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import { ArrowRightStartOnRectangleIcon, ChevronDownIcon, ChevronUpIcon, Cog6ToothIcon, Cog8ToothIcon, HomeIcon, LightBulbIcon, PlusIcon, QuestionMarkCircleIcon, ShieldCheckIcon, SparklesIcon, Square2StackIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { useAuthContext } from "contexts/AuthContext";
 import { useMemo } from "react";
 import { Button } from "components/common/Button";
-import { createActivityMutation } from "api/activities";
-import { useMutation } from "@tanstack/react-query";
+import { useMainContext } from "contexts/MainContext";
 
 function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
   return (
@@ -38,31 +37,13 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
 
 const MainLayout = () => {
   const { pathname } = useLocation();
-  console.log('[MainLayout] pathname', pathname);
-  const navigate = useNavigate();
-  let { organizationId } = useParams();
 
   const { authenticatedUser } = useAuthContext();
+  const { handleCreateActivity } = useMainContext();
+
   const userInitials = useMemo(() => {
     return `${authenticatedUser?.firstName[0]}${authenticatedUser?.lastName[0]}`
   }, [authenticatedUser]);
-
-  const {mutate: createActivityMutate} = useMutation(createActivityMutation(organizationId!, {
-    onSuccess(data) {
-      console.log('on create-activity-mutate', data)
-
-      navigate(`a/${data.activity.id}/edit`)
-    },
-    onError(error: Error) {
-      console.error('on create-activity-mutate error', error)
-    }
-  }))
-
-  const handleCreateActivity = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
-    createActivityMutate({});
-  }
 
   return (
     <SidebarLayout
@@ -144,7 +125,7 @@ const MainLayout = () => {
                 <div className="flex items-center justify-between">
                   <span>YOUR ACTIVITIES</span>
 
-                  <Button plain className="cursor-pointer" onClick={handleCreateActivity}>
+                  <Button plain className="cursor-pointer" onClick={() => handleCreateActivity()}>
                     <PlusIcon />
                   </Button>
                 </div>
@@ -159,11 +140,11 @@ const MainLayout = () => {
             <SidebarSpacer />
 
             <SidebarSection>
-              <SidebarItem href="#" className="data-[slot=icon]:*:fill-none">
+              <SidebarItem href="#" className="sm:data-[slot=icon]:*:fill-none">
                 <QuestionMarkCircleIcon />
                 <SidebarLabel>Support</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="#" className="data-[slot=icon]:*:fill-none">
+              <SidebarItem href="#" className="sm:data-[slot=icon]:*:fill-none">
                 <SparklesIcon />
                 <SidebarLabel>Changelog</SidebarLabel>
               </SidebarItem>

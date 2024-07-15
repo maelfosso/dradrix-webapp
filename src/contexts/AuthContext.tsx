@@ -23,17 +23,7 @@ interface AuthContextProps {
   setError: (error: string) => void,
 }
 
-export const AuthContext = createContext<AuthContextProps>({
-  authenticationStep: AuthenticationStep.PHONE_NUMBER,
-  authenticatedUser: null,
-  setAuthenticatedUser: () => {},
-  isAuthenticated: false,
-  signIn: () => {},
-  signOTP: () => {},
-  signOut: () => {},
-  error: '',
-  setError: () => {}
-});
+export const AuthContext = createContext<AuthContextProps | null>(null);
 
 
 interface AuthContextProviderProps {

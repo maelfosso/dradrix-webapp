@@ -11,6 +11,7 @@ import LandingPage from 'pages/LandingPage';
 import HomePage from 'pages/HomePage';
 import EditActivityPage, { ActivityContextProvider } from 'pages/a/EditActivityPage';
 import ActivitiesPage from 'pages/a/ActivitiesPage';
+import { MainProvider } from 'contexts/MainContext';
 
 function App() {
 
@@ -36,7 +37,7 @@ function App() {
             />
           </Route>
 
-          <Route path="/org/:organizationId" element={<MainLayout />}>
+          <Route path="/org/:organizationId" element={<MainProvider />}>
             <Route index element={<HomePage />} />
             <Route path="activities" element={<ActivitiesPage />} />
             <Route path="activities/:activityId/edit" element={<ActivityContextProvider><EditActivityPage /></ActivityContextProvider>} />
