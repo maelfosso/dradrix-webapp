@@ -297,7 +297,7 @@ interface ActivityFieldProps {
 const ActivityField = ({ field, position }: ActivityFieldProps) => {
   const { handleRemoveUpdate, handleSetUpdate } = useActivityContext();
 
-  const { type, name, id, key, options } = field;
+  const { type, name, id, key } = field;
   const [value, setValue] = useState<string>(name)
   const [onHover, setOnHover] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false)
@@ -327,7 +327,7 @@ const ActivityField = ({ field, position }: ActivityFieldProps) => {
             <Button plain type="button" onClick={() => setIsOpen(true)}>
               <Cog6ToothIcon />
             </Button>
-            <ActivityFieldOptions
+            <ActivityFieldSettings
               open={isOpen}
               onClose={setIsOpen}
               field={field}
@@ -345,6 +345,82 @@ const ActivityField = ({ field, position }: ActivityFieldProps) => {
   )
 }
 
+const ActivityFieldSettingsList = () => {
+  const [value, setValue] = useState<string>('');
+  const [choices, setChoices] = useState<string[]>([]);
+
+  const handleAddChoice = () => {
+    setChoices([...choices, value]);
+    setValue('')
+  }
+
+  const handleUpdateChoice = (newValue: string, index: number) => {
+    const nextChoices = choices.map((c, i) => {
+      if (i === index) {
+        return newValue
+      } else {
+        return c;
+      }
+    });
+    setChoices(nextChoices);
+  }
+
+  const handleRemoveChoice = () => {
+
+  }
+
+  return (
+    <div className="mt-0">
+      <Subheading className="sm:text-lg/6">Multiple choices</Subheading>
+      <Divider className="my-2" />
+      <Fieldset className="flex flex-col gap-y-4 mb-4">
+        <section className="flex flex-col gap-x-8 gap-y-2">
+          <div>
+            <Subheading>Choices</Subheading>
+            <Text>Indicate the different choices that will be presented when entering the data</Text>
+          </div>
+          <div>
+            {choices.map((c, index) => (
+              <div key={`field-choice-${c}-${index}`} className="flex w-full">
+                <EditInput
+                  value={c}
+                  setValue={(newValue) => handleUpdateChoice(newValue, index)}
+                  onEnter={handleAddChoice}
+                />
+                <Button plain onClick={() => handleRemoveChoice()}><TrashIcon /></Button>
+              </div>
+            ))}
+            <div className="flex w-full">
+              <EditInput
+                value={value}
+                setValue={setValue}
+                onEnter={handleAddChoice}
+                placeholder={`enter choice-${choices.length}`}
+              />
+              <Button plain onClick={() => handleRemoveChoice()}><TrashIcon /></Button>
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+          <div>
+            <Subheading>Multiple choice</Subheading>
+            <Text>Can we select multiple choices?</Text>
+          </div>
+          <div>
+            <Switch
+              aria-label="Multiple"
+              name="multiple"
+              // checked={options.multiple}
+              // onChange={(checked) => handleUpdate('options.multiple', checked, position )}
+            />
+          </div>
+        </section>
+      </Fieldset>
+    </div>
+  )
+}
+
 interface ActivityFieldOptionsProps {
   open: boolean;
   onClose: (value: boolean) => void;
@@ -354,7 +430,7 @@ interface ActivityFieldOptionsProps {
   position: number;
   onUpdate: (field: string, value: any, position: number) => void;
 }
-const ActivityFieldOptions = ({
+const ActivityFieldSettings = ({
   open,
   onClose,
   field,
@@ -363,7 +439,8 @@ const ActivityFieldOptions = ({
   position,
   onUpdate
 }: ActivityFieldOptionsProps) => {
-  const { options, key: id } = field;
+  const { options, key } = field;
+  console
 
   // const [defaultValue, setDefaultValue] = useState<string | null >(options.defaultValue)
   // const [reference, setReference] = useState<string | null>(options.reference);
@@ -372,62 +449,79 @@ const ActivityFieldOptions = ({
     onUpdate(field, value, position);
   }
 
+  const renderActivityFieldDetails = () => {
+    switch (type) {
+      case "multiple-choice":
+        return (
+          <ActivityFieldSettingsList />
+        )
+
+      default:
+        return (<></>)
+    }
+  }
   return (
     <Drawer wide open={open} onClose={onClose}>
       <DrawerTitle onClose={() => onClose(false)}>
-        Options
+        Settings
         <Text>{ name }</Text>
       </DrawerTitle>
       <DrawerContent>
         <form onSubmit={() => {}} className="mx-auto max-w-4xl">
-          <Fieldset className="flex flex-col gap-y-4">
-            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-              <div>
-                <Subheading>References</Subheading>
-                <Text>Its value is the primary key from another activity. Kindly select the referencing activity.</Text>
-              </div>
-              <div>
-                <Input aria-label="Reference activity" name="reference" />
-              </div>
-            </section>
+          { renderActivityFieldDetails() }
+          
+          <div className="mt-12">
+            <Subheading className="sm:text-lg/6">Options</Subheading>
+            <Divider className="my-2" />
+            <Fieldset className="flex flex-col gap-y-4">
+              <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                <div>
+                  <Subheading>References</Subheading>
+                  <Text>Its value is the primary key from another activity. Kindly select the referencing activity.</Text>
+                </div>
+                <div>
+                  <Input aria-label="Reference activity" name="reference" />
+                </div>
+              </section>
 
-            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-              <div>
-                <Subheading>Default value</Subheading>
-              </div>
-              <div>
-                <Input aria-label="Default value" name="defaultValue" />
-              </div>
-            </section>
+              <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                <div>
+                  <Subheading>Default value</Subheading>
+                </div>
+                <div>
+                  <Input aria-label="Default value" name="defaultValue" />
+                </div>
+              </section>
 
-            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-              <div>
-                <Subheading>Multiple</Subheading>
-                <Text>Can have multiple values. They will be separated by ``;`</Text>
-              </div>
-              <div>
-                <Switch
-                  aria-label="Multiple"
-                  name="multiple"
-                  checked={options.multiple}
-                  onChange={(checked) => handleUpdate('options.multiple', checked, position )}
-                />
-              </div>
-            </section>
+              <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                <div>
+                  <Subheading>Multiple</Subheading>
+                  <Text>Can have multiple values. They will be separated by ``;`</Text>
+                </div>
+                <div>
+                  <Switch
+                    aria-label="Multiple"
+                    name="multiple"
+                    checked={options.multiple}
+                    onChange={(checked) => handleUpdate('options.multiple', checked, position )}
+                  />
+                </div>
+              </section>
 
-            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-              <div>
-                <Subheading>Key</Subheading>
-                <Text>The primary key. The unique identifier.</Text>
-              </div>
-              <div>
-                <Switch aria-label="Key" name="key" checked={id}
-                  onChange={(checked) => handleUpdate('key', checked, position )}
-                />
-                {/* <Input aria-label="Organization Name" name="name" defaultValue="Catalyst" /> */}
-              </div>
-            </section>
-          </Fieldset>
+              <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                <div>
+                  <Subheading>Key</Subheading>
+                  <Text>The primary key. The unique identifier.</Text>
+                </div>
+                <div>
+                  <Switch aria-label="Key" name="key" checked={key}
+                    onChange={(checked) => handleUpdate('key', checked, position )}
+                  />
+                  {/* <Input aria-label="Organization Name" name="name" defaultValue="Catalyst" /> */}
+                </div>
+              </section>
+            </Fieldset>
+          </div>
         </form>
       </DrawerContent>
       <DrawerFooter>
