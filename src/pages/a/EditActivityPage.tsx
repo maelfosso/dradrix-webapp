@@ -1,4 +1,4 @@
-import { CalendarDaysIcon, ClockIcon, Cog6ToothIcon, DocumentTextIcon, HashtagIcon, KeyIcon, ListBulletIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { ArrowUpTrayIcon, CalendarDaysIcon, ClockIcon, Cog6ToothIcon, DocumentTextIcon, HashtagIcon, KeyIcon, ListBulletIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import { getActivity, updateActivityMutation } from "api/activities";
@@ -6,19 +6,19 @@ import { Button } from "components/common/Button";
 import { Divider } from "components/common/Divider";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components/common/Dropdown";
 import { Description, Field, FieldGroup, Fieldset, Legend } from "components/common/Fieldset";
-import { Heading, Subheading } from "components/common/Heading"
+import { Subheading } from "components/common/Heading"
 import { Input } from "components/common/Input";
 import { Listbox, ListboxOption } from "components/common/Listbox";
-import { Popover, PopoverButton, PopoverPanel } from "components/common/Popover";
 import Spinner from "components/common/Spinner";
 import { Switch } from "components/common/Switch";
 import { Strong, Text } from "components/common/Text";
 import { Textarea } from "components/common/Textarea";
 import useAutosizeTextArea from "hooks/useAutosizeTextArea";
-import { Activity as IActivity, ActivityField as IActivityField, DEFAULT_ACTIVITY_VALUE, ActivityFieldOptions as IActivityFieldOptions } from "models/monitoring";
+import { Activity as IActivity, ActivityField as IActivityField, DEFAULT_ACTIVITY_VALUE } from "models/monitoring";
 import { ChangeEvent, createContext, FocusEvent, Fragment, KeyboardEvent, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { cn } from "utils/css";
+import { Drawer, DrawerContent, DrawerFooter, DrawerTitle } from "components/common/Drawer";
 
 
 interface ActivityContextProps {
@@ -152,7 +152,6 @@ const reorder = (list: IActivityField[], startIndex: number, endIndex: number) =
 };
 
 const EditActivityPage = () => {
-  const navigate = useNavigate();
   const { activity, setActivity, handleSetUpdate, handleAddUpdate, handleEditDone } = useActivityContext();
   const [droppableId, setDroppableId] = useState('hello');
 
@@ -281,6 +280,9 @@ const ActivityFieldType = ({ primaryKey, type, position, onChange }: ActivityFie
         <ListboxOption value="multiple-choice">
           <ListBulletIcon />
         </ListboxOption>
+        <ListboxOption value="upload">
+          <ArrowUpTrayIcon />
+        </ListboxOption>
       </Listbox>
       {primaryKey && (
         <KeyIcon className="absolute right-0 bottom-0 w-2 h-2 fill-green-400 stroke-green-400"/>
@@ -298,6 +300,7 @@ const ActivityField = ({ field, position }: ActivityFieldProps) => {
   const { type, name, id, key, options } = field;
   const [value, setValue] = useState<string>(name)
   const [onHover, setOnHover] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <Draggable key={id} draggableId={id} index={position}>
@@ -320,12 +323,20 @@ const ActivityField = ({ field, position }: ActivityFieldProps) => {
         />
 
         <div className="flex">
-          <Popover className="relative">
-            <PopoverButton plain><Cog6ToothIcon /></PopoverButton>
-            <PopoverPanel anchor="bottom" className="flex flex-col">
-              <ActivityFieldOptions field={field} type={type} name={name} position={position} onUpdate={handleSetUpdate} />
-            </PopoverPanel>
-          </Popover>
+          <>
+            <Button plain type="button" onClick={() => setIsOpen(true)}>
+              <Cog6ToothIcon />
+            </Button>
+            <ActivityFieldOptions
+              open={isOpen}
+              onClose={setIsOpen}
+              field={field}
+              type={type}
+              name={name}
+              position={position}
+              onUpdate={handleSetUpdate}
+            />
+          </>
           <Button plain onClick={() => handleRemoveUpdate(position)}><TrashIcon /></Button>
         </div>
       </div>
@@ -335,6 +346,8 @@ const ActivityField = ({ field, position }: ActivityFieldProps) => {
 }
 
 interface ActivityFieldOptionsProps {
+  open: boolean;
+  onClose: (value: boolean) => void;
   field: IActivityField;
   type: string;
   name: string;
@@ -342,6 +355,8 @@ interface ActivityFieldOptionsProps {
   onUpdate: (field: string, value: any, position: number) => void;
 }
 const ActivityFieldOptions = ({
+  open,
+  onClose,
   field,
   type,
   name,
@@ -350,68 +365,75 @@ const ActivityFieldOptions = ({
 }: ActivityFieldOptionsProps) => {
   const { options, key: id } = field;
 
-  const [defaultValue, setDefaultValue] = useState<string | null >(options.defaultValue)
-  const [reference, setReference] = useState<string | null>(options.reference);
+  // const [defaultValue, setDefaultValue] = useState<string | null >(options.defaultValue)
+  // const [reference, setReference] = useState<string | null>(options.reference);
 
   const handleUpdate = (field: string, value: any, position: number) => {
     onUpdate(field, value, position);
   }
 
-
   return (
-    <form onSubmit={() => {}} className="p-2 mx-auto max-w-4xl">
-      <Heading>Options <Text>{ name }</Text></Heading>
-      <Divider className="my-4" />
+    <Drawer wide open={open} onClose={onClose}>
+      <DrawerTitle onClose={() => onClose(false)}>
+        Options
+        <Text>{ name }</Text>
+      </DrawerTitle>
+      <DrawerContent>
+        <form onSubmit={() => {}} className="mx-auto max-w-4xl">
+          <Fieldset className="flex flex-col gap-y-4">
+            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+              <div>
+                <Subheading>References</Subheading>
+                <Text>Its value is the primary key from another activity. Kindly select the referencing activity.</Text>
+              </div>
+              <div>
+                <Input aria-label="Reference activity" name="reference" />
+              </div>
+            </section>
 
-      <Fieldset className="flex flex-col gap-y-4">
-      <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-        <div>
-          <Subheading>References</Subheading>
-          <Text>Its value is the primary key from another activity. Kindly select the referencing activity.</Text>
-        </div>
-        <div>
-          <Input aria-label="Reference activity" name="reference" />
-        </div>
-      </section>
+            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+              <div>
+                <Subheading>Default value</Subheading>
+              </div>
+              <div>
+                <Input aria-label="Default value" name="defaultValue" />
+              </div>
+            </section>
 
-      <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-        <div>
-          <Subheading>Default value</Subheading>
-        </div>
-        <div>
-          <Input aria-label="Default value" name="defaultValue" />
-        </div>
-      </section>
+            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+              <div>
+                <Subheading>Multiple</Subheading>
+                <Text>Can have multiple values. They will be separated by ``;`</Text>
+              </div>
+              <div>
+                <Switch
+                  aria-label="Multiple"
+                  name="multiple"
+                  checked={options.multiple}
+                  onChange={(checked) => handleUpdate('options.multiple', checked, position )}
+                />
+              </div>
+            </section>
 
-      <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-        <div>
-          <Subheading>Multiple</Subheading>
-          <Text>Can have multiple values. They will be separated by ``;`</Text>
-        </div>
-        <div>
-          <Switch
-            aria-label="Multiple"
-            name="multiple"
-            checked={options.multiple}
-            onChange={(checked) => handleUpdate('options.multiple', checked, position )}
-          />
-        </div>
-      </section>
-
-      <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-        <div>
-          <Subheading>Key</Subheading>
-          <Text>The primary key. The unique identifier.</Text>
-        </div>
-        <div>
-          <Switch aria-label="Key" name="key" checked={id}
-            onChange={(checked) => handleUpdate('id', checked, position )}
-          />
-          {/* <Input aria-label="Organization Name" name="name" defaultValue="Catalyst" /> */}
-        </div>
-      </section>
-      </Fieldset>
-    </form>
+            <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+              <div>
+                <Subheading>Key</Subheading>
+                <Text>The primary key. The unique identifier.</Text>
+              </div>
+              <div>
+                <Switch aria-label="Key" name="key" checked={id}
+                  onChange={(checked) => handleUpdate('key', checked, position )}
+                />
+                {/* <Input aria-label="Organization Name" name="name" defaultValue="Catalyst" /> */}
+              </div>
+            </section>
+          </Fieldset>
+        </form>
+      </DrawerContent>
+      <DrawerFooter>
+        <Button color="dark/white" onClick={() => onClose(false)}>Done</Button>
+      </DrawerFooter>
+    </Drawer>
   )
 }
 interface EditKeyboardUsageProps {
@@ -689,6 +711,10 @@ const AddItem = ({
                       <DropdownItem onClick={() => handleClickOnType('multiple-choice')}>
                         <ListBulletIcon />
                         Multiple choices
+                      </DropdownItem>
+                      <DropdownItem onClick={() => handleClickOnType('upload')}>
+                        <ArrowUpTrayIcon />
+                        Upload files/images
                       </DropdownItem>
                     </DropdownMenu>
                   </>

@@ -98,7 +98,7 @@ const ActivityItem = ({ organizationId, activity, index, afterDeleting }: Activi
           </div> */}
           <div className="space-y-1.5">
             <div className="text-base/6 font-semibold">
-              <Link to={activity.id}>{activity.name}</Link>
+              <Link to={`${activity.id}/edit`}>{activity.name}</Link>
             </div>
             <div className="text-xs/6 text-zinc-500">
               {activity.description}
