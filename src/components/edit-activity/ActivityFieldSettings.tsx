@@ -7,7 +7,7 @@ import { Fieldset } from "components/common/Fieldset";
 import { Input } from "components/common/Input";
 import { Switch } from "components/common/Switch";
 import { Button } from "components/common/Button";
-import { ActivityField } from "models/monitoring";
+import { ActivityField, ActivityFieldList } from "models/monitoring";
 
 interface ActivityFieldSettingsProps {
   open: boolean;
@@ -41,7 +41,12 @@ export const ActivityFieldSettings = ({
     switch (type) {
       case "multiple-choice":
         return (
-          <ActivityFieldSettingsList />
+          <ActivityFieldSettingsList
+            id={field.id}
+            position={position}
+            details={field.details as ActivityFieldList}
+            onUpdate={onUpdate}
+          />
         )
 
       default:

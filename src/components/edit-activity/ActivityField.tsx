@@ -34,7 +34,7 @@ export const ActivityField = ({ field, position }: ActivityFieldProps) => {
         <EditInput
           className="grow-1"
           placeholder="Enter the name of the field"
-          icon={<ActivityFieldType primaryKey={key} type={type} position={position} onChange={handleSetUpdate} />}
+          icon={<ActivityFieldType primaryKey={key} type={type} position={position} onUpdate={handleSetUpdate} />}
           value={value}
           setValue={setValue}
           onEnter={() => handleSetUpdate('name', value, position)}

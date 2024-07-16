@@ -5,13 +5,13 @@ interface ActivityFieldTypeProps {
   primaryKey: boolean;
   type: string;
   position: number;
-  onChange: (field: string, value: any, position: number) => void;
+  onUpdate: (field: string, value: any, position: number) => void;
 }
-export const ActivityFieldType = ({ primaryKey, type, position, onChange }: ActivityFieldTypeProps) => {
+export const ActivityFieldType = ({ primaryKey, type, position, onUpdate: onUpdate }: ActivityFieldTypeProps) => {
 
   return (
     <div className="relative inline-block">
-      <Listbox showIndicator={false} name="type" value={type} onChange={(newValue) => onChange('type', newValue, position)}
+      <Listbox showIndicator={false} name="type" value={type} onChange={(newValue) => onUpdate('type', newValue, position)}
         className="!w-auto p-0 m-0 min-h-0 before:shadow-none"
         selectedOptionClassName="sm:min-h-fit sm:!p-0 sm:!mr-1 sm:border-none"
       >

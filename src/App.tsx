@@ -6,12 +6,12 @@ import OnboardingPage, { OnboardingProvider } from 'pages/OnboardingPage';
 import AuthLayout from 'components/layout/AuthLayout';
 import VisitorLayout from 'components/layout/VisitorLayout';
 import NotReadyUserLayout from 'components/layout/NotReadyUserLayout';
-import MainLayout from 'components/layout/MainLayout';
 import LandingPage from 'pages/LandingPage';
 import HomePage from 'pages/HomePage';
-import EditActivityPage, { ActivityContextProvider } from 'pages/a/EditActivityPage';
+import EditActivityPage from 'pages/a/EditActivityPage';
 import ActivitiesPage from 'pages/a/ActivitiesPage';
 import { MainProvider } from 'contexts/MainContext';
+import { ActivityContextProvider } from 'contexts/ActivityContext';
 
 function App() {
 

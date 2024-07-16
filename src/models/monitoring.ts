@@ -11,6 +11,17 @@ export const DEFAULT_ACTIVITY_FIELD_OPTIONS_VALUE = {
   defaultValue: null
 }
 
+export interface ActivityFieldDate {
+
+}
+
+export interface ActivityFieldList {
+  multiple: boolean;
+  choices: string[];
+}
+
+export type ActivityFieldType = ActivityFieldList | ActivityFieldDate
+
 export interface ActivityField {
   id: string;
   name: string;
@@ -19,6 +30,7 @@ export interface ActivityField {
   key: boolean;
   code: string;
   options: ActivityFieldOptions;
+  details: ActivityFieldType;
 }
 
 export const DEFAULT_ACTIVITY_FIELD_VALUE: ActivityField = {
@@ -29,6 +41,7 @@ export const DEFAULT_ACTIVITY_FIELD_VALUE: ActivityField = {
   description: '',
   type: 'text',
   options: DEFAULT_ACTIVITY_FIELD_OPTIONS_VALUE,
+  details: {}
 }
 
 export interface Activity {

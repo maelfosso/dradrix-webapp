@@ -2,22 +2,48 @@ import { Divider } from "components/common/Divider";
 import { Fieldset } from "components/common/Fieldset";
 import { Subheading } from "components/common/Heading";
 import { Text } from "components/common/Text";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EditInput } from "./EditInput";
 import { Button } from "components/common/Button";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { Switch } from "components/common/Switch";
+import { ActivityFieldList } from "models/monitoring";
 
-export const ActivityFieldSettingsList = () => {
+interface ActivityFieldSettingsListProps {
+  id: string;
+  position: number;
+  details: ActivityFieldList;
+  onUpdate: (field: string, value: any, position: number) => void;
+}
+export const ActivityFieldSettingsList = ({
+  id,
+  position,
+  details,
+  onUpdate
+}: ActivityFieldSettingsListProps) => {
   const [value, setValue] = useState<string>('');
   const [choices, setChoices] = useState<string[]>([]);
 
+  useEffect(() => {
+    if (details.choices) {
+      setChoices(details.choices);
+    }
+  }, [details.choices])
+
   const handleAddChoice = () => {
-    setChoices([...choices, value]);
+    onUpdate('details.choices', [...choices, value], position);
     setValue('')
   }
 
-  const handleUpdateChoice = (newValue: string, index: number) => {
+  const handleUpdateChoices = () =>
+    onUpdate('details.choices', choices, position);
+
+  const handleRemoveChoice = (indexToRemove: number) => {
+    const nextChoices = choices.filter((_, index) => index !== indexToRemove);
+    onUpdate('details.choices', nextChoices, position);
+  }
+
+  const handleLocalUpdateChoice = (newValue: string, index: number) => {
     const nextChoices = choices.map((c, i) => {
       if (i === index) {
         return newValue
@@ -26,10 +52,6 @@ export const ActivityFieldSettingsList = () => {
       }
     });
     setChoices(nextChoices);
-  }
-
-  const handleRemoveChoice = () => {
-
   }
 
   return (
@@ -44,13 +66,13 @@ export const ActivityFieldSettingsList = () => {
           </div>
           <div>
             {choices.map((c, index) => (
-              <div key={`field-choice-${c}-${index}`} className="flex w-full">
+              <div key={`field-${id}-choices-${index}`} className="flex w-full">
                 <EditInput
                   value={c}
-                  setValue={(newValue) => handleUpdateChoice(newValue, index)}
-                  onEnter={handleAddChoice}
+                  setValue={(newValue) => handleLocalUpdateChoice(newValue, index)}
+                  onEnter={() => handleUpdateChoices()}
                 />
-                <Button plain onClick={() => handleRemoveChoice()}><TrashIcon /></Button>
+                <Button plain onClick={() => handleRemoveChoice(index)}><TrashIcon /></Button>
               </div>
             ))}
             <div className="flex w-full">
@@ -58,9 +80,9 @@ export const ActivityFieldSettingsList = () => {
                 value={value}
                 setValue={setValue}
                 onEnter={handleAddChoice}
-                placeholder={`enter choice-${choices.length}`}
+                placeholder={`type the choice-${choices.length + 1} here`}
               />
-              <Button plain onClick={() => handleRemoveChoice()}><TrashIcon /></Button>
+              {/* <Button plain onClick={() => handleRemoveChoice()}><TrashIcon /></Button> */}
             </div>
           </div>
         </section>
@@ -74,8 +96,8 @@ export const ActivityFieldSettingsList = () => {
             <Switch
               aria-label="Multiple"
               name="multiple"
-              // checked={options.multiple}
-              // onChange={(checked) => handleUpdate('options.multiple', checked, position )}
+              checked={details.multiple}
+              onChange={(checked) => onUpdate('details.multiple', checked, position )}
             />
           </div>
         </section>
