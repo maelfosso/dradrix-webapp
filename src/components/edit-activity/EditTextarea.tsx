@@ -26,10 +26,8 @@ export const EditTextarea = ({
 
   useAutosizeTextArea(ref.current, value);
 
-
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     e.preventDefault();
-
     setValue(e.target.value)
   }
 

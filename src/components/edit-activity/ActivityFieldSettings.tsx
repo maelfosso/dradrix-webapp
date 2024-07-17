@@ -43,6 +43,7 @@ export const ActivityFieldSettings = ({
         return (
           <ActivityFieldSettingsList
             id={field.id}
+            description={field.description}
             position={position}
             details={field.details as ActivityFieldList}
             onUpdate={onUpdate}
