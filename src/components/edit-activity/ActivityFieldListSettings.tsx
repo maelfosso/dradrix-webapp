@@ -1,4 +1,3 @@
-import { Divider } from "components/common/Divider";
 import { Fieldset } from "components/common/Fieldset";
 import { Subheading } from "components/common/Heading";
 import { Text } from "components/common/Text";
@@ -7,23 +6,23 @@ import { EditInput } from "./EditInput";
 import { Button } from "components/common/Button";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { Switch } from "components/common/Switch";
-import { ActivityFieldList } from "models/monitoring";
+import { ActivityFieldMultipleChoices } from "models/monitoring";
 import { EditTextarea } from "./EditTextarea";
 
-interface ActivityFieldSettingsListProps {
+interface ActivityFieldListSettingsProps {
   id: string;
   description: string;
   position: number;
-  details: ActivityFieldList;
+  details: ActivityFieldMultipleChoices;
   onUpdate: (field: string, value: any, position: number) => void;
 }
-export const ActivityFieldSettingsList = ({
+export const ActivityFieldListSettings = ({
   id,
   description,
   position,
   details,
   onUpdate
-}: ActivityFieldSettingsListProps) => {
+}: ActivityFieldListSettingsProps) => {
   const [descriptionValue, setDescription] = useState<string>(description)
   const [value, setValue] = useState<string>('');
   const [choices, setChoices] = useState<string[]>([]);
@@ -63,8 +62,8 @@ export const ActivityFieldSettingsList = ({
 
   return (
     <div className="mt-0">
-      <Subheading className="sm:text-lg/6">Multiple choices</Subheading>
-      <Divider className="my-2" />
+      {/* <Subheading className="sm:text-lg/6">Multiple choices</Subheading>
+      <Divider className="my-2" /> */}
       <Fieldset className="flex flex-col gap-y-4 mb-4">
         <section>
           <div>
@@ -115,7 +114,7 @@ export const ActivityFieldSettingsList = ({
             <Subheading>Multiple choice</Subheading>
             <Text>Can we select multiple choices?</Text>
           </div>
-          <div>
+          <div className="ml-auto">
             <Switch
               aria-label="Multiple"
               name="multiple"

@@ -11,23 +11,32 @@ export const DEFAULT_ACTIVITY_FIELD_OPTIONS_VALUE = {
   defaultValue: null
 }
 
-export interface ActivityFieldDate {
+export interface ActivityFieldTime {}
 
-}
+export interface ActivityFieldDate {}
 
-export interface ActivityFieldList {
+export interface ActivityFieldNumber {}
+
+export interface ActivityFieldText {}
+
+export interface ActivityFieldMultipleChoices {
   multiple: boolean;
   choices: string[];
 }
 
-export type ActivityFieldType = ActivityFieldList | ActivityFieldDate
+export interface ActivityFieldUpload {
+  typeOfFiles: string[];
+  maxNumberOfItems: number;
+}
+
+export type ActivityFieldType = ActivityFieldMultipleChoices | ActivityFieldText | ActivityFieldNumber | ActivityFieldTime | ActivityFieldDate | ActivityFieldUpload
 
 export interface ActivityField {
   id: string;
   name: string;
   description: string;
   type: string;
-  key: boolean;
+  primaryKey: boolean;
   code: string;
   options: ActivityFieldOptions;
   details: ActivityFieldType;
@@ -35,7 +44,7 @@ export interface ActivityField {
 
 export const DEFAULT_ACTIVITY_FIELD_VALUE: ActivityField = {
   id: '',
-  key: false,
+  primaryKey: false,
   code: '',
   name: '',
   description: '',

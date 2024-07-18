@@ -5,6 +5,7 @@ import { EditKeyboardUsage } from "./EditKeyboardUsage";
 import { ChangeEvent, FocusEvent, KeyboardEvent, useState } from "react";
 
 interface EditInputProps {
+  type?: string;
   icon?: JSX.Element;
   className?: string;
   value: string;
@@ -13,6 +14,7 @@ interface EditInputProps {
   onEnter: () => void;
 }
 export const EditInput = ({
+  type = "text",
   icon,
   className,
   value,
@@ -68,6 +70,7 @@ export const EditInput = ({
     )}>
       { icon }
       <Input
+        type={type}
         wrapperClassName="border-none before:shadow-none before:rounded-none before:bg-transparent sm:after:focus-within:ring-0"
         className={cn(
           "border-none sm:pr-36 hover:bg-none before:bg-none",

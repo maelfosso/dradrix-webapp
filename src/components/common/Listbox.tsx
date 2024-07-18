@@ -1,6 +1,7 @@
 import * as Headless from '@headlessui/react'
 import clsx from 'clsx'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
+import { Badge } from './Badge'
 
 export function Listbox<T>({
   className,
@@ -10,6 +11,9 @@ export function Listbox<T>({
   'aria-label': ariaLabel,
   children: options,
   showIndicator = true,
+  multiple,
+  attrForDisplay,
+  textInMultiple,
   ...props
 }: {
   showIndicator?: boolean
@@ -18,10 +22,14 @@ export function Listbox<T>({
   placeholder?: React.ReactNode
   autoFocus?: boolean
   'aria-label'?: string
+  attrForDisplay?: string
+  textInMultiple?: string
   children?: React.ReactNode
-} & Omit<Headless.ListboxProps<typeof Fragment, T>, 'multiple'>) {
+} & Headless.ListboxProps<typeof Fragment, T>) {
+  const { value } = props;
+
   return (
-    <Headless.Listbox {...props} multiple={false}>
+    <Headless.Listbox {...props} multiple={multiple}>
       <Headless.ListboxButton
         autoFocus={autoFocus}
         data-slot="control"
@@ -44,7 +52,7 @@ export function Listbox<T>({
       >
         <Headless.ListboxSelectedOption
           as="span"
-          options={options}
+          options={multiple ? <>{`${textInMultiple} (${(value as T[]).length})`}</> : options}
           placeholder={placeholder && <span className="block truncate text-zinc-500">{placeholder}</span>}
           className={clsx([
             // Basic layout
@@ -104,6 +112,11 @@ export function Listbox<T>({
           {options}
         </Headless.ListboxOptions>
       </Headless.Transition>
+      {multiple && (value as T[]).length > 0 && (
+        <div>
+          { (value as T[]).map((item) => <Badge>{attrForDisplay ? item[attrForDisplay] : item}</Badge>)}
+        </div>
+      )}
     </Headless.Listbox>
   )
 }

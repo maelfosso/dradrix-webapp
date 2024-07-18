@@ -15,7 +15,7 @@ interface ActivityFieldProps {
 export const ActivityField = ({ field, position }: ActivityFieldProps) => {
   const { handleRemoveUpdate, handleSetUpdate } = useActivityContext();
 
-  const { type, name, id, key } = field;
+  const { type, name, id, primaryKey: key } = field;
   const [value, setValue] = useState<string>(name)
   const [onHover, setOnHover] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false)
