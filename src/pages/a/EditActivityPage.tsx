@@ -9,6 +9,9 @@ import { ActivityField } from "components/edit-activity/ActivityField";
 import { EditTextarea } from "components/edit-activity/EditTextarea";
 import { EditInput } from "components/edit-activity/EditInput";
 import { useActivityContext } from "contexts/ActivityContext";
+import { Link } from "components/common/Link";
+import { ChevronLeftIcon } from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
 
 const reorder = (list: IActivityField[], startIndex: number, endIndex: number) => {
   const result = Array.from(list);
@@ -18,7 +21,8 @@ const reorder = (list: IActivityField[], startIndex: number, endIndex: number) =
 };
 
 const EditActivityPage = () => {
-  const { activity, setActivity, handleSetUpdate, handleAddUpdate, handleEditDone } = useActivityContext();
+  const navigate = useNavigate();
+  const { activitiesHref, activity, setActivity, handleSetUpdate, handleAddUpdate } = useActivityContext();
   const [droppableId, setDroppableId] = useState('hello');
 
   useEffect(() => {
@@ -49,8 +53,18 @@ const EditActivityPage = () => {
     handleSetUpdate("fields", fields);
   }
 
+  const handleEditDone = () => {
+    navigate(activitiesHref);
+  }
+
   return (
     <>
+      <div className="max-lg:hidden">
+        <Link to={activitiesHref} className="inline-flex items-center gap-2 text-sm/6 text-zinc-500 dark:text-zinc-400">
+          <ChevronLeftIcon className="size-4" />
+          Activities
+        </Link>
+      </div>
       <form className="grow" onSubmit={e => { e.preventDefault(); }}>
         <Fieldset>
           <FieldGroup className="space-y-0">

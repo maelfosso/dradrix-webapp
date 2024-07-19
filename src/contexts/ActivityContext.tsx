@@ -3,15 +3,15 @@ import { getActivity, updateActivityMutation } from "api/activities";
 import Spinner from "components/common/Spinner";
 import { Activity as IActivity, DEFAULT_ACTIVITY_VALUE } from "models/monitoring";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 interface ActivityContextProps {
-  activity: IActivity,
-  setActivity: (activity: IActivity) => void,
-  handleSetUpdate: (field: string, value: any, position?: number) => void,
-  handleAddUpdate: (position: number, type: string) => void,
-  handleRemoveUpdate: (position: number) => void,
-  handleEditDone: () => void,
+  activity: IActivity;
+  setActivity: (activity: IActivity) => void;
+  handleSetUpdate: (field: string, value: any, position?: number) => void;
+  handleAddUpdate: (position: number, type: string) => void;
+  handleRemoveUpdate: (position: number) => void;
+  activitiesHref: string;
 }
 const ActivityContext = createContext<ActivityContextProps | null>(null)
 
@@ -29,7 +29,10 @@ interface ActivityContextProviderProps {
 }
 export const ActivityContextProvider = ({ children }: ActivityContextProviderProps) => {
   let { organizationId, activityId } = useParams();
-  const navigate = useNavigate();
+
+  const activitiesHref = useMemo(() => {
+    return `/org/${organizationId}/activities`;
+  }, [organizationId])
 
   const [activity, setActivity] = useState<IActivity>(DEFAULT_ACTIVITY_VALUE);
 
@@ -86,10 +89,6 @@ export const ActivityContextProvider = ({ children }: ActivityContextProviderPro
     } catch (error) {}
   }
 
-  const handleEditDone = () => {
-    navigate(`/org/${organizationId}/activities`)
-  }
-
   const value = useMemo(
     () => ({
       activity,
@@ -97,14 +96,14 @@ export const ActivityContextProvider = ({ children }: ActivityContextProviderPro
       handleSetUpdate,
       handleAddUpdate,
       handleRemoveUpdate,
-      handleEditDone,
+      activitiesHref
     }), [
       activity,
       setActivity,
       handleSetUpdate,
       handleAddUpdate,
       handleRemoveUpdate,
-      handleEditDone
+      activitiesHref
     ]
   );
 
