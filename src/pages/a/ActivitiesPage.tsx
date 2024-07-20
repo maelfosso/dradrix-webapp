@@ -1,51 +1,19 @@
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { deleteActivity, deleteActivityMutation, getAllActivities } from "api/activities";
+import { useMutation } from "@tanstack/react-query";
+import { deleteActivityMutation } from "api/activities";
 import { Button } from "components/common/Button";
 import { Divider } from "components/common/Divider";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components/common/Dropdown";
 import { Heading } from "components/common/Heading"
 import { Link } from "components/common/Link";
-import Spinner from "components/common/Spinner";
 import { useMainContext } from "contexts/MainContext";
 import { Activity } from "models/monitoring";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const ActivitiesPage = () => {
   let { organizationId } = useParams();
 
-  const { handleCreateActivity } = useMainContext();
-  const {isPending, data} = useQuery(getAllActivities(organizationId!));
-  const [activities, setActivities] = useState<Activity[]>([])
-
-  useEffect(() => {
-    if (data?.activities) {
-      setActivities(data.activities);
-    }
-  }, [data?.activities]);
-
-  const renderActivities = () => {
-    if (isPending) {
-      return (
-        <div><Spinner /></div>
-      )
-    }
-
-    return (
-      <ul className="mt-10">
-        {activities.map((activity, index) => (
-          <ActivityItem
-            key={activity.id}
-            organizationId={organizationId!}
-            activity={activity}
-            index={index}
-            afterDeleting={(activityId) => activities.filter((activity) => activity.id !== activityId)}
-          />
-        ))}
-      </ul>
-    )
-  }
+  const { handleCreateActivity, activities } = useMainContext();
 
   return (
     <>
@@ -59,7 +27,17 @@ const ActivitiesPage = () => {
           Create activity
         </Button>
       </div>
-      {renderActivities()}
+      <ul className="mt-10">
+        {activities.map((activity, index) => (
+          <ActivityItem
+            key={activity.id}
+            organizationId={organizationId!}
+            activity={activity}
+            index={index}
+            afterDeleting={(activityId) => activities.filter((activity) => activity.id !== activityId)}
+          />
+        ))}
+      </ul>
     </>
   )
 }

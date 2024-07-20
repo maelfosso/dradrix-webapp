@@ -28,10 +28,10 @@ const EditActivityPage = () => {
   useEffect(() => {
     // change the id later here based on some conditions
     // in my case when my data is loaded
-    if (activity.fields.length) {
+    if (activity?.fields.length) {
       setDroppableId('activity-fields');
     }
-  }, [activity.fields.length]);
+  }, [activity?.fields.length]);
 
   const handleDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -45,7 +45,7 @@ const EditActivityPage = () => {
     }
 
     const fields = reorder(
-      activity.fields, // state.quotes,
+      activity?.fields ?? [], // state.quotes,
       source.index,
       destination.index
     );
@@ -55,6 +55,10 @@ const EditActivityPage = () => {
 
   const handleEditDone = () => {
     navigate(activitiesHref);
+  }
+
+  if (!activity) {
+    return <></>;
   }
 
   return (

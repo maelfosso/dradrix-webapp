@@ -1,10 +1,13 @@
-import { useMutation } from "@tanstack/react-query";
-import { createActivityMutation } from "api/activities";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { createActivityMutation, getAllActivities } from "api/activities";
+import Spinner from "components/common/Spinner";
 import MainLayout from "components/layout/MainLayout";
-import { createContext, useContext, useMemo } from "react";
+import { Activity } from "models/monitoring";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 interface MainContext {
+  activities: Activity[];
   handleCreateActivity: () => void;
 }
 export const MainContext = createContext<MainContext | null>(null)
@@ -15,6 +18,7 @@ interface MainProvider {
 export const MainProvider = () => {
   const navigate = useNavigate();
   let { organizationId } = useParams();
+  const [activities, setActivities] = useState<Activity[]>([])
 
   const {mutate: createActivityMutate} = useMutation(createActivityMutation(organizationId!, {
     onSuccess(data) {
@@ -25,16 +29,32 @@ export const MainProvider = () => {
     }
   }))
 
+  const {isPending, data, error } =
+    useQuery(getAllActivities(organizationId!));
+
+  useEffect(() => {
+    if (data?.activities) {
+      setActivities(data.activities);
+    }
+  }, [data?.activities])
+
   const handleCreateActivity = () => {
     console.log('handleCreateActivity');
     createActivityMutate({});
   }
 
   const value = useMemo(() => ({
+    activities,
     handleCreateActivity
   }), [
+    activities,
     handleCreateActivity
   ])
+
+  if (isPending) {
+    return <Spinner />
+  }
+
   return (
     <MainContext.Provider value={value}>
       <MainLayout />

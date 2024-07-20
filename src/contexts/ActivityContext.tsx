@@ -1,12 +1,12 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getActivity, updateActivityMutation } from "api/activities";
 import Spinner from "components/common/Spinner";
-import { Activity as IActivity, DEFAULT_ACTIVITY_VALUE } from "models/monitoring";
+import { Activity as IActivity } from "models/monitoring";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 
 interface ActivityContextProps {
-  activity: IActivity;
+  activity: IActivity | null;
   setActivity: (activity: IActivity) => void;
   handleSetUpdate: (field: string, value: any, position?: number) => void;
   handleAddUpdate: (position: number, type: string) => void;
@@ -23,25 +23,31 @@ export const useActivityContext = () => {
   return context;
 }
 
-
-interface ActivityContextProviderProps {
-  children: JSX.Element
-}
-export const ActivityContextProvider = ({ children }: ActivityContextProviderProps) => {
+export const ActivityContextProvider = () => {
   let { organizationId, activityId } = useParams();
 
   const activitiesHref = useMemo(() => {
     return `/org/${organizationId}/activities`;
   }, [organizationId])
 
-  const [activity, setActivity] = useState<IActivity>(DEFAULT_ACTIVITY_VALUE);
+  const [activity, setActivity] = useState<IActivity|null>(null);
 
-  const {isPending, data} = useQuery(getActivity(organizationId!, activityId!));
+  const {isPending, data, refetch} = useQuery(getActivity(organizationId!, activityId!));
   useEffect(() => {
     if (data?.activity) {
       setActivity(data.activity);
     }
   }, [data?.activity]);
+
+  useEffect(() => {
+    if (activityId) refetch();
+  }, [activityId])
+
+  useEffect(() => {
+    return () => {
+      setActivity(null)
+    }
+  }, []);
 
   const {mutateAsync: mutateUpdateActivity} = useMutation(
     updateActivityMutation(
@@ -115,7 +121,7 @@ export const ActivityContextProvider = ({ children }: ActivityContextProviderPro
 
   return (
     <ActivityContext.Provider value={value}>
-      { children }
+      <Outlet />
     </ActivityContext.Provider>
   )
 }

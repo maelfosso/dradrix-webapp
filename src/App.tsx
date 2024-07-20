@@ -40,7 +40,9 @@ function App() {
           <Route path="/org/:organizationId" element={<MainProvider />}>
             <Route index element={<HomePage />} />
             <Route path="activities" element={<ActivitiesPage />} />
-            <Route path="activities/:activityId/edit" element={<ActivityContextProvider><EditActivityPage /></ActivityContextProvider>} />
+            <Route path="activities/:activityId" element={<ActivityContextProvider />}>
+              <Route path="edit" element={<EditActivityPage />} />
+            </Route>
           </Route>
         </Route>
       </Route>

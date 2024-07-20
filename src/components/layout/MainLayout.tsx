@@ -39,7 +39,7 @@ const MainLayout = () => {
   const { pathname } = useLocation();
 
   const { authenticatedUser } = useAuthContext();
-  const { handleCreateActivity } = useMainContext();
+  const { handleCreateActivity, activities } = useMainContext();
 
   const userInitials = useMemo(() => {
     return `${authenticatedUser?.firstName[0]}${authenticatedUser?.lastName[0]}`
@@ -130,11 +130,11 @@ const MainLayout = () => {
                   </Button>
                 </div>
               </SidebarHeading>
-              {/* {activities.map((activity) => (
-                <SidebarItem key={activity.id} href={activity.url}>
+              {activities.map((activity) => (
+                <SidebarItem key={activity.id} href={`activities/${activity.id}/edit`}>
                   {activity.name}
                 </SidebarItem>
-              ))} */}
+              ))}
             </SidebarSection>
 
             <SidebarSpacer />
