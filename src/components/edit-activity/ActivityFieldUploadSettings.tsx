@@ -1,6 +1,6 @@
 import { Fieldset } from "components/common/Fieldset";
 import { Subheading } from "components/common/Heading";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EditTextarea } from "./EditTextarea";
 import { ActivityFieldUpload } from "models/monitoring";
 import { Text } from "components/common/Text";
@@ -22,9 +22,14 @@ export const ActivityFieldUploadSettings = ({
   details,
   onUpdate
 }: ActivityFieldUploadSettingsProps) => {
+  console.log("[ActivityFieldUploadSettings] details", details)
   const [descriptionValue, setDescription] = useState<string>(description)
   const [maxNumberOfItems, setMaxNumberOfItems] = useState<number>(details.maxNumberOfItems ?? 0)
   const [typeOfFiles, setTypeOfFiles] = useState<string[]>(details.typeOfFiles ?? [])
+
+  useEffect(() => {
+    onUpdate("details.type_of_files", typeOfFiles, position);
+  }, [typeOfFiles])
 
   const handleUpdateDescription = () =>
     onUpdate('description', descriptionValue, position);
@@ -53,7 +58,7 @@ export const ActivityFieldUploadSettings = ({
             <Subheading>Type of files</Subheading>
             <Text>Do you restrict the type of files to be uploaded?</Text>
           </div>
-          <div className="ml-auto">
+          <div className="ml-auto w-full">
             <Listbox
               aria-label="Type of files"
               name="typeOfFiles"

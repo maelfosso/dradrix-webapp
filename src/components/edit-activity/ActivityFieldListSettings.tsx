@@ -9,20 +9,20 @@ import { Switch } from "components/common/Switch";
 import { ActivityFieldMultipleChoices } from "models/monitoring";
 import { EditTextarea } from "./EditTextarea";
 
-interface ActivityFieldListSettingsProps {
+interface ActivityFieldMultipleChoicesSettingsProps {
   id: string;
   description: string;
   position: number;
   details: ActivityFieldMultipleChoices;
   onUpdate: (field: string, value: any, position: number) => void;
 }
-export const ActivityFieldListSettings = ({
+export const ActivityFieldMultipleChoicesSettings = ({
   id,
   description,
   position,
   details,
   onUpdate
-}: ActivityFieldListSettingsProps) => {
+}: ActivityFieldMultipleChoicesSettingsProps) => {
   const [descriptionValue, setDescription] = useState<string>(description)
   const [value, setValue] = useState<string>('');
   const [choices, setChoices] = useState<string[]>([]);
