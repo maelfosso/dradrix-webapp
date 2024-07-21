@@ -1,4 +1,4 @@
-import { ArrowUpTrayIcon, CalendarDaysIcon, ClockIcon, DocumentTextIcon, HashtagIcon, ListBulletIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { ArrowUpTrayIcon, CalendarDaysIcon, ClockIcon, DocumentTextIcon, HashtagIcon, KeyIcon, ListBulletIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components/common/Dropdown";
 import { useEffect, useState } from "react";
 
@@ -72,6 +72,10 @@ export const AddItem = ({
                       <DropdownItem onClick={() => handleClickOnType('upload')}>
                         <ArrowUpTrayIcon />
                         Upload files/images
+                      </DropdownItem>
+                      <DropdownItem onClick={() => handleClickOnType('key')}>
+                        <KeyIcon />
+                        Activitiy Identifier
                       </DropdownItem>
                     </DropdownMenu>
                   </>

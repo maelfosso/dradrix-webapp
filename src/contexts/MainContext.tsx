@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 interface MainContext {
   activities: Activity[];
+  setActivities: (activities: Activity[]) => void;
   handleCreateActivity: () => void;
 }
 export const MainContext = createContext<MainContext | null>(null)
@@ -45,9 +46,11 @@ export const MainProvider = () => {
 
   const value = useMemo(() => ({
     activities,
+    setActivities,
     handleCreateActivity
   }), [
     activities,
+    setActivities,
     handleCreateActivity
   ])
 

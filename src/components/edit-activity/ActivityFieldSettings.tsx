@@ -2,12 +2,13 @@ import { Drawer, DrawerContent, DrawerFooter, DrawerTitle } from "components/com
 import { ActivityFieldListSettings } from "./ActivityFieldListSettings";
 import { Text } from "components/common/Text";
 import { Button } from "components/common/Button";
-import { ActivityField, ActivityFieldMultipleChoices, ActivityFieldNumber, ActivityFieldUpload } from "models/monitoring";
+import { ActivityField, ActivityFieldReference, ActivityFieldMultipleChoices, ActivityFieldNumber, ActivityFieldUpload } from "models/monitoring";
 import { ActivityFieldTextSettings } from "./ActivityFieldTextSettings";
 import { ActivityFieldNumberSettings } from "./ActivityFieldNumberSettings";
 import { ActivityFieldDateSettings } from "./ActivityFieldDateSettings";
 import { ActivityFieldTimeSettings } from "./ActivityFieldTimeSettings";
 import { ActivityFieldUploadSettings } from "./ActivityFieldUploadSettings";
+import { ActivityFieldKeySettings } from "./ActivityFieldKeySettings";
 
 interface ActivityFieldSettingsProps {
   open: boolean;
@@ -95,6 +96,17 @@ export const ActivityFieldSettings = ({
             description={field.description}
             position={position}
             details={field.details as ActivityFieldMultipleChoices}
+            onUpdate={onUpdate}
+          />
+        )
+
+      case "key":
+        return (
+          <ActivityFieldKeySettings
+            id={field.id}
+            description={field.description}
+            position={position}
+            details={field.details as ActivityFieldReference}
             onUpdate={onUpdate}
           />
         )

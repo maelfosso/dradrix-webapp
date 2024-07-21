@@ -33,6 +33,9 @@ export const ActivityFieldType = ({ primaryKey, type, position, onUpdate: onUpda
         <ListboxOption value="upload">
           <ArrowUpTrayIcon />
         </ListboxOption>
+        <ListboxOption value="key">
+          <KeyIcon />
+        </ListboxOption>
       </Listbox>
       {primaryKey && (
         <KeyIcon className="absolute right-0 bottom-0 w-2 h-2 fill-green-400 stroke-green-400"/>

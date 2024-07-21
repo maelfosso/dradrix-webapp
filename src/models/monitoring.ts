@@ -11,6 +11,11 @@ export const DEFAULT_ACTIVITY_FIELD_OPTIONS_VALUE = {
   defaultValue: null
 }
 
+export interface ActivityFieldReference {
+  activityId: string;
+  fieldId: string;
+}
+
 export interface ActivityFieldTime {}
 
 export interface ActivityFieldDate {}

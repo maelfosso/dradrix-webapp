@@ -4,6 +4,7 @@ import Spinner from "components/common/Spinner";
 import { Activity as IActivity } from "models/monitoring";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";
+import { useMainContext } from "./MainContext";
 
 interface ActivityContextProps {
   activity: IActivity | null;
@@ -25,6 +26,7 @@ export const useActivityContext = () => {
 
 export const ActivityContextProvider = () => {
   let { organizationId, activityId } = useParams();
+  let { activities, setActivities } = useMainContext();
 
   const activitiesHref = useMemo(() => {
     return `/org/${organizationId}/activities`;
@@ -48,6 +50,18 @@ export const ActivityContextProvider = () => {
       setActivity(null)
     }
   }, []);
+
+  useEffect(() => {
+    if (!activity) return;
+
+    setActivities(activities.map(((a) => {
+      if (a.id === activity.id) {
+        return activity;
+      } else {
+        return a;
+      }
+    })))
+  }, [activity]);
 
   const {mutateAsync: mutateUpdateActivity} = useMutation(
     updateActivityMutation(
