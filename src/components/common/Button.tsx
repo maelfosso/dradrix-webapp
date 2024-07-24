@@ -1,5 +1,5 @@
 import * as Headless from '@headlessui/react'
-import clsx from 'clsx'
+import { cn } from 'utils/css'
 import React, { forwardRef } from 'react'
 import { Link } from './Link'
 
@@ -15,6 +15,10 @@ const styles = {
     'data-[disabled]:opacity-50',
     // Icon
     '[&>[data-slot=icon]]:-mx-0.5 [&>[data-slot=icon]]:my-0.5 [&>[data-slot=icon]]:size-5 [&>[data-slot=icon]]:shrink-0 [&>[data-slot=icon]]:text-[--btn-icon] [&>[data-slot=icon]]:sm:my-1 [&>[data-slot=icon]]:sm:size-4 forced-colors:[--btn-icon:ButtonText] forced-colors:data-[hover]:[--btn-icon:ButtonText]',
+  ],
+  circle: [
+    // Shape
+    'rounded-full'
   ],
   solid: [
     // Optical border, implemented as the button background to avoid corner artifacts
@@ -159,22 +163,23 @@ const styles = {
 }
 
 type ButtonProps = (
-  | { color?: keyof typeof styles.colors; outline?: never; plain?: never }
-  | { color?: never; outline: true; plain?: never }
-  | { color?: never; outline?: never; plain: true }
+  | { color?: keyof typeof styles.colors; outline?: never; plain?: never; circle?: never }
+  | { color?: never; outline: true; plain?: never; circle?: never }
+  | { color?: never; outline?: never; plain: true; circle?: never }
+  | { color?: never; outline?: never; plain?: never; circle: true }
 ) & { className?: string; children: React.ReactNode } & (
     | Omit<Headless.ButtonProps, 'className'>
     | Omit<React.ComponentPropsWithoutRef<typeof Link>, 'className'>
   )
 
 export const Button = forwardRef(function Button(
-  { color, outline, plain, className, children, ...props }: ButtonProps,
+  { color, outline, plain, circle, className, children, ...props }: ButtonProps,
   ref: React.ForwardedRef<HTMLElement>
 ) {
-  let classes = clsx(
-    className,
+  let classes = cn(
     styles.base,
-    outline ? styles.outline : plain ? styles.plain : clsx(styles.solid, styles.colors[color ?? 'dark/zinc'])
+    outline ? styles.outline : plain ? styles.plain : circle ? styles.circle : cn(styles.solid, color && styles.colors[color]), // ?? 'dark/zinc']),
+    className,
   )
 
   return 'href' in props ? (
@@ -182,7 +187,7 @@ export const Button = forwardRef(function Button(
       <TouchTarget>{children}</TouchTarget>
     </Link>
   ) : (
-    <Headless.Button {...props} className={clsx(classes, 'cursor-default')} ref={ref}>
+    <Headless.Button {...props} className={cn('cursor-pointer', classes)} ref={ref}>
       <TouchTarget>{children}</TouchTarget>
     </Headless.Button>
   )

@@ -1,5 +1,3 @@
-'use client'
-
 import * as Headless from '@headlessui/react'
 import clsx from 'clsx'
 import { LayoutGroup, motion } from 'framer-motion'
@@ -74,10 +72,11 @@ export function SidebarHeading({ className, ...props }: React.ComponentPropsWith
 export const SidebarItem = forwardRef(function SidebarItem(
   {
     current,
+    wrapperClassName,
     className,
     children,
     ...props
-  }: { current?: boolean; className?: string; children: React.ReactNode } & (
+  }: { current?: boolean; wrapperClassName?: string; className?: string; children: React.ReactNode } & (
     | Omit<Headless.ButtonProps, 'className'>
     | Omit<React.ComponentPropsWithoutRef<typeof Link>, 'type' | 'className'>
   ),
@@ -102,11 +101,12 @@ export const SidebarItem = forwardRef(function SidebarItem(
     'dark:text-white dark:data-[slot=icon]:*:fill-zinc-400',
     'dark:data-[hover]:bg-white/5 dark:data-[slot=icon]:*:data-[hover]:fill-white',
     'dark:data-[active]:bg-white/5 dark:data-[slot=icon]:*:data-[active]:fill-white',
-    'dark:data-[slot=icon]:*:data-[current]:fill-white'
+    'dark:data-[slot=icon]:*:data-[current]:fill-white',
+    className
   )
 
   return (
-    <span className={clsx(className, 'relative')}>
+    <span className={clsx('relative', wrapperClassName)}>
       {current && (
         <motion.span
           layoutId="current-indicator"
@@ -115,7 +115,7 @@ export const SidebarItem = forwardRef(function SidebarItem(
       )}
       {'href' in props ? (
         <Headless.CloseButton as={Fragment} ref={ref}>
-          <Link className={classes} {...props} data-current={current ? 'true' : undefined}>
+          <Link to={props.href} className={classes} {...props} data-current={current ? 'true' : undefined}>
             <TouchTarget>{children}</TouchTarget>
           </Link>
         </Headless.CloseButton>

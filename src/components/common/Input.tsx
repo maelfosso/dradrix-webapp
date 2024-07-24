@@ -1,17 +1,18 @@
 import * as Headless from '@headlessui/react'
-import clsx from 'clsx'
 import React, { forwardRef } from 'react'
+import { cn } from 'utils/css'
 
-export function InputGroup({ children }: React.ComponentPropsWithoutRef<'span'>) {
+export function InputGroup({ className, children }: { className?: string } & React.ComponentPropsWithoutRef<'span'>) {
   return (
     <span
       data-slot="control"
-      className={clsx(
+      className={cn(
         'relative isolate block',
         '[&_input]:has-[[data-slot=icon]:first-child]:pl-10 [&_input]:has-[[data-slot=icon]:last-child]:pr-10 sm:[&_input]:has-[[data-slot=icon]:first-child]:pl-8 sm:[&_input]:has-[[data-slot=icon]:last-child]:pr-8',
         '[&>[data-slot=icon]]:pointer-events-none [&>[data-slot=icon]]:absolute [&>[data-slot=icon]]:top-3 [&>[data-slot=icon]]:z-10 [&>[data-slot=icon]]:size-5 sm:[&>[data-slot=icon]]:top-2.5 sm:[&>[data-slot=icon]]:size-4',
         '[&>[data-slot=icon]:first-child]:left-3 sm:[&>[data-slot=icon]:first-child]:left-2.5 [&>[data-slot=icon]:last-child]:right-3 sm:[&>[data-slot=icon]:last-child]:right-2.5',
-        '[&>[data-slot=icon]]:text-zinc-500 dark:[&>[data-slot=icon]]:text-zinc-400'
+        '[&>[data-slot=icon]]:text-zinc-500 dark:[&>[data-slot=icon]]:text-zinc-400',
+        className
       )}
     >
       {children}
@@ -24,10 +25,12 @@ type DateType = (typeof dateTypes)[number]
 
 export const Input = forwardRef(function Input(
   {
+    wrapperClassName,
     className,
     ...props
   }: {
-    className?: string
+    wrapperClassName?: string,
+    className?: string,
     type?: 'email' | 'number' | 'password' | 'search' | 'tel' | 'text' | 'url' | DateType
   } & Omit<Headless.InputProps, 'className'>,
   ref: React.ForwardedRef<HTMLInputElement>
@@ -35,8 +38,7 @@ export const Input = forwardRef(function Input(
   return (
     <span
       data-slot="control"
-      className={clsx([
-        className,
+      className={cn([
         // Basic layout
         'relative block w-full',
         // Background color + shadow applied to inset pseudo element, so shadow blends with border in light mode
@@ -49,14 +51,14 @@ export const Input = forwardRef(function Input(
         'has-[[data-disabled]]:opacity-50 before:has-[[data-disabled]]:bg-zinc-950/5 before:has-[[data-disabled]]:shadow-none',
         // Invalid state
         'before:has-[[data-invalid]]:shadow-red-500/10',
+        wrapperClassName,
       ])}
     >
       <Headless.Input
         ref={ref}
         {...props}
         autoComplete='off'
-        className={clsx([
-          className,
+        className={cn([
           // Date classes
           props.type &&
             dateTypes.includes(props.type) && [
@@ -89,6 +91,7 @@ export const Input = forwardRef(function Input(
           'data-[disabled]:border-zinc-950/20 dark:data-[hover]:data-[disabled]:border-white/15 data-[disabled]:dark:border-white/15 data-[disabled]:dark:bg-white/[2.5%]',
           // System icons
           'dark:[color-scheme:dark]',
+          className,
         ])}
       />
     </span>

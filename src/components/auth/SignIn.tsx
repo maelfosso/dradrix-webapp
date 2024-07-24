@@ -38,13 +38,12 @@ const SignInPage = ({ errorOnSignIn, onSignIn } : Props) => {
                   placeholder="Your phone number"
                   type="tel"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputs({...inputs, phoneNumber: e.target.value})}
-                  className="block w-full"
                   required
                 />
               </Field>
             </Fieldset>
 
-            <Button type="submit" className="w-full">Sign in</Button>
+            <Button type="submit" className="w-full" color="dark/white">Sign in</Button>
           </form>
         </div>
       </div>

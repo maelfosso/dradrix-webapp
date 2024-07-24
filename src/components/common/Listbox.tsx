@@ -1,31 +1,40 @@
-'use client'
-
 import * as Headless from '@headlessui/react'
 import clsx from 'clsx'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
+import { Badge } from './Badge'
 
 export function Listbox<T>({
   className,
+  selectedOptionClassName,
   placeholder,
   autoFocus,
   'aria-label': ariaLabel,
   children: options,
+  showIndicator = true,
+  multiple,
+  attrForDisplay,
+  textInMultiple,
   ...props
 }: {
+  showIndicator?: boolean
   className?: string
+  selectedOptionClassName?: string
   placeholder?: React.ReactNode
   autoFocus?: boolean
   'aria-label'?: string
+  attrForDisplay?: string
+  textInMultiple?: string
   children?: React.ReactNode
-} & Omit<Headless.ListboxProps<typeof Fragment, T>, 'multiple'>) {
+} & Headless.ListboxProps<typeof Fragment, T>) {
+  const { value } = props;
+
   return (
-    <Headless.Listbox {...props} multiple={false}>
+    <Headless.Listbox {...props} multiple={multiple}>
       <Headless.ListboxButton
         autoFocus={autoFocus}
         data-slot="control"
         aria-label={ariaLabel}
         className={clsx([
-          className,
           // Basic layout
           'group relative block w-full',
           // Background color + shadow applied to inset pseudo element, so shadow blends with border in light mode
@@ -38,11 +47,12 @@ export function Listbox<T>({
           'after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:ring-inset after:ring-transparent after:data-[focus]:ring-2 after:data-[focus]:ring-blue-500',
           // Disabled state
           'data-[disabled]:opacity-50 before:data-[disabled]:bg-zinc-950/5 before:data-[disabled]:shadow-none',
+          className,
         ])}
       >
         <Headless.ListboxSelectedOption
           as="span"
-          options={options}
+          options={multiple ? <>{`${textInMultiple} (${(value as T[]).length})`}</> : options}
           placeholder={placeholder && <span className="block truncate text-zinc-500">{placeholder}</span>}
           className={clsx([
             // Basic layout
@@ -61,9 +71,10 @@ export function Listbox<T>({
             'group-data-[invalid]:border-red-500 group-data-[invalid]:group-data-[hover]:border-red-500 group-data-[invalid]:dark:border-red-600 group-data-[invalid]:data-[hover]:dark:border-red-600',
             // Disabled state
             'group-data-[disabled]:border-zinc-950/20 group-data-[disabled]:opacity-100 group-data-[disabled]:dark:border-white/15 group-data-[disabled]:dark:bg-white/[2.5%] dark:data-[hover]:group-data-[disabled]:border-white/15',
+            selectedOptionClassName
           ])}
         />
-        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+        { showIndicator && (<span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
           <svg
             className="size-5 stroke-zinc-500 group-data-[disabled]:stroke-zinc-600 sm:size-4 dark:stroke-zinc-400 forced-colors:stroke-[CanvasText]"
             viewBox="0 0 16 16"
@@ -73,10 +84,11 @@ export function Listbox<T>({
             <path d="M5.75 10.75L8 13L10.25 10.75" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
             <path d="M10.25 5.25L8 3L5.75 5.25" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-        </span>
+        </span>)
+        }
       </Headless.ListboxButton>
       <Headless.Transition
-        leave="transition-opacity duration-100 ease-in pointer-events-none"
+        leave="transition-opacity duration-100 ease-in"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
@@ -100,6 +112,11 @@ export function Listbox<T>({
           {options}
         </Headless.ListboxOptions>
       </Headless.Transition>
+      {multiple && (value as T[]).length > 0 && (
+        <div>
+          { (value as T[]).map((item) => <Badge>{attrForDisplay ? item[attrForDisplay] : item}</Badge>)}
+        </div>
+      )}
     </Headless.Listbox>
   )
 }

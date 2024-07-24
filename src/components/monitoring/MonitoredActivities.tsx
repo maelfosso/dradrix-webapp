@@ -1,8 +1,8 @@
-import { MonitoredActivity } from "models/monitoring"
+import { Activity } from "models/monitoring"
 import MonitoredActivityItem from "./MonitoredActivityItem";
 
 interface Props {
-  activities: MonitoredActivity[]
+  activities: Activity[]
 }
 
 const MonitoredActivities = ({ activities }: Props) => {

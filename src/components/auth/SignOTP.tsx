@@ -65,7 +65,6 @@ const SignOTPage = ({ errorOnSignOTP, onSignOTP } : Props) => {
       phoneNumber: '',
       pinCode: otp.join("")
     };
-    console.log('handle submit')
     onSignOTP(inputs);
     // try {
     //   await signUp(inputs);
@@ -84,7 +83,7 @@ const SignOTPage = ({ errorOnSignOTP, onSignOTP } : Props) => {
           <Text>Type the OTP you've received on WhatsApp</Text>
           <form className="mt-8 space-y-6 sm:mx-auto sm:w-full sm:max-w-md" onSubmit={handleSubmit}>
             <Fieldset>
-              <FieldGroup className='flex items-center justify-between'>
+              <div className='flex items-center justify-between space-x-2'>
                 {otp.map((digit, index)=>(
                   <Input
                     key={index}
@@ -94,13 +93,14 @@ const SignOTPage = ({ errorOnSignOTP, onSignOTP } : Props) => {
                     onChange={(e)=> handleChange(e.target.value, index)}
                     onKeyUp={(e)=> handleBackspaceAndEnter(e, index)}
                     ref={(reference) => (otpBoxReference.current[index] = reference)}
-                    className="!text-center !text-3xl !m-0 !w-16 !h-16"
+                    wrapperClassName="w-16 h-16"
+                    className="text-center sm:text-3xl h-full"
                   />
                 ))}
-              </FieldGroup>
+              </div>
             </Fieldset>
 
-            <Button type="submit" className="w-full">Submit</Button>
+            <Button type="submit" className="w-full" color="dark/white">Submit</Button>
           </form>
         </div>
       </div>

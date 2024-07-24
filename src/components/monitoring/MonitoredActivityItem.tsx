@@ -1,7 +1,7 @@
-import { MonitoredActivity } from "models/monitoring";
+import { Activity } from "models/monitoring";
 
 interface Props {
-  activity: MonitoredActivity;
+  activity: Activity;
 }
 
 const MonitoredActivityItem = ({ activity }: Props) => {

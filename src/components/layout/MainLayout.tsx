@@ -4,9 +4,11 @@ import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from "../common/Navba
 import { Dropdown, DropdownButton, DropdownDivider, DropdownItem, DropdownLabel, DropdownMenu } from "../common/Dropdown";
 import { Avatar } from "../common/Avatar";
 import { Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarHeading, SidebarItem, SidebarLabel, SidebarSection, SidebarSpacer } from "../common/Sidebar";
-import { ArrowRightStartOnRectangleIcon, ChevronDownIcon, ChevronUpIcon, Cog6ToothIcon, Cog8ToothIcon, HomeIcon, LightBulbIcon, PlusIcon, QuestionMarkCircleIcon, ShieldCheckIcon, SparklesIcon, Square2StackIcon, TicketIcon, UserCircleIcon } from "@heroicons/react/20/solid";
+import { ArrowRightStartOnRectangleIcon, ChevronDownIcon, ChevronUpIcon, Cog6ToothIcon, Cog8ToothIcon, HomeIcon, LightBulbIcon, PlusIcon, QuestionMarkCircleIcon, ShieldCheckIcon, SparklesIcon, Square2StackIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { useAuthContext } from "contexts/AuthContext";
 import { useMemo } from "react";
+import { Button } from "components/common/Button";
+import { useMainContext } from "contexts/MainContext";
 
 function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
   return (
@@ -35,7 +37,10 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
 
 const MainLayout = () => {
   const { pathname } = useLocation();
+
   const { authenticatedUser } = useAuthContext();
+  const { handleCreateActivity, activities } = useMainContext();
+
   const userInitials = useMemo(() => {
     return `${authenticatedUser?.firstName[0]}${authenticatedUser?.lastName[0]}`
   }, [authenticatedUser]);
@@ -89,37 +94,57 @@ const MainLayout = () => {
 
           <SidebarBody>
             <SidebarSection>
-              <SidebarItem href="/" current={pathname === '/'}>
+              <SidebarItem
+                href=""
+                current={pathname === '/'}
+                className="sm:data-[slot=icon]:*:fill-none"
+              >
                 <HomeIcon />
                 <SidebarLabel>Home</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/activities" current={pathname.startsWith('/activities')}>
+              <SidebarItem
+                href="activities"
+                current={pathname.indexOf('activities') !== -1}
+                className="sm:data-[slot=icon]:*:fill-none"
+              >
                 <Square2StackIcon />
                 <SidebarLabel>Activities</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/settings" current={pathname.startsWith('/settings')}>
+              <SidebarItem
+                href="settings"
+                current={pathname.indexOf('settings') !== -1}
+                className="sm:data-[slot=icon]:*:fill-none"
+              >
                 <Cog6ToothIcon />
                 <SidebarLabel>Settings</SidebarLabel>
               </SidebarItem>
             </SidebarSection>
 
             <SidebarSection className="max-lg:hidden">
-              <SidebarHeading>Current Activities</SidebarHeading>
-              {/* {events.map((event) => (
-                <SidebarItem key={event.id} href={event.url}>
-                  {event.name}
+              <SidebarHeading>
+                <div className="flex items-center justify-between">
+                  <span>YOUR ACTIVITIES</span>
+
+                  <Button plain className="cursor-pointer" onClick={() => handleCreateActivity()}>
+                    <PlusIcon />
+                  </Button>
+                </div>
+              </SidebarHeading>
+              {activities.map((activity) => (
+                <SidebarItem key={activity.id} href={`activities/${activity.id}/edit`}>
+                  {activity.name}
                 </SidebarItem>
-              ))} */}
+              ))}
             </SidebarSection>
 
             <SidebarSpacer />
 
             <SidebarSection>
-              <SidebarItem href="#">
+              <SidebarItem href="#" className="sm:data-[slot=icon]:*:fill-none">
                 <QuestionMarkCircleIcon />
                 <SidebarLabel>Support</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="#">
+              <SidebarItem href="#" className="sm:data-[slot=icon]:*:fill-none">
                 <SparklesIcon />
                 <SidebarLabel>Changelog</SidebarLabel>
               </SidebarItem>

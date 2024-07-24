@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import { getAuthQuery, signInMutation, signOTPMutation } from "api/auth";
+import { useLocation, useNavigate } from "react-router-dom";
+import { SignInMutationResponse, SignOTPMutationResponse, getAuthQuery, signInMutation, signOTPMutation } from "api/auth";
 import Spinner from "components/common/Spinner";
 import { SignInInputs, SignOTPInputs, UserType } from "models/auth";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
@@ -23,17 +23,7 @@ interface AuthContextProps {
   setError: (error: string) => void,
 }
 
-export const AuthContext = createContext<AuthContextProps>({
-  authenticationStep: AuthenticationStep.PHONE_NUMBER,
-  authenticatedUser: null,
-  setAuthenticatedUser: () => {},
-  isAuthenticated: false,
-  signIn: () => {},
-  signOTP: () => {},
-  signOut: () => {},
-  error: '',
-  setError: () => {}
-});
+export const AuthContext = createContext<AuthContextProps | null>(null);
 
 
 interface AuthContextProviderProps {
@@ -41,16 +31,18 @@ interface AuthContextProviderProps {
 }
 
 const SS_AUTH_PN_KEY = 'auth/phone-number';
-const SS_AUTH_STEP_KEY = 'auth/step';
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  const redirectUrl = state?.redirectUrl ;
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState<string>('');
   const [authenticationStep, setAuthenticationStep] = useState<AuthenticationStep>(
     localStorage.getItem(SS_AUTH_PN_KEY) ? AuthenticationStep.OTP : AuthenticationStep.PHONE_NUMBER
   );
   const [authenticatedUser, setAuthenticatedUser] = useState<UserType|null>(null);
-  const navigate = useNavigate();
 
   const {isPending: isPendingAuth, data} =
     useQuery(getAuthQuery());
@@ -68,13 +60,13 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     if (authenticatedUser.preferences.onboardingStep != -1) {
       navigate("/onboarding");
     } else {
-      navigate(`/c/${authenticatedUser.preferences.organization.id}`);
+      navigate(redirectUrl || `/org/${authenticatedUser.preferences.organization.id}`);
     }
   }, [authenticatedUser])
 
   const { mutate: mutateSignIn } = useMutation(signInMutation({
-    onSuccess: (phoneNumber: string) => {
-      localStorage.setItem(SS_AUTH_PN_KEY, phoneNumber);
+    onSuccess: (response: SignInMutationResponse) => {
+      localStorage.setItem(SS_AUTH_PN_KEY, response.phoneNumber);
       setAuthenticationStep(AuthenticationStep.OTP);
     },
     onError: (error: Error) => {
@@ -83,12 +75,11 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   }));
 
   const { mutate: mutateSignOTP } = useMutation(signOTPMutation({
-    onSuccess: (data: UserType) => {
+    onSuccess: (data: SignOTPMutationResponse) => {
       localStorage.removeItem(SS_AUTH_PN_KEY);
-      localStorage.removeItem(SS_AUTH_STEP_KEY);
 
       setIsAuthenticated(true);
-      setAuthenticatedUser(data);
+      setAuthenticatedUser(data.user);
     },
     onError: (error: Error) => {
       // setError(processError(error).error)

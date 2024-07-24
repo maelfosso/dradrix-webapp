@@ -6,9 +6,12 @@ import OnboardingPage, { OnboardingProvider } from 'pages/OnboardingPage';
 import AuthLayout from 'components/layout/AuthLayout';
 import VisitorLayout from 'components/layout/VisitorLayout';
 import NotReadyUserLayout from 'components/layout/NotReadyUserLayout';
-import MainLayout from 'components/layout/MainLayout';
 import LandingPage from 'pages/LandingPage';
 import HomePage from 'pages/HomePage';
+import EditActivityPage from 'pages/a/EditActivityPage';
+import ActivitiesPage from 'pages/a/ActivitiesPage';
+import { MainProvider } from 'contexts/MainContext';
+import { ActivityContextProvider } from 'contexts/ActivityContext';
 
 function App() {
 
@@ -34,8 +37,12 @@ function App() {
             />
           </Route>
 
-          <Route element={<MainLayout />}>
-            <Route path="/c/:organizationId" element={<HomePage />} />
+          <Route path="/org/:organizationId" element={<MainProvider />}>
+            <Route index element={<HomePage />} />
+            <Route path="activities" element={<ActivitiesPage />} />
+            <Route path="activities/:activityId" element={<ActivityContextProvider />}>
+              <Route path="edit" element={<EditActivityPage />} />
+            </Route>
           </Route>
         </Route>
       </Route>

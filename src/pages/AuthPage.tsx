@@ -1,18 +1,31 @@
 import { AuthenticationStep, useAuthContext } from "contexts/AuthContext";
 import SignInPage from "../components/auth/SignIn";
 import SignOTPage from "../components/auth/SignOTP";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 const AuthPage = () => {
   const { authenticationStep, signIn, signOTP, error, isAuthenticated, authenticatedUser } = useAuthContext();
+  const { state } = useLocation();
+  const redirectUrl = state?.redirectUrl;
 
-  if (isAuthenticated) {
-    return (
-      <Navigate
-        to={`/c/${authenticatedUser?.preferences.organization.id}`}
-        replace
-      />
-    );
+  if (isAuthenticated && authenticatedUser) {
+    if (authenticatedUser.preferences.onboardingStep != -1) {
+      return (
+        <Navigate
+          to="/onboarding"
+          replace
+        />
+      );
+    } else {
+      const nextUrl = `/org/${authenticatedUser.preferences.organization.id}`;
+
+      return (
+        <Navigate
+          to={redirectUrl || nextUrl}
+          replace
+        />
+      );
+    }
   }
 
   return (
