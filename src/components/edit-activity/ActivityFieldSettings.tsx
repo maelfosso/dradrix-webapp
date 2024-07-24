@@ -1,5 +1,5 @@
 import { Drawer, DrawerContent, DrawerFooter, DrawerTitle } from "components/common/Drawer";
-import { ActivityFieldMultipleChoicesSettings } from "./ActivityFieldListSettings";
+import { ActivityFieldMultipleChoicesSettings } from "./ActivityFieldMultipleChoicesSettings";
 import { Text } from "components/common/Text";
 import { Button } from "components/common/Button";
 import { ActivityField, ActivityFieldReference, ActivityFieldMultipleChoices, ActivityFieldNumber, ActivityFieldUpload } from "models/monitoring";
@@ -89,7 +89,7 @@ export const ActivityFieldSettings = ({
           />
         )
 
-      case "multiple-choice":
+      case "multiple-choices":
         return (
           <ActivityFieldMultipleChoicesSettings
             id={field.id}

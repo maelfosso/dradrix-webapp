@@ -34,16 +34,20 @@ export const ActivityFieldMultipleChoicesSettings = ({
   }, [details.choices])
 
   const handleAddChoice = () => {
-    onUpdate('details.choices', [...choices, value], position);
+    onUpdate(
+      'details',
+      {...details, choices: [...choices, value]},
+      position
+    );
     setValue('')
   }
 
   const handleUpdateChoices = () =>
-    onUpdate('details.choices', choices, position);
+    onUpdate('details', {...details, choices}, position);
 
   const handleRemoveChoice = (indexToRemove: number) => {
     const nextChoices = choices.filter((_, index) => index !== indexToRemove);
-    onUpdate('details.choices', nextChoices, position);
+    onUpdate('details', {...details, choices: nextChoices}, position);
   }
 
   const handleLocalUpdateChoice = (newValue: string, index: number) => {
@@ -119,7 +123,7 @@ export const ActivityFieldMultipleChoicesSettings = ({
               aria-label="Multiple"
               name="multiple"
               checked={details.multiple}
-              onChange={(checked) => onUpdate('details.multiple', checked, position )}
+              onChange={(checked) => onUpdate('details', {...details, multiple: checked}, position )}
             />
           </div>
         </section>

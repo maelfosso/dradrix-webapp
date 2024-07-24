@@ -65,7 +65,7 @@ export const AddItem = ({
                         <ClockIcon />
                         Hour
                       </DropdownItem>
-                      <DropdownItem onClick={() => handleClickOnType('multiple-choice')}>
+                      <DropdownItem onClick={() => handleClickOnType('multiple-choices')}>
                         <ListBulletIcon />
                         Multiple choices
                       </DropdownItem>

@@ -22,13 +22,16 @@ export const ActivityFieldUploadSettings = ({
   details,
   onUpdate
 }: ActivityFieldUploadSettingsProps) => {
-  console.log("[ActivityFieldUploadSettings] details", details)
   const [descriptionValue, setDescription] = useState<string>(description)
   const [maxNumberOfItems, setMaxNumberOfItems] = useState<number>(details.maxNumberOfItems ?? 0)
   const [typeOfFiles, setTypeOfFiles] = useState<string[]>(details.typeOfFiles ?? [])
 
   useEffect(() => {
-    onUpdate("details.type_of_files", typeOfFiles, position);
+    onUpdate(
+      "details",
+      {...details, typeOfFiles},
+      position
+    );
   }, [typeOfFiles])
 
   const handleUpdateDescription = () =>
@@ -88,7 +91,7 @@ export const ActivityFieldUploadSettings = ({
               type="number"
               value={maxNumberOfItems.toString()}
               setValue={(newValue) => setMaxNumberOfItems(parseInt(newValue))}
-              onEnter={() => onUpdate("details.max_number_of_items", maxNumberOfItems as number, position)}
+              onEnter={() => onUpdate("details", {...details, maxNumberOfItems }, position)}
             />
           </div>
         </section>

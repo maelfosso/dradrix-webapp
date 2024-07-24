@@ -27,7 +27,7 @@ export const ActivityFieldType = ({ primaryKey, type, position, onUpdate: onUpda
         <ListboxOption value="time">
           <ClockIcon />
         </ListboxOption>
-        <ListboxOption value="multiple-choice">
+        <ListboxOption value="multiple-choices">
           <ListBulletIcon />
         </ListboxOption>
         <ListboxOption value="upload">
