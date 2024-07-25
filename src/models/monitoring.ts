@@ -71,3 +71,10 @@ export const DEFAULT_ACTIVITY_VALUE: Activity = {
   fields: [],
   id: ''
 };
+
+export interface Data {
+  id: string;
+  values: Record<string, any>;
+  createdAt: Date;
+  createdBy: string;
+}

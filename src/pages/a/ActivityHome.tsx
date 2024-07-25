@@ -5,6 +5,7 @@ import { Divider } from "components/common/Divider"
 import { Heading, Subheading } from "components/common/Heading"
 import { Link } from "components/common/Link"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/common/Table"
+import { DataFromActivity } from "components/data/DataFromActivity"
 import { useActivityContext } from "contexts/ActivityContext"
 
 export function Stat({ title, value, change }: { title: string; value: string; change: string }) {
@@ -64,33 +65,7 @@ export const ActivityHome = () => {
           change={'12'}
         />
       </div>
-      <div className="flex items-center justify-between">
-        <Subheading className="mt-12">Data</Subheading>
-        <div className="flex gap-1">
-          <Button plain><PlusCircleIcon /></Button>
-          <Button plain><ArrowsPointingOutIcon /></Button>
-        </div>
-      </div>
-      <Table className="mt-4 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)]">
-        <TableHead>
-          <TableRow>
-            <TableHeader>Order number</TableHeader>
-            <TableHeader>Purchase date</TableHeader>
-            <TableHeader>Customer</TableHeader>
-            <TableHeader className="text-right">Amount</TableHeader>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {/* {orders.map((order) => (
-            <TableRow key={order.id} href={order.url} title={`Order #${order.id}`}>
-              <TableCell>{order.id}</TableCell>
-              <TableCell className="text-zinc-500">{order.date}</TableCell>
-              <TableCell>{order.customer.name}</TableCell>
-              <TableCell className="text-right">US{order.amount.usd}</TableCell>
-            </TableRow>
-          ))} */}
-        </TableBody>
-      </Table>
+      <DataFromActivity />
     </>
   )
 }
