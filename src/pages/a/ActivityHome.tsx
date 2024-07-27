@@ -1,10 +1,9 @@
-import { ArrowsPointingOutIcon, ChevronLeftIcon, PlusCircleIcon } from "@heroicons/react/24/outline"
+import { ChevronLeftIcon } from "@heroicons/react/24/outline"
 import { Badge } from "components/common/Badge"
 import { Button } from "components/common/Button"
 import { Divider } from "components/common/Divider"
-import { Heading, Subheading } from "components/common/Heading"
+import { Heading } from "components/common/Heading"
 import { Link } from "components/common/Link"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/common/Table"
 import { DataFromActivity } from "components/data/DataFromActivity"
 import { useActivityContext } from "contexts/ActivityContext"
 
@@ -32,7 +31,7 @@ export const ActivityHome = () => {
   return (
     <>
       <div className="max-lg:hidden">
-        <Link to="/events" className="inline-flex items-center gap-2 text-sm/6 text-zinc-500 dark:text-zinc-400">
+        <Link to="" className="inline-flex items-center gap-2 text-sm/6 text-zinc-500 dark:text-zinc-400">
           <ChevronLeftIcon className="size-4" />
           Activities
         </Link>
