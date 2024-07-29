@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosHeaders, AxiosRequestConfig } from 'axios';
 import { fromJson, toJson } from 'lib/json';
 
 type RequestMethod = "GET" | "POST" | "PATCH" | "DELETE";
@@ -60,11 +60,12 @@ api.interceptors.response.use(
   }
 );
 
-export const fetchApiResponse = async <T,S = Record<string, never>>(url: string, method: RequestMethod, payload?: S) => {
+export const fetchApiResponse = async <T,S = Record<string, never>>(url: string, method: RequestMethod, payload?: S, headers?: AxiosRequestConfig['headers']) => {
   const { data } = await api<T>({
     method,
     url,
-    data: toJson(payload)
+    data: (headers && headers['Content-Type'] === 'multipart/form-data') ? payload : toJson(payload),
+    headers
   })
 
   return fromJson(data) as T;
@@ -84,6 +85,5 @@ export const processError = (error: Error) => {
     return new TError((error as Error).message)
   }
 }
-
 
 export default api;

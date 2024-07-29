@@ -6,6 +6,7 @@ import { Heading } from "components/common/Heading"
 import { Link } from "components/common/Link"
 import { DataFromActivity } from "components/data/DataFromActivity"
 import { useActivityContext } from "contexts/ActivityContext"
+import { useNavigate } from "react-router-dom"
 
 export function Stat({ title, value, change }: { title: string; value: string; change: string }) {
   return (
@@ -22,6 +23,7 @@ export function Stat({ title, value, change }: { title: string; value: string; c
 }
 
 export const ActivityHome = () => {
+  const navigate = useNavigate();
   const { activity } = useActivityContext();
 
   if (!activity) {
@@ -52,7 +54,7 @@ export const ActivityHome = () => {
           </div>
         </div>
         <div className="flex gap-4">
-          <Button outline>Edit</Button>
+          <Button outline onClick={() => navigate('edit')}>Edit</Button>
           {/* <Button>View</Button> */}
         </div>
       </div>

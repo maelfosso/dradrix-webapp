@@ -5,6 +5,7 @@ import { fetchApiResponse } from "./axios";
 import { UseMutationOptions } from "@tanstack/react-query";
 
 export const DATA = "data";
+export const UPLOAD = "upload"
 
 interface GetAllDataFromActivityResponse {
   fields: Record<string, string>;
@@ -32,6 +33,21 @@ export const createDataMutation = (organizationId: string, activityId: string, o
     `${ORGANIZATIONS}/${organizationId}/${ACTIVITIES}/${activityId}/${DATA}`,
     "POST",
     data,
+  ),
+  ...options
+});
+
+interface UploadFilesMutationResponse {}
+interface UploadFilesMutationRequest {}
+export const uploadFilesMutation =  (organizationId: string, activityId: string, options?: UseMutationOptions<UploadFilesMutationResponse, Error, {}>) => ({
+  mutationKey: [ORGANIZATIONS, organizationId, ACTIVITIES, activityId, DATA, UPLOAD],
+  mutationFn: (data: FormData) => fetchApiResponse<UploadFilesMutationResponse, UploadFilesMutationRequest>(
+    `${ORGANIZATIONS}/${organizationId}/${ACTIVITIES}/${activityId}/${DATA}/${UPLOAD}`,
+    "POST",
+    data,
+    {
+      "Content-Type": "multipart/form-data",
+    }
   ),
   ...options
 });
