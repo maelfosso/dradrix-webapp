@@ -60,12 +60,24 @@ api.interceptors.response.use(
   }
 );
 
-export const fetchApiResponse = async <T,S = Record<string, never>>(url: string, method: RequestMethod, payload?: S, headers?: AxiosRequestConfig['headers']) => {
+export const fetchApiResponse = async <T,S = Record<string, never>>(
+  url: string,
+  method: RequestMethod,
+  payload?: S,
+  params?: {
+    headers?: AxiosRequestConfig['headers'],
+    onUploadProgress?: (progressEvent: ProgressEvent) => void
+  }
+) => {
+  const headers = params && params['headers'];
+  const onUploadProgress = params && params['onUploadProgress']
+
   const { data } = await api<T>({
     method,
     url,
     data: (headers && headers['Content-Type'] === 'multipart/form-data') ? payload : toJson(payload),
-    headers
+    headers,
+    onUploadProgress
   })
 
   return fromJson(data) as T;

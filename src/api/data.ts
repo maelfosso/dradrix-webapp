@@ -39,14 +39,24 @@ export const createDataMutation = (organizationId: string, activityId: string, o
 
 interface UploadFilesMutationResponse {}
 interface UploadFilesMutationRequest {}
-export const uploadFilesMutation =  (organizationId: string, activityId: string, options?: UseMutationOptions<UploadFilesMutationResponse, Error, {}>) => ({
+export const uploadFilesMutation =  (
+  organizationId: string,
+  activityId: string,
+  progressCallback: (progressEvent: ProgressEvent) => void,
+  options?: UseMutationOptions<UploadFilesMutationResponse, Error, {}>
+) => ({
   mutationKey: [ORGANIZATIONS, organizationId, ACTIVITIES, activityId, DATA, UPLOAD],
   mutationFn: (data: FormData) => fetchApiResponse<UploadFilesMutationResponse, UploadFilesMutationRequest>(
     `${ORGANIZATIONS}/${organizationId}/${ACTIVITIES}/${activityId}/${DATA}/${UPLOAD}`,
     "POST",
     data,
     {
-      "Content-Type": "multipart/form-data",
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      onUploadProgress: (progressEvent: ProgressEvent) => {
+        progressCallback && progressCallback(progressEvent)
+      }
     }
   ),
   ...options

@@ -1,5 +1,7 @@
+import { TrashIcon } from "@heroicons/react/24/outline";
 import { useMutation } from "@tanstack/react-query";
 import { uploadFilesMutation } from "api/data";
+import { Button } from "components/common/Button";
 import { Field, Label } from "components/common/Fieldset";
 import { ActivityField, ActivityFieldUpload } from "models/monitoring";
 import { useEffect, useState } from "react";
@@ -11,38 +13,20 @@ interface AddDataUploadFieldProps {
 export const AddDataUploadField = ({
   field
 }: AddDataUploadFieldProps) => {
-  const { organizationId, activityId } = useParams();
-  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
-
-  const { mutateAsync: mutateUploadFiles } = useMutation(
-    uploadFilesMutation(organizationId!, activityId!)
-  )
-
-  useEffect(() => {
-    if (selectedFiles) {
-      submitSelectedFiles();
-    }
-  }, [selectedFiles]);
+  const [files, setFiles] = useState<File[]>([]);
 
   const handleSelectedFiles = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedFiles(event.target.files); 
-  }
+    if (!event.target.files) return;
 
-  const submitSelectedFiles = async () => {
-    if (!selectedFiles) return;
-
-    const files = Array.from(selectedFiles);
-
-    const formData = new FormData();
-    for (let i=0; i < files.length; i++) {
-      formData.append('uploadedFiles[]', files[i]);
-    }
-
-    try {
-      mutateUploadFiles(formData);
-    } catch (error) {
-      console.error('mutate-upload-files', error);
-    }
+    const acceptedFiles = Array.from(event.target.files);
+    const filesToAdd = acceptedFiles.filter(
+      (acceptedFileItem) => !files.find((file: File) =>
+        (file.name === acceptedFileItem.name
+          && file.lastModified === acceptedFileItem.lastModified)
+      )
+    )
+    
+    setFiles([...files, ...filesToAdd]);
   }
 
   return (
@@ -66,30 +50,60 @@ export const AddDataUploadField = ({
             <p className="text-xs leading-5 text-gray-600">PDF, WORD, PNG, JPG, GIF up to 10MB</p>
           </div>
         </div>
-        {/* <div className="row my-3">
-          <div className="col-8">
-            <label className="btn btn-default p-0">
-              <input type="file" multiple onChange={handleSelectedFiles} />
-            </label>
-          </div>
-
-          <div className="col-4">
-            <button
-              className="btn btn-success btn-sm"
-              disabled={!selectedFiles}
-              onClick={uploadFiles}
-            >
-              Upload
-            </button>
-          </div>
-        </div> */}
       </Field>
-      {/* {files && Array.from(files).map((file, index) => (
-        <img key={index} src={file} alt={`Uploaded content ${index}`} />
-      ))} */}
-      {selectedFiles && Array.from(selectedFiles).map((file, index) => (
-        <img key={index} src={file.name} alt={`Uploaded content ${file.name}`} />
+      {files.length > 0 && files.map((file) => (
+        <UploadFileItem key={`${file.lastModified}-${file.name}`} file={file} />
       ))}
+    </div>
+  )
+}
+
+interface UploadFileItemProps {
+  file: File
+}
+const UploadFileItem = ({
+  file
+}: UploadFileItemProps) => {
+  const { organizationId, activityId } = useParams();
+  const [progress, setProgress] = useState<number>(0);
+  const [uploading, setUploading] = useState<boolean>(false);
+
+  const uploadProgress = (progressEvent: ProgressEvent) => {
+    const progress =  Math.round((progressEvent.loaded / progressEvent.total) * 100);
+    setProgress(progress);
+  }
+
+  const { mutateAsync: mutateUploadFiles } = useMutation(
+    uploadFilesMutation(organizationId!, activityId!, uploadProgress)
+  )
+
+  useEffect(() => {
+    uploadToServer(file);
+  }, [])
+
+  const uploadToServer = async (file: File) => {
+    const formData = new FormData();
+    formData.append("uploaded-file", file)
+    setUploading(true);
+
+    try {
+      await mutateUploadFiles(formData);
+    } catch (error) {
+      console.error('mutate-upload-files', error);
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return (
+    <div className="flex items-center justify-between">
+      <div className="grow">{file.name}</div>
+      {uploading && (
+        <div>Uploading {progress}%</div>
+      )}
+      <div>
+        <Button plain><TrashIcon /></Button>
+      </div>
     </div>
   )
 }
