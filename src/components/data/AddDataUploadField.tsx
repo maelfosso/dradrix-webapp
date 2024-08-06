@@ -1,4 +1,4 @@
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { ExclamationCircleIcon, TrashIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { useMutation } from "@tanstack/react-query";
 import { uploadFilesMutation } from "api/data";
 import { Button } from "components/common/Button";
@@ -6,14 +6,25 @@ import { Field, Label } from "components/common/Fieldset";
 import { ActivityField, ActivityFieldUpload } from "models/monitoring";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { cn } from "utils/css";
 
 interface AddDataUploadFieldProps {
   field: ActivityField;
+  fieldValues: string[];
+  onUpdateField: (fieldId: string, values: any) => void;
 }
 export const AddDataUploadField = ({
-  field
+  field,
+  fieldValues,
+  onUpdateField,
 }: AddDataUploadFieldProps) => {
   const [files, setFiles] = useState<File[]>([]);
+
+  useEffect(() => {
+    if (fieldValues && !Array.isArray(fieldValues)) {
+      onUpdateField(field.id, []);
+    }
+  }, []);
 
   const handleSelectedFiles = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
@@ -52,19 +63,32 @@ export const AddDataUploadField = ({
         </div>
       </Field>
       {files.length > 0 && files.map((file) => (
-        <UploadFileItem key={`${file.lastModified}-${file.name}`} file={file} />
+        <UploadFileItem
+          key={`${file.lastModified}-${file.name}`}
+          file={file}
+          fieldId={field.id}
+          fieldValues={fieldValues}
+          onUpdateField={onUpdateField}
+        />
       ))}
     </div>
   )
 }
 
 interface UploadFileItemProps {
-  file: File
+  file: File;
+  fieldId: string;
+  fieldValues: string[];
+  onUpdateField: (fieldId: string, values: any) => void;
 }
 const UploadFileItem = ({
-  file
+  file,
+  fieldId,
+  fieldValues,
+  onUpdateField
 }: UploadFileItemProps) => {
   const { organizationId, activityId } = useParams();
+  const [uploadError, setUploadError] = useState<string>("");
   const [progress, setProgress] = useState<number>(0);
   const [uploading, setUploading] = useState<boolean>(false);
 
@@ -87,23 +111,38 @@ const UploadFileItem = ({
     setUploading(true);
 
     try {
-      await mutateUploadFiles(formData);
+      const response = await mutateUploadFiles(formData);
+      console.log(response);
+      onUpdateField(fieldId, [...fieldValues, response.fileKey ]);
     } catch (error) {
       console.error('mutate-upload-files', error);
+      setUploadError((error as Error).message);
     } finally {
       setUploading(false);
     }
   }
 
+  const handleDeleteUploadedFile = () => {
+
+  }
+
   return (
     <div className="flex items-center justify-between">
-      <div className="grow">{file.name}</div>
-      {uploading && (
-        <div>Uploading {progress}%</div>
+      <div className={cn("grow text-base", uploadError && "text-red-600")}>{file.name}</div>
+      {uploading && !uploadError && (
+        <>
+          <div className="text-xs">Uploading {progress}%</div>
+          <div><Button plain onClick={() => handleDeleteUploadedFile()}><XCircleIcon /></Button></div>
+        </>
       )}
-      <div>
-        <Button plain><TrashIcon /></Button>
-      </div>
+      {uploadError && (
+        <div><Button plain className="[&>[data-slot=icon]]:text-red-600"><ExclamationCircleIcon/></Button></div>
+      )}
+      {!uploading && !uploadError && (
+        <div>
+          <Button plain onClick={() => handleDeleteUploadedFile()}><TrashIcon /></Button>
+        </div>
+      )}
     </div>
   )
 }

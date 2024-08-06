@@ -6,7 +6,7 @@ import { Listbox, ListboxLabel, ListboxOption } from "components/common/Listbox"
 import { Text } from "components/common/Text";
 import { useActivityContext } from "contexts/ActivityContext";
 import { ActivityField, ActivityFieldMultipleChoices } from "models/monitoring";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AddDataUploadField } from "./AddDataUploadField";
 
 interface AddDataProps {
@@ -27,6 +27,14 @@ export const AddData = ({
   const { activity } = useActivityContext();
   const [values, setValues] = useState<Record<string, any>>({});
   const { isSubmittingData, setIsSubmittingData } = isSubmittingDataState;
+
+  useEffect(() => {
+    console.log('values: ', values);
+  }, [values]);
+
+  const onUpdateField = (fieldId: string, newFieldValues: any) => {
+    setValues({ ...values, [fieldId]: newFieldValues});
+  }
 
   const renderFieldInput = (field: ActivityField) => {
     switch (field.type) {
@@ -76,7 +84,13 @@ export const AddData = ({
 
       case "upload":
         return (
-          <AddDataUploadField key={`add-data-field-${field.id}`} field={field}/>
+          <AddDataUploadField
+            key={`add-data-field-${field.id}`}
+            field={field}
+            fieldValues={values[field.id]}
+            onUpdateField={onUpdateField}
+            // setValues={setValues}
+          />
         )
 
       case "multiple-choices":

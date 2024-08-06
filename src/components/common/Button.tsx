@@ -167,6 +167,7 @@ type ButtonProps = (
   | { color?: never; outline: true; plain?: never; circle?: never }
   | { color?: never; outline?: never; plain: true; circle?: never }
   | { color?: never; outline?: never; plain?: never; circle: true }
+  | { color: keyof typeof styles.colors; outline?: never; plain: true; circle?: never }
 ) & { className?: string; withSpin?: boolean; children: React.ReactNode } & (
     | Omit<Headless.ButtonProps, 'className'>
     | Omit<React.ComponentPropsWithoutRef<typeof Link>, 'className'>

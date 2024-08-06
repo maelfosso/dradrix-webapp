@@ -37,7 +37,9 @@ export const createDataMutation = (organizationId: string, activityId: string, o
   ...options
 });
 
-interface UploadFilesMutationResponse {}
+interface UploadFilesMutationResponse {
+  fileKey: string
+}
 interface UploadFilesMutationRequest {}
 export const uploadFilesMutation =  (
   organizationId: string,
