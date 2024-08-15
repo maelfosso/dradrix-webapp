@@ -52,6 +52,11 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    if (!error.response) {
+      // We have a network error
+      console.error('Network error:', error);
+    }
+
     if (error?.response?.status === 401) {
       redirectToSignIn();
     }

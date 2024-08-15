@@ -63,3 +63,24 @@ export const uploadFilesMutation =  (
   ),
   ...options
 });
+
+
+interface DeleteUploadedFileResponse {
+  deleted: boolean;
+}
+interface DeleteUploadedFileRequest {
+  fileKey: string
+}
+export const deleteUploadedFileMutation =  (
+  organizationId: string,
+  activityId: string,
+  options?: UseMutationOptions<DeleteUploadedFileResponse, Error, {}>
+) => ({
+  mutationKey: [ORGANIZATIONS, organizationId, ACTIVITIES, activityId, DATA, UPLOAD],
+  mutationFn: (data: DeleteUploadedFileRequest) => fetchApiResponse<DeleteUploadedFileResponse, DeleteUploadedFileRequest>(
+    `${ORGANIZATIONS}/${organizationId}/${ACTIVITIES}/${activityId}/${DATA}/${UPLOAD}`,
+    "DELETE",
+    data,
+  ),
+  ...options
+});

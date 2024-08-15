@@ -12,7 +12,6 @@ import EditActivityPage from 'pages/a/EditActivityPage';
 import ActivitiesPage from 'pages/a/ActivitiesPage';
 import { MainProvider } from 'contexts/MainContext';
 import { ActivityContextProvider } from 'contexts/ActivityContext';
-import { DataPage } from 'pages/DataPage';
 import { ActivityHome } from 'pages/a/ActivityHome';
 
 function App() {
