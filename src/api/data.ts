@@ -8,7 +8,10 @@ export const DATA = "data";
 export const UPLOAD = "upload"
 
 interface GetAllDataFromActivityResponse {
-  fields: Record<string, string>;
+  fields: Record<string, {
+    name: string;
+    type: string;
+  }>;
   data: Data[];
 }
 export const getAllDataFromActivity = (

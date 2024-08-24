@@ -40,31 +40,15 @@ export const ActivityHome = () => {
       </div>
       <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-wrap items-center gap-6">
-          {/* <div className="w-32 shrink-0">
-            <img className="aspect-[3/2] rounded-lg shadow" src={event.imgUrl} alt="" />
-          </div> */}
           <div>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <Heading>{activity.name}</Heading>
-              {/* <Badge color={event.status === 'On Sale' ? 'lime' : 'zinc'}>{event.status}</Badge> */}
             </div>
-            {/* <div className="mt-2 text-sm/6 text-zinc-500">
-              {event.date} at {event.time} <span aria-hidden="true">·</span> {event.location}
-            </div> */}
           </div>
         </div>
         <div className="flex gap-4">
           <Button outline onClick={() => navigate('edit')}>Edit</Button>
-          {/* <Button>View</Button> */}
         </div>
-      </div>
-      <div className="mt-8 grid gap-8 sm:grid-cols-2">
-        <Stat title="Total number of data" value={'15'} change={'43'} />
-        <Stat
-          title="Completness"
-          value={'24'}
-          change={'12'}
-        />
       </div>
       <DataFromActivity />
     </>

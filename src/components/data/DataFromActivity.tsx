@@ -19,7 +19,7 @@ export const DataFromActivity = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmittingData, setIsSubmittingData] = useState(false);
   const [allData, setAllData] = useState<Data[]>([])
-  const {isPending, data, error } =
+  const {isPending, data } =
     useQuery(getAllDataFromActivity(organizationId!, activityId!));
 
   const { mutateAsync: mutateCreateData } = useMutation(
@@ -29,7 +29,7 @@ export const DataFromActivity = () => {
   useEffect(() => {
     if (!data) return;
 
-    setHeaders(Object.values(data.fields));
+    setHeaders(Object.values(data.fields).map((f) => f.name));
     setFieldIds(Object.keys(data.fields));
     setAllData(data.data ?? []);
   }, [data]);
@@ -81,13 +81,46 @@ export const DataFromActivity = () => {
         <TableBody>
           {allData.map((datum) => (
             <TableRow key={`activity-data-${datum.id}`}>
-              {fieldIds.map((fieldId) => (<TableCell key={`activity-data-field-${datum.id}-${fieldId}`}>{datum.values[fieldId]}</TableCell>))}
-              <TableCell>{ datum.createdBy }</TableCell>
-              <TableCell>{ datum.createdAt }</TableCell>
+              {fieldIds.map((fieldId) => (
+                <DataValue
+                  key={`activity-data-field-${datum.id}-${fieldId}`}
+                  field={data!.fields[fieldId]} value={datum.values[fieldId]}
+                />
+              ))}
+              <TableCell>{ datum.createdBy.name }</TableCell>
+              <TableCell>{ new Date(datum.createdAt).toLocaleString() }</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </div>
+  )
+}
+
+const DataValue = ({
+  field,
+  value
+}: {
+  field: {
+    name: string;
+    type: string;
+  }
+  value: any
+}) => {
+  switch (field.type) {
+    case "upload":
+      return (
+        <TableCell className="w-max flex -space-x-10 overflow-hidden">
+          { Array.from(value).map((v) => (<img className="w-20 h-20 rounded-full" src={v as string} alt="image" />)) }
+        </TableCell>
+      )
+
+    default:
+      break;
+  }
+  return (
+    <TableCell>
+      {value}
+    </TableCell>
   )
 }

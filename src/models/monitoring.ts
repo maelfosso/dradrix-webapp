@@ -76,5 +76,8 @@ export interface Data {
   id: string;
   values: Record<string, any>;
   createdAt: Date;
-  createdBy: string;
+  createdBy: {
+    id: string;
+    name: string;
+  };
 }
