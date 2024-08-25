@@ -6,7 +6,8 @@ import { Heading } from "components/common/Heading"
 import { Link } from "components/common/Link"
 import { DataFromActivity } from "components/data/DataFromActivity"
 import { useActivityContext } from "contexts/ActivityContext"
-import { useNavigate } from "react-router-dom"
+import { useMemo } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
 
 export function Stat({ title, value, change }: { title: string; value: string; change: string }) {
   return (
@@ -24,6 +25,12 @@ export function Stat({ title, value, change }: { title: string; value: string; c
 
 export const ActivityHome = () => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const goBackURL = useMemo(() => {
+    return pathname.split("/").slice(0, -1).join("/")
+  }, [pathname])
+
   const { activity } = useActivityContext();
 
   if (!activity) {
@@ -33,7 +40,7 @@ export const ActivityHome = () => {
   return (
     <>
       <div className="max-lg:hidden">
-        <Link to="" className="inline-flex items-center gap-2 text-sm/6 text-zinc-500 dark:text-zinc-400">
+        <Link to={goBackURL} className="inline-flex items-center gap-2 text-sm/6 text-zinc-500 dark:text-zinc-400">
           <ChevronLeftIcon className="size-4" />
           Activities
         </Link>

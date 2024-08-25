@@ -83,7 +83,7 @@ export const DataFromActivity = () => {
             <TableRow key={`activity-data-${datum.id}`}>
               {fieldIds.map((fieldId) => (
                 <DataValue
-                  key={`activity-data-field-${datum.id}-${fieldId}`}
+                  key={`activity-data-${datum.id}-field-${fieldId}`}
                   field={data!.fields[fieldId]} value={datum.values[fieldId]}
                 />
               ))}
