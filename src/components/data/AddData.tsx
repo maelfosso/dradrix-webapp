@@ -8,6 +8,7 @@ import { useActivityContext } from "contexts/ActivityContext";
 import { ActivityField, ActivityFieldMultipleChoices } from "models/monitoring";
 import { useEffect, useState } from "react";
 import { AddDataUploadField } from "./AddDataUploadField";
+import { AddDataReferenceField } from "./AddDataReferenceField";
 
 interface AddDataProps {
   open: boolean;
@@ -114,13 +115,12 @@ export const AddData = ({
 
       case "key":
         return (
-          <Field key={`add-data-field-${field.id}`}>
-            <Label>{field.name}</Label>
-            <Input
-              type="text"
-              value={values[field.id] || ""}
-              onChange={(event) => setValues({...values, [field.id]: event.target.value})}/>
-          </Field>
+          <AddDataReferenceField
+            field={field}
+            fieldValues={values[field.id]}
+            onUpdateField={onUpdateField}
+            key={`add-data-field-${field.id}`}
+          />
         )
 
       default:

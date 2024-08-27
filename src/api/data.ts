@@ -7,7 +7,7 @@ import { UseMutationOptions } from "@tanstack/react-query";
 export const DATA = "data";
 export const UPLOAD = "upload"
 
-interface GetAllDataFromActivityResponse {
+export interface GetAllDataFromActivityResponse {
   fields: Record<string, {
     name: string;
     type: string;
