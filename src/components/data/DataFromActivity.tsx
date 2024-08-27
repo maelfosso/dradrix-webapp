@@ -1,4 +1,4 @@
-import { ArrowsPointingOutIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import { ArrowsPointingOutIcon, EllipsisVerticalIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createDataMutation, getAllDataFromActivity } from "api/data";
 import { Button } from "components/common/Button";
@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 import { AddData } from "./AddData";
 import { Data } from "models/monitoring";
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components/common/Dropdown";
 
 export const DataFromActivity = () => {
   const { organizationId, activityId } = useParams();
@@ -47,6 +48,10 @@ export const DataFromActivity = () => {
     }
   }
 
+  const handleDeleteData = (dataId: string) => {
+    console.log('[DataFromActivity] handleDeleteData', dataId);
+  }
+
   if (isPending) {
     return (
       <Spinner />
@@ -76,6 +81,7 @@ export const DataFromActivity = () => {
             ))}
             <TableHeader>Created by</TableHeader>
             <TableHeader>Created at</TableHeader>
+            <TableHeader></TableHeader>
           </TableRow>
         </TableHead>}
         <TableBody>
@@ -89,6 +95,18 @@ export const DataFromActivity = () => {
               ))}
               <TableCell>{ datum.createdBy.name }</TableCell>
               <TableCell>{ new Date(datum.createdAt).toLocaleString() }</TableCell>
+              <TableCell>
+                <Dropdown>
+                  <DropdownButton plain aria-label="More options">
+                    <EllipsisVerticalIcon />
+                  </DropdownButton>
+                  <DropdownMenu anchor="bottom end">
+                    {/* <DropdownItem href={datum.id}>View</DropdownItem> */}
+                    <DropdownItem href={`${datum.id}/edit`}>Edit</DropdownItem>
+                    <DropdownItem onClick={() => handleDeleteData(datum.id)}>Delete</DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
