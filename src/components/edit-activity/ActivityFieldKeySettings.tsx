@@ -1,7 +1,7 @@
 import { Fieldset } from "components/common/Fieldset";
 import { Subheading } from "components/common/Heading";
-import { useState } from "react";
-import { ActivityFieldReference } from "models/monitoring";
+import { useEffect, useState } from "react";
+import { ActivityField, ActivityFieldReference } from "models/monitoring";
 import { EditTextarea } from "./EditTextarea";
 import { Text } from "components/common/Text";
 import { useMainContext } from "contexts/MainContext";
@@ -21,8 +21,17 @@ export const ActivityFieldKeySettings = ({
   onUpdate
 }: ActivityFieldKeySettingsProps) => {
   const [descriptionValue, setDescription] = useState<string>(description);
+  const [fields, setFields] = useState<ActivityField[]>([]);
 
   const { activities } = useMainContext();
+
+  useEffect(() => {
+    const selectedActivity = activities.find((a) => a.id === details.activityId)
+    if (!selectedActivity) return;
+
+    setFields(selectedActivity.fields);
+
+  }, [details.activityId]);
 
   const handleUpdateDescription = () =>
     onUpdate('description', descriptionValue, position);
@@ -32,7 +41,18 @@ export const ActivityFieldKeySettings = ({
     onUpdate(
       'details', {
         activityId,
-        fieldId
+        fieldId,
+        fieldToUseId: fieldId
+      },
+      position
+    )
+  }
+
+  const handleUpdateFieldToUse = (fieldId: string) => {
+    onUpdate(
+      'details', {
+        ...details,
+        fieldToUseId: fieldId
       },
       position
     )
@@ -77,6 +97,28 @@ export const ActivityFieldKeySettings = ({
                   </ListboxOption>
                 )))}
             </Listbox>
+          </div>
+        </section>
+
+        <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+          <div>
+            <Subheading>Field to use</Subheading>
+            <Text>Select the field to use</Text>
+          </div>
+          <div className="ml-auto w-full">
+            {fields.length > 0 && (
+              <Listbox
+                placeholder="Select the activity/identifier"
+                value={details.fieldToUseId}
+                onChange={(newValue) => handleUpdateFieldToUse(newValue as string)}
+              >
+                { fields.map((field) => (
+                    <ListboxOption key={`activity-${details.activityId}-field-${field.id}`} value={field.id}>
+                      <ListboxLabel>{ field.name }</ListboxLabel>
+                    </ListboxOption>
+                  ))}
+              </Listbox>
+            )}
           </div>
         </section>
 
