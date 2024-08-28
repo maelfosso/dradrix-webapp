@@ -40,6 +40,22 @@ export const createDataMutation = (organizationId: string, activityId: string, o
   ...options
 });
 
+interface UpdateDataMutationResponse {
+  data: Data,
+}
+interface UpdateDataMutationRequest {
+  values: Record<string, any>;
+}
+export const updateDataMutation = (organizationId: string, activityId: string, options?: UseMutationOptions<UpdateDataMutationResponse, Error, {}>) => ({
+  mutationKey: [ORGANIZATIONS, organizationId, ACTIVITIES, activityId, DATA, "update"],
+  mutationFn: ({dataId, data}: {dataId: string; data: UpdateDataMutationRequest}) => fetchApiResponse<UpdateDataMutationResponse, UpdateDataMutationRequest>(
+    `${ORGANIZATIONS}/${organizationId}/${ACTIVITIES}/${activityId}/${DATA}/${dataId}`,
+    "PUT",
+    data,
+  ),
+  ...options
+});
+
 interface UploadFilesMutationResponse {
   fileKey: string
 }

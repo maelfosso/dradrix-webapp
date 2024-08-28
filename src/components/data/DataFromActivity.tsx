@@ -1,6 +1,6 @@
 import { ArrowsPointingOutIcon, EllipsisVerticalIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createDataMutation, getAllDataFromActivity } from "api/data";
+import { createDataMutation, getAllDataFromActivity, updateDataMutation } from "api/data";
 import { Button } from "components/common/Button";
 import { Subheading } from "components/common/Heading";
 import Spinner from "components/common/Spinner";
@@ -19,12 +19,17 @@ export const DataFromActivity = () => {
   const [fieldIds, setFieldIds] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmittingData, setIsSubmittingData] = useState(false);
+  const [currentData, setCurrentData] = useState<Data | undefined>(undefined);
   const [allData, setAllData] = useState<Data[]>([])
   const {isPending, data } =
     useQuery(getAllDataFromActivity(organizationId!, activityId!));
 
   const { mutateAsync: mutateCreateData } = useMutation(
     createDataMutation(organizationId!, activityId!)
+  )
+
+  const { mutateAsync: mutateEditData } = useMutation(
+    updateDataMutation(organizationId!, activityId!)
   )
 
   useEffect(() => {
@@ -37,8 +42,24 @@ export const DataFromActivity = () => {
 
   const handleSubmitData = async (values: Record<string, any>) => {
     try {
-      const response = await mutateCreateData({ values });
-      setAllData([...allData, response.data]);
+      if (currentData) {
+        const response = await mutateEditData({
+          dataId: currentData.id,
+          data: { values }
+        });
+        setAllData((currentAllData) => {
+          return currentAllData.map((datum) => {
+            if (datum.id === response.data.id) {
+              return response.data;
+            }
+
+            return datum;
+          })
+        });
+      } else {
+        const response = await mutateCreateData({ values });
+        setAllData([...allData, response.data]);
+      }
 
       setIsSubmittingData(false);
       setIsOpen(false);
@@ -46,6 +67,11 @@ export const DataFromActivity = () => {
 
       throw error;
     }
+  }
+
+  const handleEditData = (dataId: string) => {
+    setIsOpen(true);
+    setCurrentData(allData.find((datum) => datum.id == dataId))
   }
 
   const handleDeleteData = (dataId: string) => {
@@ -65,6 +91,7 @@ export const DataFromActivity = () => {
         <div className="flex gap-1">
           <Button plain onClick={() => setIsOpen(true)}><PlusCircleIcon /></Button>
           {isOpen && <AddData
+              currentData={currentData}
               open={isOpen}
               onClose={setIsOpen}
               onSubmittingData={(values) => handleSubmitData(values)}
@@ -102,7 +129,7 @@ export const DataFromActivity = () => {
                   </DropdownButton>
                   <DropdownMenu anchor="bottom end">
                     {/* <DropdownItem href={datum.id}>View</DropdownItem> */}
-                    <DropdownItem href={`${datum.id}/edit`}>Edit</DropdownItem>
+                    <DropdownItem onClick={() => handleEditData(datum.id)}>Edit</DropdownItem>
                     <DropdownItem onClick={() => handleDeleteData(datum.id)}>Delete</DropdownItem>
                   </DropdownMenu>
                 </Dropdown>

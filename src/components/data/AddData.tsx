@@ -5,12 +5,13 @@ import { Input } from "components/common/Input";
 import { Listbox, ListboxLabel, ListboxOption } from "components/common/Listbox";
 import { Text } from "components/common/Text";
 import { useActivityContext } from "contexts/ActivityContext";
-import { ActivityField, ActivityFieldMultipleChoices } from "models/monitoring";
+import { ActivityField, ActivityFieldMultipleChoices, Data } from "models/monitoring";
 import { useEffect, useState } from "react";
 import { AddDataUploadField } from "./AddDataUploadField";
 import { AddDataReferenceField } from "./AddDataReferenceField";
 
 interface AddDataProps {
+  currentData: Data | undefined;
   open: boolean;
   onClose: (value: boolean) => void;
   onSubmittingData: (values: Record<string, any>) => void;
@@ -20,13 +21,18 @@ interface AddDataProps {
   }
 }
 export const AddData = ({
+  currentData,
   open,
   onClose,
   onSubmittingData,
   isSubmittingDataState
 }: AddDataProps) => {
   const { activity } = useActivityContext();
-  const [values, setValues] = useState<Record<string, any>>({});
+  const [values, setValues] = useState<Record<string, any>>(
+    currentData
+     ? currentData.values
+     : {}
+  );
   const { isSubmittingData, setIsSubmittingData } = isSubmittingDataState;
 
   useEffect(() => {
