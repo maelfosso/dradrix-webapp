@@ -1,6 +1,6 @@
 import { ArrowsPointingOutIcon, EllipsisVerticalIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createDataMutation, getAllDataFromActivity, updateDataMutation } from "api/data";
+import { createDataMutation, deleteDataMutation, getAllDataFromActivity, updateDataMutation } from "api/data";
 import { Button } from "components/common/Button";
 import { Subheading } from "components/common/Heading";
 import Spinner from "components/common/Spinner";
@@ -30,6 +30,10 @@ export const DataFromActivity = () => {
 
   const { mutateAsync: mutateEditData } = useMutation(
     updateDataMutation(organizationId!, activityId!)
+  )
+
+  const { mutateAsync: mutateDeleteData } = useMutation(
+    deleteDataMutation(organizationId!, activityId!)
   )
 
   useEffect(() => {
@@ -66,6 +70,9 @@ export const DataFromActivity = () => {
     } catch (error) {
 
       throw error;
+    } finally {
+      setIsSubmittingData(false);
+      setIsOpen(false);
     }
   }
 
@@ -74,8 +81,16 @@ export const DataFromActivity = () => {
     setCurrentData(allData.find((datum) => datum.id == dataId))
   }
 
-  const handleDeleteData = (dataId: string) => {
-    console.log('[DataFromActivity] handleDeleteData', dataId);
+  const handleDeleteData = async (dataId: string) => {
+    try {
+      await mutateDeleteData(dataId);
+      setAllData(currentAllData => {
+        return currentAllData.filter(datum => datum.id !== dataId)
+      });
+    } catch (error) {
+
+      throw error;
+    }
   }
 
   if (isPending) {

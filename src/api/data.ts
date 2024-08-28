@@ -56,6 +56,19 @@ export const updateDataMutation = (organizationId: string, activityId: string, o
   ...options
 });
 
+interface DeleteDataMutationResponse {
+  deleted: boolean
+}
+interface DeleteDataMutationRequest {}
+export const deleteDataMutation = (organizationId: string, activityId: string, options?: UseMutationOptions<DeleteDataMutationResponse, Error, {}>) => ({
+  mutationKey: [ORGANIZATIONS, organizationId, ACTIVITIES, activityId, DATA, "update"],
+  mutationFn: (dataId: string) => fetchApiResponse<DeleteDataMutationResponse, DeleteDataMutationRequest>(
+    `${ORGANIZATIONS}/${organizationId}/${ACTIVITIES}/${activityId}/${DATA}/${dataId}`,
+    "DELETE",
+  ),
+  ...options
+});
+
 interface UploadFilesMutationResponse {
   fileKey: string
 }
