@@ -27,36 +27,27 @@ export const AddDataReferenceField = ({
     );
   if (!data) return;
 
-  console.log('[AddDataReferenceField] props', field, fieldValues);
-
-  const renderListOfValues = (data: GetAllDataFromActivityResponse | undefined) => {
-    if (!data) return;
-
-    return (
-      <>
-        <Listbox
-          placeholder={`Select ${field.name}`}
-          value={fieldValues}
-          onChange={(newValue) => onUpdateField(field.id, newValue)}
-        >
-          {data.data.map((datum) => (
-            <ListboxOption value={datum.id}>
-              <ListboxLabel>{datum.values[details.fieldToUseId]}</ListboxLabel>
-              <ListboxDescription>{datum.values[details.fieldId]}</ListboxDescription>
-            </ListboxOption>
-          ))}
-        </Listbox>
-      </>
-    )
-  }
-
   return (
     <div>
       <Field>
         <Label>{field.name}</Label>
         { isPending 
           ? <Spinner />
-          : renderListOfValues(data)
+          :  <Listbox
+              placeholder={`Select ${field.name}`}
+              value={fieldValues}
+              onChange={(newValue) => onUpdateField(field.id, newValue)}
+            >
+              {data.data.map((datum) => (
+                <ListboxOption
+                  key={`add-data-reference-field-input-${datum.id}`}
+                  value={datum.values[details.fieldToUseId]}
+                >
+                  <ListboxLabel>{datum.values[details.fieldToUseId]}</ListboxLabel>
+                  <ListboxDescription>{datum.values[details.fieldId]}</ListboxDescription>
+                </ListboxOption>
+              ))}
+            </Listbox>
         }
       </Field>
     </div>
