@@ -61,10 +61,11 @@ export function DrawerTitle({
 }
 
 export function DrawerContent({
-  children
-}: {children: React.ReactNode}) {
+  children,
+  className
+}: {className?: string; children: React.ReactNode}) {
   return (
-    <div className="relative flex-1 py-4 px-4 sm:px-6">{children}</div>
+    <div className={cn("relative flex-1 py-4 px-4 sm:px-6", className)}>{children}</div>
   )
 }
 

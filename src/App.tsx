@@ -12,6 +12,7 @@ import EditActivityPage from 'pages/a/EditActivityPage';
 import ActivitiesPage from 'pages/a/ActivitiesPage';
 import { MainProvider } from 'contexts/MainContext';
 import { ActivityContextProvider } from 'contexts/ActivityContext';
+import { ActivityHome } from 'pages/a/ActivityHome';
 
 function App() {
 
@@ -41,6 +42,7 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="activities" element={<ActivitiesPage />} />
             <Route path="activities/:activityId" element={<ActivityContextProvider />}>
+              <Route index element={<ActivityHome />} />
               <Route path="edit" element={<EditActivityPage />} />
             </Route>
           </Route>

@@ -14,6 +14,7 @@ export const DEFAULT_ACTIVITY_FIELD_OPTIONS_VALUE = {
 export interface ActivityFieldReference {
   activityId: string;
   fieldId: string;
+  fieldToUseId: string;
 }
 
 export interface ActivityFieldTime {}
@@ -71,3 +72,13 @@ export const DEFAULT_ACTIVITY_VALUE: Activity = {
   fields: [],
   id: ''
 };
+
+export interface Data {
+  id: string;
+  values: Record<string, any>;
+  createdAt: Date;
+  createdBy: {
+    id: string;
+    name: string;
+  };
+}

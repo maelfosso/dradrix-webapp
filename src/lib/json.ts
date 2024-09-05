@@ -1,5 +1,6 @@
 import objectTransformer from 'object-key-transformer';
-import { camelCase, snakeCase } from 'lodash';
+import { snakeCase } from "snake-case";
+import { camelCase } from "camel-case";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function toJson(json: any) {

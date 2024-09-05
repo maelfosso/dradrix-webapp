@@ -131,7 +131,7 @@ const MainLayout = () => {
                 </div>
               </SidebarHeading>
               {activities.map((activity) => (
-                <SidebarItem key={activity.id} href={`activities/${activity.id}/edit`}>
+                <SidebarItem key={activity.id} href={`activities/${activity.id}`}>
                   {activity.name}
                 </SidebarItem>
               ))}

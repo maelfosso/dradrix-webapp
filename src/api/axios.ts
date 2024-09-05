@@ -1,7 +1,7 @@
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosHeaders, AxiosRequestConfig } from 'axios';
 import { fromJson, toJson } from 'lib/json';
 
-type RequestMethod = "GET" | "POST" | "PATCH" | "DELETE";
+type RequestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 export class TError {
   error: string;
@@ -52,6 +52,11 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    if (!error.response) {
+      // We have a network error
+      console.error('Network error:', error);
+    }
+
     if (error?.response?.status === 401) {
       redirectToSignIn();
     }
@@ -60,11 +65,24 @@ api.interceptors.response.use(
   }
 );
 
-export const fetchApiResponse = async <T,S = Record<string, never>>(url: string, method: RequestMethod, payload?: S) => {
+export const fetchApiResponse = async <T,S = Record<string, never>>(
+  url: string,
+  method: RequestMethod,
+  payload?: S,
+  params?: {
+    headers?: AxiosRequestConfig['headers'],
+    onUploadProgress?: (progressEvent: ProgressEvent) => void
+  }
+) => {
+  const headers = params && params['headers'];
+  const onUploadProgress = params && params['onUploadProgress']
+
   const { data } = await api<T>({
     method,
     url,
-    data: toJson(payload)
+    data: (headers && headers['Content-Type'] === 'multipart/form-data') ? payload : toJson(payload),
+    headers,
+    onUploadProgress
   })
 
   return fromJson(data) as T;
@@ -84,6 +102,5 @@ export const processError = (error: Error) => {
     return new TError((error as Error).message)
   }
 }
-
 
 export default api;
