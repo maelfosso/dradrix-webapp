@@ -17,6 +17,7 @@ export const DataFromActivity = () => {
 
   const [headers, setHeaders] = useState<string[]>([]);
   const [fieldIds, setFieldIds] = useState<string[]>([]);
+  const [fields, setFields] = useState<Record<string, {name: string; type: string}>>({});
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmittingData, setIsSubmittingData] = useState(false);
   const [currentData, setCurrentData] = useState<Data | undefined>(undefined);
@@ -41,6 +42,7 @@ export const DataFromActivity = () => {
 
     setHeaders(Object.values(data.fields).map((f) => f.name));
     setFieldIds(Object.keys(data.fields));
+    setFields(data.fields);
     setAllData(data.data ?? []);
   }, [data]);
 
@@ -129,10 +131,10 @@ export const DataFromActivity = () => {
         <TableBody>
           {allData.map((datum) => (
             <TableRow key={`activity-data-${datum.id}`}>
-              {fieldIds.map((fieldId) => (
+              {fields && fieldIds.map((fieldId) => (
                 <DataValue
-                  key={`activity-data-${datum.id}-field-${fieldId}`}
-                  field={data!.fields[fieldId]} value={datum.values[fieldId]}
+                  key={`activity-data-value-${datum.id}-field-${fieldId}`}
+                  field={fields[fieldId]} value={datum.values[fieldId]}
                 />
               ))}
               <TableCell>{ datum.createdBy.name }</TableCell>
