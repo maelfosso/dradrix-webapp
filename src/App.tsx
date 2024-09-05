@@ -1,5 +1,5 @@
 import './App.css'
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
+import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import AuthPage from 'pages/AuthPage';
 import PrivateRoute from 'components/PrivateRoute';
 import OnboardingPage, { OnboardingProvider } from 'pages/OnboardingPage';
@@ -13,6 +13,9 @@ import ActivitiesPage from 'pages/a/ActivitiesPage';
 import { MainProvider } from 'contexts/MainContext';
 import { ActivityContextProvider } from 'contexts/ActivityContext';
 import { ActivityHome } from 'pages/a/ActivityHome';
+import SettingsPage from 'pages/SettingsPage';
+import OrganizationSettings from 'components/settings/OrganizationSettings';
+import MembersSettings from 'components/settings/MembersSettings';
 
 function App() {
 
@@ -44,6 +47,11 @@ function App() {
             <Route path="activities/:activityId" element={<ActivityContextProvider />}>
               <Route index element={<ActivityHome />} />
               <Route path="edit" element={<EditActivityPage />} />
+            </Route>
+            <Route path='settings' element={<SettingsPage />}>
+              <Route index element={<Navigate to="organization" />} />
+              <Route path="organization" element={<OrganizationSettings />} />
+              <Route path="members" element={<MembersSettings />} />
             </Route>
           </Route>
         </Route>

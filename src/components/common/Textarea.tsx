@@ -1,5 +1,4 @@
 import * as Headless from '@headlessui/react'
-import clsx from 'clsx'
 import React, { forwardRef } from 'react'
 import { cn } from 'utils/css';
 
@@ -9,7 +8,7 @@ export const Textarea = forwardRef(function Textarea(
     wrapperClassName,
     resizable = true,
     ...props
-  }: { className?: string; wrapperClassName: string; resizable?: boolean } & Omit<Headless.TextareaProps, 'className'>,
+  }: { className?: string; wrapperClassName?: string; resizable?: boolean } & Omit<Headless.TextareaProps, 'className'>,
   ref: React.ForwardedRef<HTMLTextAreaElement>
 ) {
   return (
