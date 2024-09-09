@@ -8,6 +8,7 @@ import { DataFromActivity } from "components/data/DataFromActivity"
 import { useActivityContext } from "contexts/ActivityContext"
 import { useMemo } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+import { cn } from "utils/css"
 
 export function Stat({ title, value, change }: { title: string; value: string; change: string }) {
   return (
@@ -22,6 +23,12 @@ export function Stat({ title, value, change }: { title: string; value: string; c
     </div>
   )
 }
+
+const navigation = [
+  { name: "Fields", href: "edit", current: true },
+  { name: "Data", href: "data", current: false },
+  { name: "Settings", href: "settings", current: false }
+]
 
 export const ActivityHome = () => {
   const navigate = useNavigate();
@@ -45,17 +52,24 @@ export const ActivityHome = () => {
           Activities
         </Link>
       </div>
-      <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
+      <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-wrap items-center gap-6">
-          <div>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+          <header className="pb-4 pt-6 sm:pb-6">
+            <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-6 sm:flex-nowrap sm:pr-6 lg:pr-8">
               <Heading>{activity.name}</Heading>
+              <div className="order-last flex w-full gap-x-8 text-sm font-semibold leading-6 sm:order-none sm:w-auto sm:border-l sm:border-gray-200 sm:pl-6 sm:leading-7">
+                {navigation.map((item) => (
+                  <Link key={`activity-home-${item.name}`} to={item.href} className={cn('text-sm', item.current ? 'text-indigo-600' : 'text-gray-700')}>
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
+          </header>
         </div>
-        <div className="flex gap-4">
+        {/* <div className="flex gap-4">
           <Button outline onClick={() => navigate('edit')}>Edit</Button>
-        </div>
+        </div> */}
       </div>
       <DataFromActivity />
     </>

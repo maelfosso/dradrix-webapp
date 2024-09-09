@@ -1,19 +1,21 @@
 import { Heading } from 'components/common/Heading';
 import { Link } from 'components/common/Link';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { cn } from 'utils/css'
 
 const tabs = [
-  { name: 'Organization', href: 'organization', count: '', current: true },
-  { name: 'Members', href: 'members', count: '6', current: false },
+  { name: 'Organization', href: 'organization', current: true },
+  { name: 'Team', href: 'team', current: false },
   // { name: 'Interview', href: '#', count: '4', current: true },
   // { name: 'Offer', href: '#', current: false },
   // { name: 'Disqualified', href: '#', current: false },
 ]
 
 const SettingsPage = () => {
+  const { pathname } = useLocation();
+
   return (
-    <div  className="mx-auto max-w-4xl">
+    <div  className="max-w-4xl">
       <Heading>Settings</Heading>
       <div>
         <div className="sm:hidden">
@@ -41,14 +43,14 @@ const SettingsPage = () => {
                   to={tab.href}
                   aria-current={tab.current ? 'page' : undefined}
                   className={cn(
-                    tab.current
+                    pathname.endsWith(tab.href)
                       ? 'border-indigo-500 text-indigo-600'
                       : 'border-transparent text-gray-500 hover:border-gray-200 hover:text-gray-700',
                     'flex whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium',
                   )}
                 >
                   {tab.name}
-                  {tab.count ? (
+                  {/* {tab.count ? (
                     <span
                       className={cn(
                         tab.current ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-900',
@@ -57,12 +59,12 @@ const SettingsPage = () => {
                     >
                       {tab.count}
                     </span>
-                  ) : null}
+                  ) : null} */}
                 </Link>
               ))}
             </nav>
-            <Outlet />
           </div>
+          <Outlet />
         </div>
       </div>
     </div>

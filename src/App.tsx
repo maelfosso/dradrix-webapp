@@ -15,7 +15,7 @@ import { ActivityContextProvider } from 'contexts/ActivityContext';
 import { ActivityHome } from 'pages/a/ActivityHome';
 import SettingsPage from 'pages/SettingsPage';
 import OrganizationSettings from 'components/settings/OrganizationSettings';
-import MembersSettings from 'components/settings/MembersSettings';
+import TeamSettings from 'components/settings/TeamSettings';
 
 function App() {
 
@@ -51,7 +51,7 @@ function App() {
             <Route path='settings' element={<SettingsPage />}>
               <Route index element={<Navigate to="organization" />} />
               <Route path="organization" element={<OrganizationSettings />} />
-              <Route path="members" element={<MembersSettings />} />
+              <Route path="team" element={<TeamSettings />} />
             </Route>
           </Route>
         </Route>
