@@ -164,6 +164,7 @@ const styles = {
 
 type ButtonProps = (
   | { color?: keyof typeof styles.colors; outline?: never; plain?: never; circle?: never }
+  | { color?: keyof typeof styles.colors; outline: true; plain?: never; circle?: never }
   | { color?: never; outline: true; plain?: never; circle?: never }
   | { color?: never; outline?: never; plain: true; circle?: never }
   | { color?: never; outline?: never; plain?: never; circle: true }
