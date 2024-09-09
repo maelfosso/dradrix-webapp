@@ -6,7 +6,7 @@ type UserPreferences = {
   onboardingStep: number
 }
 
-export type UserType = {
+export type User = {
   id: number,
   firstName: string,
   lastName: string,

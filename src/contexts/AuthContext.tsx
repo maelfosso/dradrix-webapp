@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SignInMutationResponse, SignOTPMutationResponse, getAuthQuery, signInMutation, signOTPMutation } from "api/auth";
 import Spinner from "components/common/Spinner";
-import { SignInInputs, SignOTPInputs, UserType } from "models/auth";
+import { SignInInputs, SignOTPInputs, User } from "models/auth";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 
@@ -13,8 +13,8 @@ export enum AuthenticationStep {
 
 interface AuthContextProps {
   authenticationStep: AuthenticationStep,
-  authenticatedUser: UserType | null,
-  setAuthenticatedUser: (user: UserType) => void,
+  authenticatedUser: User | null,
+  setAuthenticatedUser: (user: User) => void,
   isAuthenticated: boolean,
   signIn: (signInInputs: SignInInputs) => void,
   signOTP: (signOTPInputs: SignOTPInputs) => void,
@@ -42,7 +42,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [authenticationStep, setAuthenticationStep] = useState<AuthenticationStep>(
     localStorage.getItem(SS_AUTH_PN_KEY) ? AuthenticationStep.OTP : AuthenticationStep.PHONE_NUMBER
   );
-  const [authenticatedUser, setAuthenticatedUser] = useState<UserType|null>(null);
+  const [authenticatedUser, setAuthenticatedUser] = useState<User|null>(null);
 
   const {isPending: isPendingAuth, data} =
     useQuery(getAuthQuery());

@@ -1,3 +1,5 @@
+import { User } from "./auth"
+
 export type Profile = {
   firstName: string
   lastName: string
@@ -17,6 +19,19 @@ export type Organization = {
   bio: string
   email: string
   address: Address
+}
+
+export type Member = {
+  Id: string
+  organizationId: string
+  user: User
+
+  invitedAt: Date
+  answeredAt: Date
+  deletedAt: Date
+
+  status: string
+  role: string
 }
 
 export type OnboardingStep = {

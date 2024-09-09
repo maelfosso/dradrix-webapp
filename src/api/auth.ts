@@ -1,4 +1,4 @@
-import { SignInInputs, SignOTPInputs, UserType } from "models/auth";
+import { SignInInputs, SignOTPInputs, User } from "models/auth";
 import { fetchApiResponse } from "./axios";
 import { UseMutationOptions } from "@tanstack/react-query";
 import { UseQueryOptionsWithoutQueryFnKey } from "./type";
@@ -17,7 +17,7 @@ export const signInMutation = (options: UseMutationOptions<SignInMutationRespons
 });
 
 export type SignOTPMutationResponse = {
-  user: UserType
+  user: User
 }
 export const signOTPMutation = (options: UseMutationOptions<SignOTPMutationResponse, Error, SignOTPInputs>) => ({
   mutationKey: [AUTH_OTP_CHECK],
@@ -25,8 +25,8 @@ export const signOTPMutation = (options: UseMutationOptions<SignOTPMutationRespo
   ...options
 });
 
-export const getAuthQuery = (options?: UseQueryOptionsWithoutQueryFnKey<UserType>) => ({
+export const getAuthQuery = (options?: UseQueryOptionsWithoutQueryFnKey<User>) => ({
   queryKey: [AUTH_USER],
-  queryFn: async () => fetchApiResponse<UserType>(AUTH_USER, "GET"),
+  queryFn: async () => fetchApiResponse<User>(AUTH_USER, "GET"),
   ...options
 });
