@@ -1,66 +1,70 @@
 import { CheckCircleIcon, LinkIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
+import { getOrganization } from "api/organization";
 import { getTeam } from "api/team";
-import { BadgeButton } from "components/common/Badge";
 import { Button } from "components/common/Button";
 import { Divider } from "components/common/Divider";
 import { Fieldset, Legend } from "components/common/Fieldset";
 import { Input } from "components/common/Input";
 import { Listbox, ListboxLabel, ListboxOption } from "components/common/Listbox";
 import Spinner from "components/common/Spinner";
+import { Text } from "components/common/Text";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
 const roles = [
   { name: "Owner", description: "" },
-  { name: "Team member", description: "" },
+  { name: "Member", description: "" },
 ]
 
 const TeamSettings = () => {
   const { organizationId = "" } = useParams();
   const [isLinkCopied, setIsLinkCopied] = useState<boolean>(false);
 
-  const { isPending, data: team } = useQuery({
-    queryKey: [],
+  const { isPending: isTeamPending, data: team } = useQuery({
+    queryKey: ['organization', organizationId, 'team'],
     queryFn: async () => getTeam(organizationId)
   })
 
-  const handleCopyLink = () => {
-    const link = `${document.location.origin}/t/${organizationId}?invite-code=`;
+  const { isPending: isOrganizationPending, data: organization } = useQuery({
+    queryKey: ['organization', organizationId],
+    queryFn: async () => getOrganization(organizationId)
+  })
+
+  const handleCopyLinkClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    const link = `${document.location.origin}/invite/${organization?.organization.inviteToken}`;
     navigator.clipboard.writeText(link);
     setIsLinkCopied(true);
   };
 
-  if (isPending) {
+  if (isTeamPending && isOrganizationPending) {
     return <Spinner />
   }
 
   return (
     <form method="post" className="my-10 mt-6">
       <Fieldset>
-        <Legend className="mb-4 flex items-center gap-10 font-normal text-zinc-500 dark:text-zinc-400">
-          Invite
-
-          <BadgeButton color={isLinkCopied ? 'green' : 'zinc'} onClick={handleCopyLink}>
-            { isLinkCopied ? <CheckCircleIcon className="h-4 w-4" /> : <LinkIcon className="h-4 w-4" /> }
-            Copy invitation Link
-          </BadgeButton>
-        </Legend>
-        <section className="flex">
-          <div className="flex-grow">
-            <Input
-              id="add-team-members"
-              name="add-team-members"
-              type="text"
-              placeholder="Phone number"
-              aria-describedby="add-team-members-helper"
-            />
-          </div>
-          <span className="ml-3">
-            <Button color="dark/zinc">
-              Send invite
+        <section className="">
+          <Text className="mt-3">Share this link with your team to give them access to your organization.</Text>
+          <div className="mt-3 flex max-w-lg items-center gap-3 whitespace-nowrap">
+            <div className="grow w-full">
+              <Input
+                type="url"
+                name="url"
+                value={`${document.location.origin}/invite/${organization?.organization.inviteToken}`}
+                onChange={() => {}}
+              />
+            </div>
+            <Button className="h-full" color={isLinkCopied ? 'green' : 'dark/white'} onClick={handleCopyLinkClick}>
+              { isLinkCopied ? <CheckCircleIcon className="h-4 w-4" /> : <LinkIcon className="h-4 w-4" /> }
+              Copy invitation Link
             </Button>
-          </span>
+          </div>
+          <div className="mt-3">
+            <Button text className="">Reset your invite link</Button>
+          </div>
         </section>
       </Fieldset>
 
