@@ -1,8 +1,18 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
-import { SignInMutationResponse, SignOTPMutationResponse, getAuthQuery, signInMutation, signOTPMutation } from "api/auth";
+import {
+  AUTH_OTP,
+  AUTH_OTP_CHECK,
+  SignInRequest,
+  SignInResponse,
+  SignOTPRequest,
+  SignOTPResponse,
+  getAuthQuery,
+  signIn,
+  signOTP
+} from "api/auth";
 import Spinner from "components/common/Spinner";
-import { SignInInputs, SignOTPInputs, User } from "models/auth";
+import { User } from "models/auth";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 
@@ -16,8 +26,8 @@ interface AuthContextProps {
   authenticatedUser: User | null,
   setAuthenticatedUser: (user: User) => void,
   isAuthenticated: boolean,
-  signIn: (signInInputs: SignInInputs) => void,
-  signOTP: (signOTPInputs: SignOTPInputs) => void,
+  handleSignIn: (signInInputs: SignInRequest) => void,
+  handleSignOTP: (signOTPInputs: SignOTPRequest) => void,
   signOut: () => void,
   error: string,
   setError: (error: string) => void,
@@ -63,19 +73,23 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       navigate(redirectUrl || `/org/${authenticatedUser.preferences.organization.id}`);
     }
   }, [authenticatedUser])
-
-  const { mutate: mutateSignIn } = useMutation(signInMutation({
-    onSuccess: (response: SignInMutationResponse) => {
+  
+  const { mutate: mutateSignIn } = useMutation({
+    mutationKey: [AUTH_OTP],
+    mutationFn:  (inputs: SignInRequest) => signIn(inputs),
+    onSuccess: (response: SignInResponse) => {
       localStorage.setItem(SS_AUTH_PN_KEY, response.phoneNumber);
       setAuthenticationStep(AuthenticationStep.OTP);
     },
     onError: (error: Error) => {
       // setError(processError(error).error)
     }
-  }));
+  });
 
-  const { mutate: mutateSignOTP } = useMutation(signOTPMutation({
-    onSuccess: (data: SignOTPMutationResponse) => {
+  const { mutate: mutateSignOTP } = useMutation({
+    mutationKey: [AUTH_OTP_CHECK],
+    mutationFn:  (inputs: SignOTPRequest) => signOTP(inputs),
+    onSuccess: (data: SignOTPResponse) => {
       localStorage.removeItem(SS_AUTH_PN_KEY);
 
       setIsAuthenticated(true);
@@ -84,16 +98,16 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     onError: (error: Error) => {
       // setError(processError(error).error)
     }
-  }));
+  });
 
-  const signOTP = async (signOTPInputs: SignOTPInputs) => {
+  const handleSignOTP = async (signOTPInputs: SignOTPRequest) => {
     mutateSignOTP({
       ...signOTPInputs,
       phoneNumber: localStorage.getItem(SS_AUTH_PN_KEY)!
     });
   }
 
-  const signIn = async (signInInputs: SignInInputs) => {
+  const handleSignIn = async (signInInputs: SignInRequest) => {
     mutateSignIn(signInInputs);
   }
 
@@ -110,8 +124,8 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       authenticatedUser,
       setAuthenticatedUser,
       isAuthenticated,
-      signIn,
-      signOTP,
+      handleSignIn,
+      handleSignOTP,
       signOut,
       error,
       setError

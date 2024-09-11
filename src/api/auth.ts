@@ -1,4 +1,4 @@
-import { SignInInputs, SignOTPInputs, User } from "models/auth";
+import { User } from "models/auth";
 import { fetchApiResponse } from "./axios";
 import { UseMutationOptions } from "@tanstack/react-query";
 import { UseQueryOptionsWithoutQueryFnKey } from "./type";
@@ -7,23 +7,26 @@ export const AUTH_USER = "user";
 export const AUTH_OTP = "auth/otp";
 export const AUTH_OTP_CHECK = "auth/otp/check";
 
-export type SignInMutationResponse = {
+export type SignInRequest = {
+  phoneNumber: string
+  organizationId?: string
+}
+
+export type SignInResponse = {
   phoneNumber: string
 }
-export const signInMutation = (options: UseMutationOptions<SignInMutationResponse, Error, SignInInputs>) => ({
-  mutationKey: [AUTH_OTP],
-  mutationFn:  (inputs: SignInInputs) => fetchApiResponse<SignInMutationResponse, SignInInputs>(AUTH_OTP, "POST", inputs),
-  ...options
-});
+export const signIn = (inputs: SignInRequest) => fetchApiResponse<SignInResponse, SignInRequest>(AUTH_OTP, "POST", inputs);
 
-export type SignOTPMutationResponse = {
+export type SignOTPResponse = {
   user: User
 }
-export const signOTPMutation = (options: UseMutationOptions<SignOTPMutationResponse, Error, SignOTPInputs>) => ({
-  mutationKey: [AUTH_OTP_CHECK],
-  mutationFn:  (inputs: SignOTPInputs) => fetchApiResponse<SignOTPMutationResponse, SignOTPInputs>(AUTH_OTP_CHECK, "POST", inputs),
-  ...options
-});
+
+export type SignOTPRequest = {
+  phoneNumber: string
+  pinCode: string
+}
+
+export const signOTP = (inputs: SignOTPRequest) => fetchApiResponse<SignOTPResponse, SignOTPRequest>(AUTH_OTP_CHECK, "POST", inputs);
 
 export const getAuthQuery = (options?: UseQueryOptionsWithoutQueryFnKey<User>) => ({
   queryKey: [AUTH_USER],

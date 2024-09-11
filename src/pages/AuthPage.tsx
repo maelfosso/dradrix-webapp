@@ -4,7 +4,7 @@ import SignOTPage from "../components/auth/SignOTP";
 import { Navigate, useLocation } from "react-router-dom";
 
 const AuthPage = () => {
-  const { authenticationStep, signIn, signOTP, error, isAuthenticated, authenticatedUser } = useAuthContext();
+  const { authenticationStep, handleSignIn, handleSignOTP, error, isAuthenticated, authenticatedUser } = useAuthContext();
   const { state } = useLocation();
   const redirectUrl = state?.redirectUrl;
 
@@ -31,8 +31,8 @@ const AuthPage = () => {
   return (
     <div>
       { authenticationStep === AuthenticationStep.PHONE_NUMBER
-        ? <SignInPage errorOnSignIn={error} onSignIn={signIn} />
-        : <SignOTPage errorOnSignOTP={error} onSignOTP={signOTP} />
+        ? <SignInPage errorOnSignIn={error} onSignIn={handleSignIn} />
+        : <SignOTPage errorOnSignOTP={error} onSignOTP={handleSignOTP} />
       }
     </div>
   )

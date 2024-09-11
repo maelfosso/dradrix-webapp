@@ -15,12 +15,3 @@ export type User = {
 
   preferences: UserPreferences
 }
-
-export type SignInInputs = {
-  phoneNumber: string
-}
-
-export type SignOTPInputs = {
-  phoneNumber: string
-  pinCode: string
-}
