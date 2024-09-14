@@ -9,3 +9,9 @@ interface GetOrganizationResponse {
 export const getOrganization = async (organizationId: string) => {
   return await fetchApiResponse<GetOrganizationResponse>(`${ORGANIZATIONS}/${organizationId}`, "GET")
 }
+
+type GetOrganizationFromInviteTokenResponse = GetOrganizationResponse;
+
+export const getOrganizationFromInviteToken = async (inviteToken: string) => {
+  return await fetchApiResponse<GetOrganizationFromInviteTokenResponse>(`${ORGANIZATIONS}/${inviteToken}`, "GET")
+}

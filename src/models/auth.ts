@@ -1,9 +1,9 @@
 type UserPreferences = {
-  organization: {
-    id: string
-    name: string
-  }
-  onboardingStep: number
+  currentOrganizationId: string;
+  // }{
+  //   id: string
+  //   name: string
+  currentStatus: string;
 }
 
 export type User = {

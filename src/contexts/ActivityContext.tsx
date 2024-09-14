@@ -29,7 +29,7 @@ export const ActivityContextProvider = () => {
   let { activities, setActivities } = useMainContext();
 
   const activitiesHref = useMemo(() => {
-    return `/org/${organizationId}/activities`;
+    return `/x/activities`;
   }, [organizationId])
 
   const [activity, setActivity] = useState<IActivity|null>(null);

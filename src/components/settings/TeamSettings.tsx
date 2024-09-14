@@ -1,6 +1,5 @@
 import { CheckCircleIcon, LinkIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
-import { getOrganization } from "api/organization";
 import { getTeam } from "api/team";
 import { Button } from "components/common/Button";
 import { Divider } from "components/common/Divider";
@@ -9,8 +8,8 @@ import { Input } from "components/common/Input";
 import { Listbox, ListboxLabel, ListboxOption } from "components/common/Listbox";
 import Spinner from "components/common/Spinner";
 import { Text } from "components/common/Text";
+import { useMainContext } from "contexts/MainContext";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
 
 const roles = [
   { name: "Owner", description: "" },
@@ -18,28 +17,24 @@ const roles = [
 ]
 
 const TeamSettings = () => {
-  const { organizationId = "" } = useParams();
+  const { organization } = useMainContext();
   const [isLinkCopied, setIsLinkCopied] = useState<boolean>(false);
 
   const { isPending: isTeamPending, data: team } = useQuery({
-    queryKey: ['organization', organizationId, 'team'],
-    queryFn: async () => getTeam(organizationId)
+    queryKey: ['organization', organization?.id ?? '' , 'team'],
+    queryFn: async () => getTeam(organization?.id ?? '' )
   })
 
-  const { isPending: isOrganizationPending, data: organization } = useQuery({
-    queryKey: ['organization', organizationId],
-    queryFn: async () => getOrganization(organizationId)
-  })
 
   const handleCopyLinkClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    const link = `${document.location.origin}/invite/${organization?.organization.inviteToken}`;
+    const link = `${document.location.origin}/join/${organization?.invitationToken}`;
     navigator.clipboard.writeText(link);
     setIsLinkCopied(true);
   };
 
-  if (isTeamPending && isOrganizationPending) {
+  if (isTeamPending) {
     return <Spinner />
   }
 
@@ -53,7 +48,7 @@ const TeamSettings = () => {
               <Input
                 type="url"
                 name="url"
-                value={`${document.location.origin}/invite/${organization?.organization.inviteToken}`}
+                value={`${document.location.origin}/join/${organization?.invitationToken}`}
                 onChange={() => {}}
               />
             </div>
@@ -71,7 +66,7 @@ const TeamSettings = () => {
       <Divider className="my-10" soft />
 
       <Fieldset>
-        <Legend className="mb-4 font-normal text-zinc-500 dark:text-zinc-400">Members (3)</Legend>
+        <Legend className="mb-4 font-normal text-zinc-500 dark:text-zinc-400">Members ({team?.members.length ?? 1})</Legend>
         <ul role="list" className="divide-y divide-gray-200">
           {team?.members.map((person) => (
             <li key={person.user.phoneNumber} className="flex items-center py-4">

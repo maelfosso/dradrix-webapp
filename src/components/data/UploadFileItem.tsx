@@ -66,7 +66,6 @@ const UploadFileItem = ({
       setDeleting(true);
       if (fileKey) {
         const response = await mutateDeleteUploadedFile({ fileKey });
-        console.log(response);
       }
       onRemoveFile({ file, fileKey });
     } catch (error) {

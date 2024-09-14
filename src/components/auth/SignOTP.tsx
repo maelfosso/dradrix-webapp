@@ -1,28 +1,35 @@
+import { useMutation } from "@tanstack/react-query";
+import { signOTP, SignOTPRequest } from "api/auth";
 import { Button } from "components/common/Button";
-import { FieldGroup, Fieldset } from "components/common/Fieldset";
+import { Fieldset } from "components/common/Fieldset";
 import { Heading } from "components/common/Heading";
 import { Input } from "components/common/Input";
 import { Text } from "components/common/Text";
-import { SignOTPInputs } from "models/auth";
+import { useAuthContext } from "contexts/AuthContext";
 import { useEffect, useRef, useState } from "react"
+import { useNavigate } from "react-router-dom";
+import { usePathUtils } from "utils/path";
 
 const NUMBER_OF_DIGITS = 4;
 
-interface Props {
-  onSignOTP: (inputs: SignOTPInputs) => void;
-  errorOnSignOTP: string
-}
-const SignOTPage = ({ errorOnSignOTP, onSignOTP } : Props) => {
-  const [inputs, setInputs] = useState<SignOTPInputs>({
-    phoneNumber: '',
-    otp: ''
+const SignOTP = () => {
+  const navigate = useNavigate();
+  const { checkCurrentUser } = useAuthContext();
+  const { mutateAsync: mutateSignOTP } = useMutation({
+    mutationKey: ["auth", "sign-otp"],
+    mutationFn:  (inputs: SignOTPRequest) => signOTP(inputs)
   });
-  // const [error, setSubmissionError] = useState<string>();
-  // const [showError, setShowError] = useState<boolean>(false);
-  // const { signOTP } = useAuth();
+
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  
+  const { findParameter, removeParameter } = usePathUtils();
+
+  useEffect(() => {
+    const phoneNumber = findParameter("phone-number");
+    setPhoneNumber(phoneNumber);
+  }, [findParameter])
 
   const [otp, setOtp] = useState<string[]>(new Array(NUMBER_OF_DIGITS).fill(""));
-  // const [errorOnSignOTP, setOtpError] = useState<string | null>(null);
   const otpBoxReference = useRef([]);
 
   const handleChange = (value: string, index: number) => {
@@ -60,19 +67,21 @@ const SignOTPage = ({ errorOnSignOTP, onSignOTP } : Props) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // await signOTP(inputs);
     const inputs = {
-      phoneNumber: '',
+      phoneNumber,
       pinCode: otp.join("")
     };
-    onSignOTP(inputs);
-    // try {
-    //   await signUp(inputs);
-    //   router.replace(AUTH_SIGN_IN);
-    // } catch (error) {
-    //   setShowError(true);
-    //   setSubmissionError(getErrorMessage(error))
-    // }
+
+    try {
+      const response = await mutateSignOTP(inputs);
+      removeParameter("phone-number");
+      navigate(response.redirectToUrl, {
+        replace: true
+      });
+      checkCurrentUser();
+    } catch (error) {
+      
+    }
   }
 
   return (
@@ -108,4 +117,4 @@ const SignOTPage = ({ errorOnSignOTP, onSignOTP } : Props) => {
   )
 }
 
-export default SignOTPage;
+export default SignOTP;

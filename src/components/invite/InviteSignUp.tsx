@@ -1,22 +1,22 @@
-import { useMutation } from "@tanstack/react-query";
-import { signIn, SignInRequest } from "api/auth";
+import { SignInRequest } from "api/auth";
 import { Button } from "components/common/Button";
 import { Field, Fieldset } from "components/common/Fieldset";
 import { Heading } from "components/common/Heading";
 import { Input } from "components/common/Input";
 import { Text } from "components/common/Text";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "contexts/AuthContext";
+import { useState } from "react";
 
-const SignIn = () => {
-  const navigate = useNavigate();
-  // const { setAuthenticatedUser } = useAuthContext();
-
-  const { mutateAsync: mutateSignIn } = useMutation({
-    mutationKey: ["auth", "sign-in"],
-    mutationFn:  (inputs: SignInRequest) => signIn(inputs)
-  });
-
+const InviteSignUp = () => {
+  // const {
+  //   authenticationStep,
+  //   handleSignIn,
+  //   handleSignOTP,
+  //   error,
+  //   isAuthenticated,
+  //   authenticatedUser
+  // } = useAuthContext();
+  
   const [inputs, setInputs] = useState<SignInRequest>({
     phoneNumber: ''
   });
@@ -24,14 +24,7 @@ const SignIn = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      const response = await mutateSignIn(inputs);
-      navigate(response.redirectToUrl, {
-        replace: true
-      });
-    } catch (error) {
-      
-    }
+    // onSignIn(inputs);
   }
 
   return (
@@ -58,9 +51,8 @@ const SignIn = () => {
           </form>
         </div>
       </div>
-
     </div>
-  );
+  )
 }
 
-export default SignIn;
+export default InviteSignUp;

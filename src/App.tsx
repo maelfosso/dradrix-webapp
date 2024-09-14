@@ -1,12 +1,7 @@
 import './App.css'
 import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
-import AuthPage from 'pages/AuthPage';
 import PrivateRoute from 'components/PrivateRoute';
-import OnboardingPage, { OnboardingProvider } from 'pages/OnboardingPage';
-import AuthLayout from 'components/layout/AuthLayout';
-import VisitorLayout from 'components/layout/VisitorLayout';
-import NotReadyUserLayout from 'components/layout/NotReadyUserLayout';
-import LandingPage from 'pages/LandingPage';
+import VisitorLayout from 'components/layout/AuthLayout';
 import HomePage from 'pages/HomePage';
 import EditActivityPage from 'pages/a/EditActivityPage';
 import ActivitiesPage from 'pages/a/ActivitiesPage';
@@ -16,32 +11,33 @@ import { ActivityHome } from 'pages/a/ActivityHome';
 import SettingsPage from 'pages/SettingsPage';
 import OrganizationSettings from 'components/settings/OrganizationSettings';
 import TeamSettings from 'components/settings/TeamSettings';
+import InviteLayout from 'components/layout/InviteLayout';
+import InviteSignUp from 'components/invite/InviteSignUp';
+import InviteOTP from 'components/invite/InviteOTP';
+import InviteCreateProfile from 'components/invite/InviteCreateProfile';
+import { useAuthContext } from 'contexts/AuthContext';
+import SignOTP from 'components/auth/SignOTP';
+import SignIn from 'components/auth/SignIn';
+import SetUpProfile from 'components/auth/SetUpProfile';
+import SetUpOrganization from 'components/auth/SetUpOrganization';
 
 function App() {
+  const { authenticatedUser } = useAuthContext();
 
   const routes = createBrowserRouter(
     createRoutesFromElements(
-      <Route
-        element={<AuthLayout />}
-      >
-        <Route element={<VisitorLayout />}>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/sign-in" element={<AuthPage />}/>
-        </Route>
+      <Route>
+        <Route
+          path="/"
+          element={
+            authenticatedUser && authenticatedUser.preferences.currentStatus === "registration-complete"
+              ? <Navigate to={`/x`} />
+              : <Navigate to={'/auth/sign-in'} replace />
+          }
+        />
 
         <Route element={<PrivateRoute />}>
-          <Route element={<NotReadyUserLayout />}>
-            <Route
-              path="/onboarding"
-              element={
-                <OnboardingProvider>
-                  <OnboardingPage></OnboardingPage>
-                </OnboardingProvider>
-              }
-            />
-          </Route>
-
-          <Route path="/org/:organizationId" element={<MainProvider />}>
+          <Route path="/x" element={<MainProvider />}>
             <Route index element={<HomePage />} />
             <Route path="activities" element={<ActivitiesPage />} />
             <Route path="activities/:activityId" element={<ActivityContextProvider />}>
@@ -54,6 +50,20 @@ function App() {
               <Route path="team" element={<TeamSettings />} />
             </Route>
           </Route>
+        </Route>
+
+        <Route path='auth' element={<VisitorLayout />}>
+          <Route index element={<Navigate to={"auth/sign-in"} />} />
+          <Route path="check-otp" element={<SignOTP />} />
+          <Route path="profile" element={<SetUpProfile />} />
+          <Route path="org" element={<SetUpOrganization />} />
+          <Route path="sign-in" element={<SignIn />}/>
+        </Route>
+
+        <Route path='/join/:invitationToken' element={<InviteLayout />}>
+          <Route path='' element={<InviteSignUp />} />
+          <Route path='otp' element={<InviteOTP />} />
+          <Route path='create-profile' element={<InviteCreateProfile />} />
         </Route>
       </Route>
     )
