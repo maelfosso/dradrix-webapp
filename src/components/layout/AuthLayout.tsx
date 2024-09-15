@@ -29,7 +29,10 @@ const AuthLayout = () => {
         </NavbarSection>
       </Navbar>
 
+
+    <div className="flex flex-col items-center justify-center h-[calc(100vh_-_60px)]">
       <Outlet />
+    </div>
     </>
   )
 }

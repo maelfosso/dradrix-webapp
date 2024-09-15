@@ -8,7 +8,7 @@ export const AUTH_OTP_CHECK = "auth/otp-check";
 
 export type SignInRequest = {
   phoneNumber: string
-  organizationId?: string
+  invitationToken?: string
 }
 
 export type SignInResponse = {
@@ -27,12 +27,14 @@ export type SignOTPRequest = {
   pinCode: string
 }
 
-export const signOTP = (inputs: SignOTPRequest) => fetchApiResponse<SignOTPResponse, SignOTPRequest>(AUTH_OTP_CHECK, "POST", inputs);
+interface SignOTPRequestOptions {
+  from?: string
+}
+export const signOTP = (inputs: SignOTPRequest, options: SignOTPRequestOptions = {}) =>
+  fetchApiResponse<SignOTPResponse, SignOTPRequest>(
+    `${AUTH_OTP_CHECK}?from=${options['from'] ?? ''}`,
+    "POST",
+    inputs
+  );
 
 export const getCurrentUser = () => fetchApiResponse<User>(AUTH_USER, "GET");
-
-export const getAuthQuery = (options?: UseQueryOptionsWithoutQueryFnKey<User>) => ({
-  queryKey: [AUTH_USER],
-  queryFn: async () => fetchApiResponse<User>(AUTH_USER, "GET"),
-  ...options
-});

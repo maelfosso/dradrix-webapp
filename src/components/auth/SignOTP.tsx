@@ -6,18 +6,25 @@ import { Heading } from "components/common/Heading";
 import { Input } from "components/common/Input";
 import { Text } from "components/common/Text";
 import { useAuthContext } from "contexts/AuthContext";
-import { useEffect, useRef, useState } from "react"
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState } from "react"
+import { useLocation, useNavigate } from "react-router-dom";
 import { usePathUtils } from "utils/path";
 
 const NUMBER_OF_DIGITS = 4;
 
 const SignOTP = () => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const requestSource = useMemo(() => {
+    const splitten = pathname.split("/");
+    return splitten.slice(0, splitten.length - 1).join("/")
+  }, [pathname]);
+
   const { checkCurrentUser } = useAuthContext();
   const { mutateAsync: mutateSignOTP } = useMutation({
     mutationKey: ["auth", "sign-otp"],
-    mutationFn:  (inputs: SignOTPRequest) => signOTP(inputs)
+    mutationFn:  (inputs: SignOTPRequest) => signOTP(inputs, { from: requestSource })
   });
 
   const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -85,7 +92,6 @@ const SignOTP = () => {
   }
 
   return (
-    <div className="flex flex-col py-12 items-center justify-center h-[calc(100vh_-_60px)] sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
           <Heading>Enter the OTP</Heading>
@@ -113,7 +119,6 @@ const SignOTP = () => {
           </form>
         </div>
       </div>
-    </div>
   )
 }
 

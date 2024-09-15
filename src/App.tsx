@@ -11,10 +11,7 @@ import { ActivityHome } from 'pages/a/ActivityHome';
 import SettingsPage from 'pages/SettingsPage';
 import OrganizationSettings from 'components/settings/OrganizationSettings';
 import TeamSettings from 'components/settings/TeamSettings';
-import InviteLayout from 'components/layout/InviteLayout';
-import InviteSignUp from 'components/invite/InviteSignUp';
-import InviteOTP from 'components/invite/InviteOTP';
-import InviteCreateProfile from 'components/invite/InviteCreateProfile';
+import JoinLayout from 'components/layout/JoinLayout';
 import { useAuthContext } from 'contexts/AuthContext';
 import SignOTP from 'components/auth/SignOTP';
 import SignIn from 'components/auth/SignIn';
@@ -60,10 +57,11 @@ function App() {
           <Route path="sign-in" element={<SignIn />}/>
         </Route>
 
-        <Route path='/join/:invitationToken' element={<InviteLayout />}>
-          <Route path='' element={<InviteSignUp />} />
-          <Route path='otp' element={<InviteOTP />} />
-          <Route path='create-profile' element={<InviteCreateProfile />} />
+        <Route path='/join/:invitationToken' element={<JoinLayout />}>
+          <Route index element={<Navigate to="sign-in" relative="path" />} />
+          <Route path="check-otp" element={<SignOTP />} />
+          <Route path="profile" element={<SetUpProfile />} />
+          <Route path="sign-in" element={<SignIn />}/>
         </Route>
       </Route>
     )

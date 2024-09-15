@@ -12,6 +12,6 @@ export const getOrganization = async (organizationId: string) => {
 
 type GetOrganizationFromInviteTokenResponse = GetOrganizationResponse;
 
-export const getOrganizationFromInviteToken = async (inviteToken: string) => {
-  return await fetchApiResponse<GetOrganizationFromInviteTokenResponse>(`${ORGANIZATIONS}/${inviteToken}`, "GET")
+export const getOrganizationFromInviteToken = async (invitationToken: string) => {
+  return await fetchApiResponse<GetOrganizationFromInviteTokenResponse>(`join/${invitationToken}`, "GET")
 }

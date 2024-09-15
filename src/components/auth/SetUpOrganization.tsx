@@ -152,7 +152,7 @@ const SetUpOrganization = () => {
   }
 
   return (
-    <div className="flex flex-col py-12 items-center justify-center h-[calc(100vh_-_60px)] sm:px-6 lg:px-8">
+    <div className="flex flex-col items-center justify-center">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
           <Heading>Set up your organization/company</Heading>
