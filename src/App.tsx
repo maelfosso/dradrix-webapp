@@ -16,7 +16,7 @@ import JoinLayout from '@/components/layout/JoinLayout';
 import { useAuthContext } from '@/contexts/AuthContext';
 import SignOTP from '@/components/auth/sign-otp';
 import SignIn from '@/components/auth/sign-in';
-import SetUpProfile from '@/components/auth/SetUpProfile';
+import SetUpProfile from '@/components/auth/set-up-profile';
 import SetUpOrganization from '@/components/auth/SetUpOrganization';
 
 function App() {
