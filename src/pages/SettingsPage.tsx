@@ -1,7 +1,7 @@
 import { Heading } from 'components/common/Heading';
 import { Link } from 'components/common/Link';
 import { Outlet, useLocation } from 'react-router-dom';
-import { cn } from 'utils/css'
+import { cn } from 'lib/utils'
 
 const tabs = [
   { name: 'Organization', href: 'organization', current: true },

@@ -1,4 +1,4 @@
-type UserPreferences = {
+interface UserPreferences {
   organization: {
     id: string
     name: string
@@ -6,7 +6,7 @@ type UserPreferences = {
   onboardingStep: number
 }
 
-export type UserType = {
+export interface UserType {
   id: number,
   firstName: string,
   lastName: string,
@@ -16,11 +16,11 @@ export type UserType = {
   preferences: UserPreferences
 }
 
-export type SignInInputs = {
+export interface SignInInputs {
   phoneNumber: string
 }
 
-export type SignOTPInputs = {
+export interface SignOTPInputs{
   phoneNumber: string
   pinCode: string
 }

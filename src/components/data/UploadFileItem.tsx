@@ -4,7 +4,7 @@ import { deleteUploadedFileMutation, uploadFilesMutation } from "api/data";
 import { Button } from "components/common/Button";
 import { memo, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { cn } from "utils/css";
+import { cn } from "lib/utils";
 
 interface UploadFileItemProps {
   file: File;

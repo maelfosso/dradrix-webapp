@@ -1,10 +1,11 @@
-import { Button } from "components/common/Button";
-import { Field, Fieldset } from "components/common/Fieldset";
-import { Heading } from "components/common/Heading";
-import { Input } from "components/common/Input";
-import { Text } from "components/common/Text";
-import { SignInInputs } from "models/auth";
+import { Button } from "@/components/common/Button";
+import { Field, Fieldset } from "@/components/common/Fieldset";
+import { Heading } from "@/components/common/Heading";
+import { Input } from "@/components/common/Input";
+import { Text } from "@/components/common/Text";
+import { SignInInputs } from "@/models/auth";
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 interface Props {
   onSignIn: (inputs: SignInInputs) => void;
@@ -43,6 +44,23 @@ const SignInPage = ({ errorOnSignIn, onSignIn } : Props) => {
 
             <Button type="submit" className="w-full" color="dark/white">Sign in</Button>
           </form>
+          <p className="px-8 text-center text-sm text-muted-foreground">
+            By clicking continue, you agree to our{" "}
+            <Link
+              to="/terms"
+              className="underline underline-offset-4 hover:text-primary"
+            >
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link
+              to="/privacy"
+              className="underline underline-offset-4 hover:text-primary"
+            >
+              Privacy Policy
+            </Link>
+            .
+          </p>
         </div>
       </div>
 

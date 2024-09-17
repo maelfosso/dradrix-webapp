@@ -8,7 +8,7 @@ import { DataFromActivity } from "components/data/DataFromActivity"
 import { useActivityContext } from "contexts/ActivityContext"
 import { useMemo } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { cn } from "utils/css"
+import { cn } from "lib/utils"
 
 export function Stat({ title, value, change }: { title: string; value: string; change: string }) {
   return (

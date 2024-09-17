@@ -1,6 +1,6 @@
 import * as Headless from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { cn } from 'utils/css';
+import { cn } from 'lib/utils';
 import { Heading } from './Heading';
 
 export function Drawer({

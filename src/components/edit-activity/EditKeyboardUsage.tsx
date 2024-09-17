@@ -1,6 +1,6 @@
 import { Description } from "components/common/Fieldset";
 import { Strong } from "components/common/Text";
-import { cn } from "utils/css";
+import { cn } from "lib/utils";
 
 interface EditKeyboardUsageProps {
   onHover: boolean,

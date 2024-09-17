@@ -1,6 +1,6 @@
 import * as Headless from '@headlessui/react'
 import React, { forwardRef } from 'react'
-import { cn } from 'utils/css'
+import { cn } from 'lib/utils'
 
 export function InputGroup({ className, children }: { className?: string } & React.ComponentPropsWithoutRef<'span'>) {
   return (

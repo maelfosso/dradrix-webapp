@@ -2,7 +2,7 @@ import { ChangeEvent, FocusEvent, KeyboardEvent, useRef, useState } from "react"
 import { Field } from "components/common/Fieldset";
 import { Textarea } from "components/common/Textarea";
 import useAutosizeTextArea from "hooks/useAutosizeTextArea";
-import { cn } from "utils/css";
+import { cn } from "lib/utils";
 import { EditKeyboardUsage } from "./EditKeyboardUsage";
 
 interface EditTextareaProps {

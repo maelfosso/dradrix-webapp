@@ -1,5 +1,5 @@
 import * as Headless from '@headlessui/react'
-import { cn } from 'utils/css'
+import { cn } from 'lib/utils'
 import type React from 'react'
 import { Button } from './Button'
 

@@ -1,6 +1,6 @@
 import * as Headless from '@headlessui/react'
 import type React from 'react'
-import { cn } from 'utils/css'
+import { cn } from 'lib/utils'
 
 export function Fieldset({ className, ...props }: { className?: string } & Omit<Headless.FieldsetProps, 'className'>) {
   return (
