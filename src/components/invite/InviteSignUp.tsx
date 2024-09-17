@@ -1,10 +1,10 @@
-import { SignInRequest } from "api/auth";
-import { Button } from "components/common/Button";
-import { Field, Fieldset } from "components/common/Fieldset";
-import { Heading } from "components/common/Heading";
-import { Input } from "components/common/Input";
-import { Text } from "components/common/Text";
-import { useAuthContext } from "contexts/AuthContext";
+import { SignInRequest } from "@/api/auth";
+import { Button } from "@/components/common/Button";
+import { Field, Fieldset } from "@/components/common/Fieldset";
+import { Heading } from "@/components/common/Heading";
+import { Input } from "@/components/common/Input";
+import { Text } from "@/components/common/Text";
+import { useAuthContext } from "@/contexts/AuthContext";
 import { useState } from "react";
 
 const InviteSignUp = () => {

@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAllDataFromActivity, GetAllDataFromActivityResponse } from "api/data";
-import { Field, Label } from "components/common/Fieldset";
-import { Listbox, ListboxDescription, ListboxLabel, ListboxOption } from "components/common/Listbox";
-import Spinner from "components/common/Spinner";
+import { getAllDataFromActivity, GetAllDataFromActivityResponse } from "@/api/data";
+import { Field, Label } from "@/components/common/Fieldset";
+import { Listbox, ListboxDescription, ListboxLabel, ListboxOption } from "@/components/common/Listbox";
+import Spinner from "@/components/common/Spinner";
 import { ActivityField, ActivityFieldReference } from "models/monitoring";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";

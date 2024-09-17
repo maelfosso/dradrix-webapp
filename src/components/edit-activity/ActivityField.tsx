@@ -1,12 +1,12 @@
 import { Cog6ToothIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Button } from "components/common/Button";
+import { Button } from "@/components/common/Button";
 import { ActivityFieldSettings } from "./ActivityFieldSettings";
 import { ActivityFieldType } from "./ActivityFieldType";
 import { EditInput } from "./EditInput";
 import { Draggable } from "react-beautiful-dnd";
 import { useState } from "react";
 import { ActivityField as IActivityField } from "models/monitoring";
-import { useActivityContext } from "contexts/ActivityContext";
+import { useActivityContext } from "@/contexts/ActivityContext";
 
 interface ActivityFieldProps {
   field: IActivityField;

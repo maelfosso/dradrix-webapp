@@ -1,14 +1,14 @@
 import { CheckCircleIcon, LinkIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
-import { getTeam } from "api/team";
-import { Button } from "components/common/Button";
-import { Divider } from "components/common/Divider";
-import { Fieldset, Legend } from "components/common/Fieldset";
-import { Input } from "components/common/Input";
-import { Listbox, ListboxLabel, ListboxOption } from "components/common/Listbox";
-import Spinner from "components/common/Spinner";
-import { Text } from "components/common/Text";
-import { useMainContext } from "contexts/MainContext";
+import { getTeam } from "@/api/team";
+import { Button } from "@/components/common/Button";
+import { Divider } from "@/components/common/Divider";
+import { Fieldset, Legend } from "@/components/common/Fieldset";
+import { Input } from "@/components/common/Input";
+import { Listbox, ListboxLabel, ListboxOption } from "@/components/common/Listbox";
+import Spinner from "@/components/common/Spinner";
+import { Text } from "@/components/common/Text";
+import { useMainContext } from "@/contexts/MainContext";
 import { useState } from "react";
 
 const roles = [

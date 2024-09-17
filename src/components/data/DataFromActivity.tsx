@@ -1,15 +1,15 @@
 import { ArrowsPointingOutIcon, EllipsisVerticalIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createDataMutation, deleteDataMutation, getAllDataFromActivity, updateDataMutation } from "api/data";
-import { Button } from "components/common/Button";
-import { Subheading } from "components/common/Heading";
-import Spinner from "components/common/Spinner";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/common/Table";
+import { createDataMutation, deleteDataMutation, getAllDataFromActivity, updateDataMutation } from "@/api/data";
+import { Button } from "@/components/common/Button";
+import { Subheading } from "@/components/common/Heading";
+import Spinner from "@/components/common/Spinner";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/common/Table";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 import { AddData } from "./AddData";
 import { Data } from "models/monitoring";
-import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components/common/Dropdown";
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/common/Dropdown";
 
 export const DataFromActivity = () => {
   const { organizationId, activityId } = useParams();

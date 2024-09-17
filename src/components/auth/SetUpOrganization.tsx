@@ -1,15 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
-import { AUTH_ORGANIZATION, setUpOrganization, SetUpOrganizationRequest } from "api/onboarding";
-import { Button } from "components/common/Button";
-import { Field, FieldGroup, Fieldset, Label } from "components/common/Fieldset";
-import { Heading } from "components/common/Heading";
-import { Input } from "components/common/Input";
-import { Text } from "components/common/Text";
-import { Textarea } from "components/common/Textarea";
-import { useAuthContext } from "contexts/AuthContext";
+import { AUTH_ORGANIZATION, setUpOrganization, SetUpOrganizationRequest } from "@/api/onboarding";
+import { Button } from "@/components/common/Button";
+import { Field, FieldGroup, Fieldset, Label } from "@/components/common/Fieldset";
+import { Heading } from "@/components/common/Heading";
+import { Input } from "@/components/common/Input";
+import { Text } from "@/components/common/Text";
+import { Textarea } from "@/components/common/Textarea";
+import { useAuthContext } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { usePathUtils } from "utils/path";
+import { usePathUtils } from "@/lib/path";
 
 // export const Address = () => {
 //   let countries = getCountries()

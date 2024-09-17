@@ -14,7 +14,7 @@ import OrganizationSettings from '@/components/settings/OrganizationSettings';
 import TeamSettings from '@/components/settings/TeamSettings';
 import JoinLayout from '@/components/layout/JoinLayout';
 import { useAuthContext } from '@/contexts/AuthContext';
-import SignOTP from '@/components/auth/SignOTP';
+import SignOTP from '@/components/auth/sign-otp';
 import SignIn from '@/components/auth/sign-in';
 import SetUpProfile from '@/components/auth/SetUpProfile';
 import SetUpOrganization from '@/components/auth/SetUpOrganization';

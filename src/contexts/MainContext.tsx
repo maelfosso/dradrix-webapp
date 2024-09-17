@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { ACTIVITIES, createActivityMutation, getAllActivities, ORGANIZATIONS } from "api/activities";
-import { getOrganization } from "api/organization";
-import Spinner from "components/common/Spinner";
-import MainLayout from "components/layout/MainLayout";
+import { ACTIVITIES, createActivityMutation, getAllActivities, ORGANIZATIONS } from "@/api/activities";
+import { getOrganization } from "@/api/organization";
+import Spinner from "@/components/common/Spinner";
+import MainLayout from "@/components/layout/MainLayout";
 import { Activity } from "models/monitoring";
 import { Organization } from "models/onboarding";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";

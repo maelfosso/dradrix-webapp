@@ -1,8 +1,8 @@
-import { Fieldset } from "components/common/Fieldset";
-import { Subheading } from "components/common/Heading";
-import { Text } from "components/common/Text";
+import { Fieldset } from "@/components/common/Fieldset";
+import { Subheading } from "@/components/common/Heading";
+import { Text } from "@/components/common/Text";
 import { useState } from "react";
-import { Switch } from "components/common/Switch";
+import { Switch } from "@/components/common/Switch";
 import { ActivityFieldNumber } from "models/monitoring";
 import { EditTextarea } from "./EditTextarea";
 

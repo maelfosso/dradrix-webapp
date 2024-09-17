@@ -1,11 +1,11 @@
-import { Fieldset } from "components/common/Fieldset";
-import { Subheading } from "components/common/Heading";
-import { Text } from "components/common/Text";
+import { Fieldset } from "@/components/common/Fieldset";
+import { Subheading } from "@/components/common/Heading";
+import { Text } from "@/components/common/Text";
 import { useEffect, useState } from "react";
 import { EditInput } from "./EditInput";
-import { Button } from "components/common/Button";
+import { Button } from "@/components/common/Button";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { Switch } from "components/common/Switch";
+import { Switch } from "@/components/common/Switch";
 import { ActivityFieldMultipleChoices } from "models/monitoring";
 import { EditTextarea } from "./EditTextarea";
 

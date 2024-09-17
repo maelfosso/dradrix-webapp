@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { getOrganizationFromInviteToken } from "api/organization";
-import { Heading } from "components/common/Heading";
-import { Navbar } from "components/common/Navbar";
-import Spinner from "components/common/Spinner";
-import { Text } from "components/common/Text";
+import { getOrganizationFromInviteToken } from "@/api/organization";
+import { Heading } from "@/components/common/Heading";
+import { Navbar } from "@/components/common/Navbar";
+import Spinner from "@/components/common/Spinner";
+import { Text } from "@/components/common/Text";
 import { Organization } from "models/onboarding";
 import { useEffect, useState } from "react";
 import { Link, Outlet, useParams } from "react-router-dom";

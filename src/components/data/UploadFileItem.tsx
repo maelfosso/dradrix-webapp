@@ -1,7 +1,7 @@
 import { ExclamationCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useMutation } from "@tanstack/react-query";
-import { deleteUploadedFileMutation, uploadFilesMutation } from "api/data";
-import { Button } from "components/common/Button";
+import { deleteUploadedFileMutation, uploadFilesMutation } from "@/api/data";
+import { Button } from "@/components/common/Button";
 import { memo, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { cn } from "lib/utils";

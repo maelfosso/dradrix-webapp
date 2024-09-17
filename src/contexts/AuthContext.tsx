@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import {
-  AUTH_USER} from "api/auth";
-import Spinner from "components/common/Spinner";
+  AUTH_USER} from "@/api/auth";
+import Spinner from "@/components/common/Spinner";
 import { User } from "models/auth";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { fetchApiResponse } from "api/axios";
+import { fetchApiResponse } from "@/api/axios";
 
 interface AuthContextProps {
   authenticatedUser: User | null,

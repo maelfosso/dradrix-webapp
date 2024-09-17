@@ -1,12 +1,12 @@
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { useMutation } from "@tanstack/react-query";
-import { deleteActivityMutation } from "api/activities";
-import { Button } from "components/common/Button";
-import { Divider } from "components/common/Divider";
-import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components/common/Dropdown";
-import { Heading } from "components/common/Heading"
-import { Link } from "components/common/Link";
-import { useMainContext } from "contexts/MainContext";
+import { deleteActivityMutation } from "@/api/activities";
+import { Button } from "@/components/common/Button";
+import { Divider } from "@/components/common/Divider";
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/common/Dropdown";
+import { Heading } from "@/components/common/Heading"
+import { Link } from "@/components/common/Link";
+import { useMainContext } from "@/contexts/MainContext";
 import { Activity } from "models/monitoring";
 import { useParams } from "react-router-dom";
 

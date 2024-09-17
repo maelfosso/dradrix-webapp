@@ -1,10 +1,10 @@
-import { Fieldset } from "components/common/Fieldset"
-import { Subheading } from "components/common/Heading"
+import { Fieldset } from "@/components/common/Fieldset"
+import { Subheading } from "@/components/common/Heading"
 import { EditTextarea } from "./EditTextarea"
 import { useState } from "react"
 import { ActivityFieldText } from "models/monitoring"
-import { Text } from "components/common/Text"
-import { Switch } from "components/common/Switch"
+import { Text } from "@/components/common/Text"
+import { Switch } from "@/components/common/Switch"
 
 
 interface ActivityFieldTextSettingsProps {

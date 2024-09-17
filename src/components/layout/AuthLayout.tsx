@@ -1,6 +1,6 @@
-import { Link } from "components/common/Link"
-import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from "components/common/Navbar"
-import { useAuthContext } from "contexts/AuthContext"
+import { Link } from "@/components/common/Link"
+import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from "@/components/common/Navbar"
+import { useAuthContext } from "@/contexts/AuthContext"
 import { Navigate, Outlet } from "react-router-dom"
 
 const AuthLayout = () => {

@@ -1,11 +1,11 @@
-import { Fieldset } from "components/common/Fieldset";
-import { Subheading } from "components/common/Heading";
+import { Fieldset } from "@/components/common/Fieldset";
+import { Subheading } from "@/components/common/Heading";
 import { useEffect, useState } from "react";
 import { ActivityField, ActivityFieldReference } from "models/monitoring";
 import { EditTextarea } from "./EditTextarea";
-import { Text } from "components/common/Text";
-import { useMainContext } from "contexts/MainContext";
-import { Listbox, ListboxDescription, ListboxLabel, ListboxOption } from "components/common/Listbox";
+import { Text } from "@/components/common/Text";
+import { useMainContext } from "@/contexts/MainContext";
+import { Listbox, ListboxDescription, ListboxLabel, ListboxOption } from "@/components/common/Listbox";
 
 interface ActivityFieldKeySettingsProps {
   id: string;

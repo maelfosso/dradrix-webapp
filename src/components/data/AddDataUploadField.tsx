@@ -1,4 +1,4 @@
-import { Field, Label } from "components/common/Fieldset";
+import { Field, Label } from "@/components/common/Fieldset";
 import { ActivityField, ActivityFieldUpload } from "models/monitoring";
 import { useEffect, useState } from "react";
 import UploadFileItem from "./UploadFileItem";

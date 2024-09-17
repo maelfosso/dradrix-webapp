@@ -1,13 +1,13 @@
-import { Button } from "components/common/Button"
-import { Checkbox, CheckboxField } from "components/common/Checkbox"
-import { Divider } from "components/common/Divider"
-import { Label } from "components/common/Fieldset"
-import { Subheading } from "components/common/Heading"
-import { Input } from "components/common/Input"
-import { Select } from "components/common/Select"
-import { Text } from "components/common/Text"
-import { Textarea } from "components/common/Textarea"
-import { useMainContext } from "contexts/MainContext"
+import { Button } from "@/components/common/Button"
+import { Checkbox, CheckboxField } from "@/components/common/Checkbox"
+import { Divider } from "@/components/common/Divider"
+import { Label } from "@/components/common/Fieldset"
+import { Subheading } from "@/components/common/Heading"
+import { Input } from "@/components/common/Input"
+import { Select } from "@/components/common/Select"
+import { Text } from "@/components/common/Text"
+import { Textarea } from "@/components/common/Textarea"
+import { useMainContext } from "@/contexts/MainContext"
 
 const OrganizationSettings = () => {
   const { organization } = useMainContext();

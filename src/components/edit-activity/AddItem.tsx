@@ -1,5 +1,5 @@
 import { ArrowUpTrayIcon, CalendarDaysIcon, ClockIcon, DocumentTextIcon, HashtagIcon, KeyIcon, ListBulletIcon, PlusIcon } from "@heroicons/react/24/outline";
-import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "components/common/Dropdown";
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from "@/components/common/Dropdown";
 import { useEffect, useState } from "react";
 
 interface AddItemProps {

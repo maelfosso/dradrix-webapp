@@ -1,10 +1,10 @@
-import { Button } from "components/common/Button";
-import { Drawer, DrawerContent, DrawerFooter, DrawerTitle } from "components/common/Drawer";
-import { Field, FieldGroup, Label } from "components/common/Fieldset";
-import { Input } from "components/common/Input";
-import { Listbox, ListboxLabel, ListboxOption } from "components/common/Listbox";
-import { Text } from "components/common/Text";
-import { useActivityContext } from "contexts/ActivityContext";
+import { Button } from "@/components/common/Button";
+import { Drawer, DrawerContent, DrawerFooter, DrawerTitle } from "@/components/common/Drawer";
+import { Field, FieldGroup, Label } from "@/components/common/Fieldset";
+import { Input } from "@/components/common/Input";
+import { Listbox, ListboxLabel, ListboxOption } from "@/components/common/Listbox";
+import { Text } from "@/components/common/Text";
+import { useActivityContext } from "@/contexts/ActivityContext";
 import { ActivityField, ActivityFieldMultipleChoices, Data } from "models/monitoring";
 import { useState } from "react";
 import { AddDataUploadField } from "./AddDataUploadField";

@@ -1,5 +1,5 @@
-import { Field } from "components/common/Fieldset";
-import { Input } from "components/common/Input";
+import { Field } from "@/components/common/Fieldset";
+import { Input } from "@/components/common/Input";
 import { cn } from "lib/utils";
 import { EditKeyboardUsage } from "./EditKeyboardUsage";
 import { ChangeEvent, FocusEvent, KeyboardEvent, useState } from "react";

@@ -1,5 +1,5 @@
 import { ArrowUpTrayIcon, CalendarDaysIcon, ClockIcon, DocumentTextIcon, HashtagIcon, KeyIcon, ListBulletIcon } from "@heroicons/react/24/outline";
-import { Listbox, ListboxOption } from "components/common/Listbox";
+import { Listbox, ListboxOption } from "@/components/common/Listbox";
 
 interface ActivityFieldTypeProps {
   primaryKey: boolean;

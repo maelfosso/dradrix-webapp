@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getActivity, updateActivityMutation } from "api/activities";
-import Spinner from "components/common/Spinner";
+import { getActivity, updateActivityMutation } from "@/api/activities";
+import Spinner from "@/components/common/Spinner";
 import { Activity as IActivity } from "models/monitoring";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { Outlet, useParams } from "react-router-dom";

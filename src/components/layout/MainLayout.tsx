@@ -5,10 +5,10 @@ import { Dropdown, DropdownButton, DropdownDivider, DropdownItem, DropdownLabel,
 import { Avatar } from "../common/Avatar";
 import { Sidebar, SidebarBody, SidebarFooter, SidebarHeader, SidebarHeading, SidebarItem, SidebarLabel, SidebarSection, SidebarSpacer } from "../common/Sidebar";
 import { ArrowRightStartOnRectangleIcon, ChevronDownIcon, ChevronUpIcon, Cog6ToothIcon, Cog8ToothIcon, HomeIcon, LightBulbIcon, PlusIcon, QuestionMarkCircleIcon, ShieldCheckIcon, SparklesIcon, Square2StackIcon, UserCircleIcon } from "@heroicons/react/24/outline";
-import { useAuthContext } from "contexts/AuthContext";
+import { useAuthContext } from "@/contexts/AuthContext";
 import { useMemo } from "react";
-import { Button } from "components/common/Button";
-import { useMainContext } from "contexts/MainContext";
+import { Button } from "@/components/common/Button";
+import { useMainContext } from "@/contexts/MainContext";
 
 function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
   return (

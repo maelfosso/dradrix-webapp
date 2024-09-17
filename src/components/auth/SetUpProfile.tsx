@@ -1,14 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
-import { AUTH_PROFILE, updateProfile, UpdateProfileRequest } from "api/onboarding";
-import { Button } from "components/common/Button";
-import { Field, FieldGroup, Fieldset, Label } from "components/common/Fieldset";
-import { Heading } from "components/common/Heading";
-import { Input } from "components/common/Input";
-import { Text } from "components/common/Text";
-import { useAuthContext } from "contexts/AuthContext";
+import { AUTH_PROFILE, updateProfile, UpdateProfileRequest } from "@/api/onboarding";
+import { Button } from "@/components/common/Button";
+import { Field, FieldGroup, Fieldset, Label } from "@/components/common/Fieldset";
+import { Heading } from "@/components/common/Heading";
+import { Input } from "@/components/common/Input";
+import { Text } from "@/components/common/Text";
+import { useAuthContext } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { usePathUtils } from "utils/path";
+import { usePathUtils } from "@/lib/path";
 
 const SetUpProfile = () => {
   const navigate = useNavigate();

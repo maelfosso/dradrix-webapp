@@ -1,15 +1,15 @@
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
-import { Button } from "components/common/Button";
-import { Divider } from "components/common/Divider";
-import { FieldGroup, Fieldset, Legend } from "components/common/Fieldset";
+import { Button } from "@/components/common/Button";
+import { Divider } from "@/components/common/Divider";
+import { FieldGroup, Fieldset, Legend } from "@/components/common/Fieldset";
 import { ActivityField as IActivityField } from "models/monitoring";
 import { Fragment, useEffect, useState } from "react";
-import { AddItem } from "components/edit-activity/AddItem";
-import { ActivityField } from "components/edit-activity/ActivityField";
-import { EditTextarea } from "components/edit-activity/EditTextarea";
-import { EditInput } from "components/edit-activity/EditInput";
-import { useActivityContext } from "contexts/ActivityContext";
-import { Link } from "components/common/Link";
+import { AddItem } from "@/components/edit-activity/AddItem";
+import { ActivityField } from "@/components/edit-activity/ActivityField";
+import { EditTextarea } from "@/components/edit-activity/EditTextarea";
+import { EditInput } from "@/components/edit-activity/EditInput";
+import { useActivityContext } from "@/contexts/ActivityContext";
+import { Link } from "@/components/common/Link";
 import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 

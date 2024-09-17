@@ -1,6 +1,6 @@
-import { Link } from "components/common/Link"
-import { Navbar, NavbarSpacer } from "components/common/Navbar"
-import { useAuthContext } from "contexts/AuthContext";
+import { Link } from "@/components/common/Link"
+import { Navbar, NavbarSpacer } from "@/components/common/Navbar"
+import { useAuthContext } from "@/contexts/AuthContext";
 import { Outlet } from "react-router-dom"
 
 const NotReadyUserLayout = () => {

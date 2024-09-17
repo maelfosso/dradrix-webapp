@@ -1,5 +1,5 @@
-import { Fieldset } from "components/common/Fieldset";
-import { Subheading } from "components/common/Heading";
+import { Fieldset } from "@/components/common/Fieldset";
+import { Subheading } from "@/components/common/Heading";
 import { useState } from "react";
 import { ActivityFieldTime } from "models/monitoring";
 import { EditTextarea } from "./EditTextarea";

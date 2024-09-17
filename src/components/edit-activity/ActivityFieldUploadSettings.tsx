@@ -1,11 +1,11 @@
-import { Fieldset } from "components/common/Fieldset";
-import { Subheading } from "components/common/Heading";
+import { Fieldset } from "@/components/common/Fieldset";
+import { Subheading } from "@/components/common/Heading";
 import { useEffect, useState } from "react";
 import { EditTextarea } from "./EditTextarea";
 import { ActivityFieldUpload } from "models/monitoring";
-import { Text } from "components/common/Text";
+import { Text } from "@/components/common/Text";
 import { EditInput } from "./EditInput";
-import { Listbox, ListboxLabel, ListboxOption } from "components/common/Listbox";
+import { Listbox, ListboxLabel, ListboxOption } from "@/components/common/Listbox";
 
 const TYPE_OF_FILES = ['Image', 'PDF', 'Video', 'Audio'];
 

@@ -1,5 +1,5 @@
-import { Description } from "components/common/Fieldset";
-import { Strong } from "components/common/Text";
+import { Description } from "@/components/common/Fieldset";
+import { Strong } from "@/components/common/Text";
 import { cn } from "lib/utils";
 
 interface EditKeyboardUsageProps {
