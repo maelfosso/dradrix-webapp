@@ -58,13 +58,11 @@ const SetUpProfile = () => {
           Create your profile
         </h1>
         <p className="text-sm text-muted-foreground">
-          Please enter the one-time password sent to your phone.
+          Please enter your information.
         </p>
       </div>
-      <form className="mt-8 space-y-6 sm:mx-auto sm:w-full sm:max-w-md" onSubmit={handleSubmit}>
+      <form className="p-4 mt-8 space-y-6 sm:mx-auto sm:w-full sm:max-w-md" onSubmit={handleSubmit}>
         <Fieldset>
-          {/* <Legend>Profile information</Legend> */}
-          {/* <Text>Kindly, provide some information about you</Text> */}
           <FieldGroup>
             <Field>
               <Label>First name</Label>

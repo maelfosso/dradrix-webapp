@@ -62,7 +62,7 @@ const SignIn = () => {
           Enter your email below to create your account
         </p>
       </div>
-      <div className="grid gap-6">
+      <div className="p-4 grid gap-6">
         <form onSubmit={handleSubmit}>
           <div className="grid gap-2">
             <div className="grid gap-1">
