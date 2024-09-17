@@ -1,71 +1,74 @@
+import { useMutation } from "@tanstack/react-query";
+import { signIn, SignInRequest, SignInResponse } from "@/api/auth";
+import { addMemberIntoTeam } from "@/api/team";
 import { Button } from "@/components/common/Button";
 import { Field, Fieldset } from "@/components/common/Fieldset";
 import { Heading } from "@/components/common/Heading";
 import { Input } from "@/components/common/Input";
 import { Text } from "@/components/common/Text";
-import { SignInInputs } from "@/models/auth";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-interface Props {
-  onSignIn: (inputs: SignInInputs) => void;
-  errorOnSignIn: string
-}
-const SignInPage = ({ errorOnSignIn, onSignIn } : Props) => {
-  const [inputs, setInputs] = useState<SignInInputs>({
+const SignIn = () => {
+  const navigate = useNavigate();
+  const { invitationToken = "" } = useParams() as { invitationToken: string };
+
+  const { mutateAsync: mutateSignIn } = useMutation({
+    mutationKey: ["auth", "sign-in"],
+    mutationFn:  (inputs: SignInRequest) => signIn(inputs)
+  });
+
+  const { mutateAsync: mutateAddMember } = useMutation({
+    mutationKey: ["join", invitationToken],
+    mutationFn:  (inputs: SignInRequest) => addMemberIntoTeam(inputs)
+  });
+
+  const [inputs, setInputs] = useState<SignInRequest>({
     phoneNumber: ''
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    let response: SignInResponse
     e.preventDefault();
 
-    onSignIn(inputs);
+    try {
+      if (invitationToken) {
+        response = await mutateAddMember({...inputs, invitationToken })
+      } else {
+        response = await mutateSignIn(inputs);
+      }
+      navigate(response.redirectToUrl, {
+        replace: true
+      });
+    } catch (error) {
+      
+    }
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-[calc(100vh_-_60px)] py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
-          <Heading>Sign in to your account</Heading>
-          <Text>Enter your phone number, please</Text>
-          <form className="mt-8 space-y-6 sm:mx-auto sm:w-full sm:max-w-md" onSubmit={handleSubmit}>
-            <Fieldset>
-              <Field>
-                <Input
-                  id="phone_number"
-                  name="phone_number"
-                  placeholder="Your phone number"
-                  type="tel"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputs({...inputs, phoneNumber: e.target.value})}
-                  required
-                />
-              </Field>
-            </Fieldset>
+    <div className="sm:mx-auto sm:w-full sm:max-w-md">
+      <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
+        <Heading>Sign in to your account</Heading>
+        <Text>Enter your phone number, please</Text>
+        <form className="mt-8 space-y-6 sm:mx-auto sm:w-full sm:max-w-md" onSubmit={handleSubmit}>
+          <Fieldset>
+            <Field>
+              <Input
+                id="phone_number"
+                name="phone_number"
+                placeholder="Your phone number"
+                type="tel"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputs({...inputs, phoneNumber: e.target.value})}
+                required
+              />
+            </Field>
+          </Fieldset>
 
-            <Button type="submit" className="w-full" color="dark/white">Sign in</Button>
-          </form>
-          <p className="px-8 text-center text-sm text-muted-foreground">
-            By clicking continue, you agree to our{" "}
-            <Link
-              to="/terms"
-              className="underline underline-offset-4 hover:text-primary"
-            >
-              Terms of Service
-            </Link>{" "}
-            and{" "}
-            <Link
-              to="/privacy"
-              className="underline underline-offset-4 hover:text-primary"
-            >
-              Privacy Policy
-            </Link>
-            .
-          </p>
-        </div>
+          <Button type="submit" className="w-full" color="dark/white">Sign in</Button>
+        </form>
       </div>
-
     </div>
   );
 }
 
-export default SignInPage;
+export default SignIn;

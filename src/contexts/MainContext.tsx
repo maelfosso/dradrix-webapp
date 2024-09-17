@@ -1,12 +1,16 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createActivityMutation, getAllActivities } from "api/activities";
+import { ACTIVITIES, createActivityMutation, getAllActivities, ORGANIZATIONS } from "api/activities";
+import { getOrganization } from "api/organization";
 import Spinner from "components/common/Spinner";
 import MainLayout from "components/layout/MainLayout";
 import { Activity } from "models/monitoring";
+import { Organization } from "models/onboarding";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "./AuthContext";
 
 interface MainContext {
+  organization: Organization | null,
   activities: Activity[];
   setActivities: (activities: Activity[]) => void;
   handleCreateActivity: () => void;
@@ -18,20 +22,41 @@ interface MainProvider {
 }
 export const MainProvider = () => {
   const navigate = useNavigate();
-  let { organizationId } = useParams();
-  const [activities, setActivities] = useState<Activity[]>([])
+  const { authenticatedUser } = useAuthContext();
+  const [organizationId, setOrganizationId] = useState<string>('');
+  const [activities, setActivities] = useState<Activity[]>([]);
+
+  useEffect(() => {
+    if (!authenticatedUser?.preferences.currentOrganizationId) return;
+    setOrganizationId(authenticatedUser.preferences.currentOrganizationId);
+  }, [authenticatedUser]);
+
+  const { isPending: isOrganizationPending, data: organizationData } = useQuery({
+    queryKey: ['organization', organizationId],
+    queryFn: async () => getOrganization(organizationId),
+    enabled: !!organizationId
+  })
+  const [organization, setOrganization] = useState<Organization | null>(null);
+  useEffect(() => {
+    if (!organizationData) return;
+    setOrganization(organizationData?.organization);
+    refetchActivities();
+  }, [organizationData])
 
   const {mutate: createActivityMutate} = useMutation(createActivityMutation(organizationId!, {
     onSuccess(data) {
       navigate(`activities/${data.activity.id}/edit`)
     },
     onError(error: Error) {
-      console.error('on create-activity-mutate error', error)
     }
   }))
 
-  const {isPending, data, error } =
-    useQuery(getAllActivities(organizationId!));
+  console.log('organizationId', organizationId);
+  const {isPending: isActivitiesPending, data, error, refetch: refetchActivities } = useQuery({
+    queryKey: [ORGANIZATIONS, organizationId, ACTIVITIES],
+    queryFn: () => getAllActivities(organizationId),
+    enabled: !!organizationId
+  });
 
   useEffect(() => {
     if (data?.activities) {
@@ -40,21 +65,22 @@ export const MainProvider = () => {
   }, [data?.activities])
 
   const handleCreateActivity = () => {
-    console.log('handleCreateActivity');
     createActivityMutate({});
   }
 
   const value = useMemo(() => ({
+    organization,
     activities,
     setActivities,
     handleCreateActivity
   }), [
+    organization,
     activities,
     setActivities,
     handleCreateActivity
   ])
 
-  if (isPending) {
+  if (isActivitiesPending || isOrganizationPending) {
     return <Spinner />
   }
 

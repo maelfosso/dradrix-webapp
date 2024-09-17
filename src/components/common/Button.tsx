@@ -60,6 +60,12 @@ const styles = {
     // Icon
     '[--btn-icon:theme(colors.zinc.500)] data-[active]:[--btn-icon:theme(colors.zinc.700)] data-[hover]:[--btn-icon:theme(colors.zinc.700)] dark:[--btn-icon:theme(colors.zinc.500)] dark:data-[active]:[--btn-icon:theme(colors.zinc.400)] dark:data-[hover]:[--btn-icon:theme(colors.zinc.400)]',
   ],
+  text: [
+    // Base
+    'border-none p-0 sm:p-0 text-base/6 font-medium text-zinc-950 sm:text-sm/6 data-[hover]:text-zinc-700',
+    // Dark
+    'dark:text-white dark:data-[hover]:text-zinc-300',
+  ],
   colors: {
     'dark/zinc': [
       'text-white [--btn-bg:theme(colors.zinc.900)] [--btn-border:theme(colors.zinc.950/90%)] [--btn-hover-overlay:theme(colors.white/10%)]',
@@ -163,24 +169,25 @@ const styles = {
 }
 
 type ButtonProps = (
-  | { color?: keyof typeof styles.colors; outline?: never; plain?: never; circle?: never }
-  | { color?: keyof typeof styles.colors; outline: true; plain?: never; circle?: never }
-  | { color?: never; outline: true; plain?: never; circle?: never }
-  | { color?: never; outline?: never; plain: true; circle?: never }
-  | { color?: never; outline?: never; plain?: never; circle: true }
-  | { color: keyof typeof styles.colors; outline?: never; plain: true; circle?: never }
+  | { color?: keyof typeof styles.colors; outline?: never; plain?: never; circle?: never, text?: never }
+  | { color?: keyof typeof styles.colors; outline: true; plain?: never; circle?: never, text?: never }
+  | { color?: never; outline: true; plain?: never; circle?: never, text?: never }
+  | { color?: never; outline?: never; plain: true; circle?: never, text?: never }
+  | { color?: never; outline?: never; plain?: never; circle: true, text?: never }
+  | { color?: never; outline?: never; plain?: never; circle?: never, text: true }
+  | { color: keyof typeof styles.colors; outline?: never; plain: true; circle?: never, text?: never }
 ) & { className?: string; withSpin?: boolean; children: React.ReactNode } & (
     | Omit<Headless.ButtonProps, 'className'>
     | Omit<React.ComponentPropsWithoutRef<typeof Link>, 'className'>
   )
 
 export const Button = forwardRef(function Button(
-  { color, outline, plain, circle, className, withSpin, children, ...props }: ButtonProps,
+  { color, outline, plain, circle, text, className, withSpin, children, ...props }: ButtonProps,
   ref: React.ForwardedRef<HTMLElement>
 ) {
   let classes = cn(
     styles.base,
-    outline ? styles.outline : plain ? styles.plain : circle ? styles.circle : cn(styles.solid, color && styles.colors[color]), // ?? 'dark/zinc']),
+    outline ? styles.outline : plain ? styles.plain : circle ? styles.circle : text ? styles.text : cn(styles.solid, color && styles.colors[color]), // ?? 'dark/zinc']),
     className,
   )
 

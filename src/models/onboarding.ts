@@ -1,8 +1,5 @@
-export type Profile = {
-  firstName: string
-  lastName: string
-  email: string
-}
+import { User } from "./auth"
+
 
 export type Address = {
   street: string
@@ -13,10 +10,26 @@ export type Address = {
 }
 
 export type Organization = {
+  id: string
   name: string
   bio: string
   email: string
   address: Address
+
+  invitationToken: string
+}
+
+export type Member = {
+  Id: string
+  organizationId: string
+  user: User
+
+  invitedAt: Date
+  answeredAt: Date
+  deletedAt: Date
+
+  status: string
+  role: string
 }
 
 export type OnboardingStep = {
@@ -25,15 +38,3 @@ export type OnboardingStep = {
   component: React.JSX.Element;
 }
 
-export type OnboardingContextType = {
-  profile: Profile;
-  setProfile: (newProfile: Profile) => void;
-  organization: Organization;
-  setOrganization: (newOrganization: Organization) => void;
-  error: string;
-  stepIndex: number;
-  currentStep: OnboardingStep;
-  handlePrevious: () => void;
-  handleNext: () => void;
-  routingId: string | undefined;
-}

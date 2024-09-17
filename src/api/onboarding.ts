@@ -1,29 +1,38 @@
-import { UseMutationOptions } from "@tanstack/react-query";
 import { fetchApiResponse } from "./axios";
-import { Profile, Organization } from "models/onboarding";
 
-export const ONBOARDING_PROFILE = "/user/onboarding/profile";
-export const ONBOARDING_ORGANIZATION = "/user/onboarding/organization";
+export const AUTH_PROFILE = "/auth/profile";
+export const AUTH_ORGANIZATION = "/auth/organization";
 export const ONBOARDING_END = "/user/onboarding/end";
 
-export const setProfileMutation = (options: UseMutationOptions<boolean, Error, Profile>) => ({
-  mutationKey: [ONBOARDING_PROFILE],
-  mutationFn:  (inputs: Profile) => fetchApiResponse<boolean, Profile>(ONBOARDING_PROFILE, "POST", inputs),
-  ...options
-});
+export interface UpdateProfileRequest {
+  firstName: string
+  lastName: string
+  email: string
+  phoneNumber: string
+}
+
+export interface UpdateProfileResponse {
+  redirectToUrl: string
+}
+
+export const updateProfile = (inputs: UpdateProfileRequest) => fetchApiResponse<UpdateProfileResponse, UpdateProfileRequest>(AUTH_PROFILE, "POST", inputs);
 
 export type OrganizationMutationResponse = {
   id: string;
 }
 
-export const setOrganizationMutation = (options: UseMutationOptions<OrganizationMutationResponse, Error, Organization>) => ({
-  mutationKey: [ONBOARDING_ORGANIZATION],
-  mutationFn:  (inputs: Organization) => fetchApiResponse<OrganizationMutationResponse, Organization>(ONBOARDING_ORGANIZATION, "POST", inputs),
-  ...options
-});
 
-export const endOfOnboardingMutation = (options: UseMutationOptions<string, Error, {}>) => ({
-  mutationKey: [ONBOARDING_ORGANIZATION],
-  mutationFn:  () => fetchApiResponse<string, void>(ONBOARDING_END, "POST"),
-  ...options
-});
+export interface SetUpOrganizationRequest {
+  name: string
+  bio: string
+  email: string
+  phoneNumber: string
+}
+
+export interface SetUpOrganizationResponse {
+  Id: string
+  redirectToUrl: string
+}
+
+export const setUpOrganization = (inputs: SetUpOrganizationRequest) => fetchApiResponse<SetUpOrganizationResponse, SetUpOrganizationRequest>(AUTH_ORGANIZATION, "POST", inputs)
+

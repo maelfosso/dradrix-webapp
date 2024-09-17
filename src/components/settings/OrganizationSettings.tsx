@@ -7,8 +7,11 @@ import { Input } from "components/common/Input"
 import { Select } from "components/common/Select"
 import { Text } from "components/common/Text"
 import { Textarea } from "components/common/Textarea"
+import { useMainContext } from "contexts/MainContext"
 
 const OrganizationSettings = () => {
+  const { organization } = useMainContext();
+
   return (
     <form method="post" className="my-10 mt-6">
 
@@ -18,7 +21,7 @@ const OrganizationSettings = () => {
           <Text>This will be displayed on your public profile.</Text>
         </div>
         <div>
-          <Input aria-label="Organization Name" name="name" defaultValue="Catalyst" />
+          <Input aria-label="Organization Name" name="name" value={organization?.name} />
         </div>
       </section>
 
@@ -30,7 +33,7 @@ const OrganizationSettings = () => {
           <Text>This will be displayed on your public profile. Maximum 240 characters.</Text>
         </div>
         <div>
-          <Textarea aria-label="Organization Bio" name="bio" />
+          <Textarea aria-label="Organization Bio" name="bio" value={organization?.bio} />
         </div>
       </section>
 
@@ -42,7 +45,7 @@ const OrganizationSettings = () => {
           <Text>This is how customers can contact you for support.</Text>
         </div>
         <div className="space-y-4">
-          <Input type="email" aria-label="Organization Email" name="email" defaultValue="info@example.com" />
+          <Input type="email" aria-label="Organization Email" name="email" value={organization?.email} />
           <CheckboxField>
             <Checkbox name="email_is_public" defaultChecked />
             <Label>Show email on public profile</Label>
@@ -50,17 +53,17 @@ const OrganizationSettings = () => {
         </div>
       </section>
 
-      <Divider className="my-10" soft />
+      {/* <Divider className="my-10" soft />
 
       <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
         <div className="space-y-1">
           <Subheading>Address</Subheading>
           <Text>This is where your organization is registered.</Text>
         </div>
-        {/* <Address /> */}
-      </section>
+        <Address />
+      </section> */}
 
-      <Divider className="my-10" soft />
+      {/* <Divider className="my-10" soft />
 
       <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
         <div className="space-y-1">
@@ -73,7 +76,7 @@ const OrganizationSettings = () => {
             <option value="usd">USD - United States Dollar</option>
           </Select>
         </div>
-      </section>
+      </section> */}
 
       <Divider className="my-10" soft />
 

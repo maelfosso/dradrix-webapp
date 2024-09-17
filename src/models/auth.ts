@@ -1,12 +1,9 @@
 interface UserPreferences {
-  organization: {
-    id: string
-    name: string
-  }
-  onboardingStep: number
+  currentOrganizationId: string;
+  currentStatus: string;
 }
 
-export interface UserType {
+export interface User {
   id: number,
   firstName: string,
   lastName: string,
@@ -14,13 +11,4 @@ export interface UserType {
   phoneNumber: string,
 
   preferences: UserPreferences
-}
-
-export interface SignInInputs {
-  phoneNumber: string
-}
-
-export interface SignOTPInputs{
-  phoneNumber: string
-  pinCode: string
 }

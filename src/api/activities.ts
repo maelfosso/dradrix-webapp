@@ -2,6 +2,7 @@ import { Activity } from "models/monitoring";
 import { fetchApiResponse } from "./axios";
 import { UseQueryOptionsWithoutQueryFnKey } from "./type";
 import { UseMutationOptions } from "@tanstack/react-query";
+import { useCallback } from "react";
 
 export const ORGANIZATIONS = "organizations";
 export const ACTIVITIES = "activities";
@@ -24,15 +25,7 @@ export const getActivity = (
 interface GetAllActivitiesResponse {
   activities: Activity[]
 }
-export const getAllActivities = (
-  organizationId: string,
-  options?: UseQueryOptionsWithoutQueryFnKey<GetAllActivitiesResponse>
-) =>  ({
-  queryKey: [ORGANIZATIONS, organizationId, ACTIVITIES],
-  queryFn: async () => fetchApiResponse<GetAllActivitiesResponse>(
-    `${ORGANIZATIONS}/${organizationId}/${ACTIVITIES}`, "GET"),
-  ...options
-});
+export const getAllActivities = async (organizationId: string) => fetchApiResponse<GetAllActivitiesResponse>(`${ORGANIZATIONS}/${organizationId}/${ACTIVITIES}`, "GET");
 
 interface CreateActivityMutationResponse {
   activity: Activity

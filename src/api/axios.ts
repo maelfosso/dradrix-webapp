@@ -21,11 +21,14 @@ const api = axios.create({
 });
 
 const redirectToSignIn = () => {
-  console.log('redirectToSignIn', window.location.pathname)
   if (window.location) {
-    if (window.location.pathname.includes("/sign-in")) return;
+    if (
+      window.location.pathname.includes("/auth/") ||
+      window.location.pathname.includes("/join/")
+    ) return;
     
-    window.location.href = '/sign-in';
+    const nextRoute = window.location.search ?? "";
+    window.location.href = `/auth/sign-in?from=${encodeURIComponent(window.location.pathname)}${nextRoute}`;
   }
 };
 
@@ -54,7 +57,6 @@ api.interceptors.response.use(
   (error) => {
     if (!error.response) {
       // We have a network error
-      console.error('Network error:', error);
     }
 
     if (error?.response?.status === 401) {

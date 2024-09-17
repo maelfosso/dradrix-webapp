@@ -6,7 +6,7 @@ import { Listbox, ListboxLabel, ListboxOption } from "components/common/Listbox"
 import { Text } from "components/common/Text";
 import { useActivityContext } from "contexts/ActivityContext";
 import { ActivityField, ActivityFieldMultipleChoices, Data } from "models/monitoring";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AddDataUploadField } from "./AddDataUploadField";
 import { AddDataReferenceField } from "./AddDataReferenceField";
 
@@ -34,10 +34,6 @@ export const AddData = ({
      : {}
   );
   const { isSubmittingData, setIsSubmittingData } = isSubmittingDataState;
-
-  useEffect(() => {
-    console.log('values: ', values);
-  }, [values]);
 
   const onUpdateField = (fieldId: string, newFieldValues: any) => {
     setValues({ ...values, [fieldId]: newFieldValues});
@@ -140,7 +136,6 @@ export const AddData = ({
       onSubmittingData(values);
       setValues({})
     } catch (error) {
-      // console.error('handleSubmit', error);
     }
   }
 

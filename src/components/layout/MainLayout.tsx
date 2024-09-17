@@ -39,7 +39,7 @@ const MainLayout = () => {
   const { pathname } = useLocation();
 
   const { authenticatedUser } = useAuthContext();
-  const { handleCreateActivity, activities } = useMainContext();
+  const { handleCreateActivity, activities, organization } = useMainContext();
 
   const userInitials = useMemo(() => {
     return `${authenticatedUser?.firstName[0]}${authenticatedUser?.lastName[0]}`
@@ -65,8 +65,8 @@ const MainLayout = () => {
           <SidebarHeader>
             <Dropdown>
               <DropdownButton as={SidebarItem}>
-                <Avatar initials={`${authenticatedUser?.preferences.organization.name[0]}`} className="size-8 bg-zinc-900 text-white dark:bg-white dark:text-black" />
-                <SidebarLabel>{authenticatedUser?.preferences.organization.name}</SidebarLabel>
+                <Avatar initials={`${organization?.name[0]}`} className="size-8 bg-zinc-900 text-white dark:bg-white dark:text-black" />
+                <SidebarLabel>{organization?.name}</SidebarLabel>
                 <ChevronDownIcon />
               </DropdownButton>
               <DropdownMenu className="min-w-80 lg:min-w-64" anchor="bottom start">
