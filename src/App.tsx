@@ -1,22 +1,23 @@
-import './App.css'
+import * as React from "react";
+import './App.css';
 import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
-import PrivateRoute from 'components/PrivateRoute';
-import VisitorLayout from 'components/layout/AuthLayout';
-import HomePage from 'pages/HomePage';
-import EditActivityPage from 'pages/a/EditActivityPage';
-import ActivitiesPage from 'pages/a/ActivitiesPage';
-import { MainProvider } from 'contexts/MainContext';
-import { ActivityContextProvider } from 'contexts/ActivityContext';
-import { ActivityHome } from 'pages/a/ActivityHome';
-import SettingsPage from 'pages/SettingsPage';
-import OrganizationSettings from 'components/settings/OrganizationSettings';
-import TeamSettings from 'components/settings/TeamSettings';
-import JoinLayout from 'components/layout/JoinLayout';
-import { useAuthContext } from 'contexts/AuthContext';
-import SignOTP from 'components/auth/SignOTP';
-import SignIn from 'components/auth/SignIn';
-import SetUpProfile from 'components/auth/SetUpProfile';
-import SetUpOrganization from 'components/auth/SetUpOrganization';
+import PrivateRoute from '@/components/PrivateRoute';
+import VisitorLayout from '@/components/layout/AuthLayout';
+import HomePage from '@/pages/HomePage';
+import EditActivityPage from '@/pages/a/EditActivityPage';
+import ActivitiesPage from '@/pages/a/ActivitiesPage';
+import { MainProvider } from '@/contexts/MainContext';
+import { ActivityContextProvider } from '@/contexts/ActivityContext';
+import { ActivityHome } from '@/pages/a/ActivityHome';
+import SettingsPage from '@/pages/SettingsPage';
+import OrganizationSettings from '@/components/settings/OrganizationSettings';
+import TeamSettings from '@/components/settings/TeamSettings';
+import JoinLayout from '@/components/layout/JoinLayout';
+import { useAuthContext } from '@/contexts/AuthContext';
+import SignOTP from '@/components/auth/SignOTP';
+import SignIn from '@/components/auth/sign-in';
+import SetUpProfile from '@/components/auth/SetUpProfile';
+import SetUpOrganization from '@/components/auth/SetUpOrganization';
 
 function App() {
   const { authenticatedUser } = useAuthContext();
