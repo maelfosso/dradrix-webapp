@@ -1,23 +1,26 @@
 import * as React from "react";
-import './App.css';
+import './app.css';
 import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
-import PrivateRoute from '@/components/PrivateRoute';
-import VisitorLayout from '@/components/layout/AuthLayout';
-import HomePage from '@/pages/HomePage';
-import EditActivityPage from '@/pages/a/EditActivityPage';
-import ActivitiesPage from '@/pages/a/ActivitiesPage';
-import { MainProvider } from '@/contexts/MainContext';
-import { ActivityContextProvider } from '@/contexts/ActivityContext';
-import { ActivityHome } from '@/pages/a/ActivityHome';
-import SettingsPage from '@/pages/SettingsPage';
-import OrganizationSettings from '@/components/settings/OrganizationSettings';
-import TeamSettings from '@/components/settings/TeamSettings';
+import PrivateRoute from '@/components/private.route';
+import VisitorLayout from '@/components/layout/auth.layout';
+import HomePage from '@/pages/home.page';
+import ActivityFieldsPage from '@/pages/activity-fields.page';
+import ActivitiesPage from '@/pages/activities.page';
+import { MainProvider } from '@/contexts/main.context';
+import { ActivityWrapper } from '@/contexts/activity.context';
+import SettingsPage from '@/pages/settings.page';
+import OrganizationSettings from '@/components/settings/organization-settings';
+import TeamSettings from '@/components/settings/team-settings';
 import JoinLayout from '@/components/layout/JoinLayout';
-import { useAuthContext } from '@/contexts/AuthContext';
+import { useAuthContext } from '@/contexts/auth.context';
 import SignOTP from '@/components/auth/sign-otp';
 import SignIn from '@/components/auth/sign-in';
 import SetUpProfile from '@/components/auth/set-up-profile';
 import SetUpOrganization from '@/components/auth/set-up-organization';
+import { ActivityDataPage } from "./pages/activity-data.page";
+import { ActivitySettingsPage } from "./pages/activity-settings.page";
+import InventoryPage from "./pages/inventory.page";
+import AddFamilyItemsPage from "./pages/add-family-items.page";
 
 function App() {
   const { authenticatedUser } = useAuthContext();
@@ -37,10 +40,18 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/x" element={<MainProvider />}>
             <Route index element={<HomePage />} />
-            <Route path="activities" element={<ActivitiesPage />} />
-            <Route path="activities/:activityId" element={<ActivityContextProvider />}>
-              <Route index element={<ActivityHome />} />
-              <Route path="edit" element={<EditActivityPage />} />
+            <Route path="activities">
+              <Route index element={<ActivitiesPage />} />
+              <Route path=":activityId" element={<ActivityWrapper />}>
+                <Route index element={<Navigate to={"edit"} />} />
+                <Route path="edit" element={<ActivityFieldsPage />} />
+                <Route path="data" element={<ActivityDataPage />} />
+                <Route path="settings" element={<ActivitySettingsPage />} />
+              </Route>
+            </Route>
+            <Route path="inventory">
+              <Route index element={<InventoryPage />} />
+              <Route path="add" element={<AddFamilyItemsPage />} />
             </Route>
             <Route path='settings' element={<SettingsPage />}>
               <Route index element={<Navigate to="organization" />} />

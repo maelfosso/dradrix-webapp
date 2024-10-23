@@ -1,9 +1,9 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
+import * as React from 'react'
+import * as ReactDOM from 'react-dom/client'
 import './index.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthProvider } from '@/contexts/AuthContext.tsx';
+import { AuthProvider } from '@/contexts/auth.context';
+import App from './app.tsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {

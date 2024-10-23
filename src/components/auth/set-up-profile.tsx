@@ -1,14 +1,14 @@
 import * as React from "react";
 import { useMutation } from "@tanstack/react-query";
 import { AUTH_PROFILE, updateProfile, UpdateProfileRequest } from "@/api/onboarding";
-import { useAuthContext } from "@/contexts/AuthContext";
+import { useAuthContext } from "@/contexts/auth.context";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePathUtils } from "@/lib/path";
 import { Button } from "../ui/button";
-import { Field, FieldGroup, Fieldset } from "../common/Fieldset";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import { Field, FieldGroup, Fieldset } from "../ui/fieldset";
 
 const SetUpProfile = () => {
   const navigate = useNavigate();
@@ -51,8 +51,6 @@ const SetUpProfile = () => {
 
   return (
     <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-      {/* <Heading>Create your profile</Heading>
-      <Text>Kindly, provide some information about you</Text> */}
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
           Create your profile

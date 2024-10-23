@@ -1,4 +1,4 @@
-import { Member } from "models/onboarding";
+import { Member } from "@/models/onboarding";
 import { fetchApiResponse } from "./axios";
 import { ORGANIZATIONS } from "./activities";
 import { SignInRequest, SignInResponse } from "./auth";

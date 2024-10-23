@@ -1,8 +1,7 @@
-import { Activity } from "models/monitoring";
+import { Activity } from "@/models/monitoring";
 import { fetchApiResponse } from "./axios";
 import { UseQueryOptionsWithoutQueryFnKey } from "./type";
 import { UseMutationOptions } from "@tanstack/react-query";
-import { useCallback } from "react";
 
 export const ORGANIZATIONS = "organizations";
 export const ACTIVITIES = "activities";

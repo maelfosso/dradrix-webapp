@@ -2,13 +2,13 @@ import * as React from "react"
 import { useMutation } from "@tanstack/react-query";
 import { signIn, SignInRequest, SignInResponse } from "@/api/auth";
 import { addMemberIntoTeam } from "@/api/team";
-import { Input } from "@/components/common/Input";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Link } from "../common/Link";
 import { Icons } from "../icons";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
+import { Link } from "../ui/link";
+import { Input } from "../ui/input";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -52,8 +52,6 @@ const SignIn = () => {
 
   return (
     <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-      {/* <Heading>Sign in to your account</Heading>
-      <Text>Enter your phone number, please</Text> */}
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
           Create an account
@@ -112,14 +110,14 @@ const SignIn = () => {
       <p className="px-8 text-center text-sm text-muted-foreground">
         By clicking continue, you agree to our{" "}
         <Link
-          href="/terms"
+          to="/terms"
           className="underline underline-offset-4 hover:text-primary"
         >
           Terms of Service
         </Link>{" "}
         and{" "}
         <Link
-          href="/privacy"
+          to="/privacy"
           className="underline underline-offset-4 hover:text-primary"
         >
           Privacy Policy

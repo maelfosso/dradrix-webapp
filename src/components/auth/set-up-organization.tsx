@@ -1,16 +1,14 @@
 import * as React from "react";
 import { useMutation } from "@tanstack/react-query";
 import { AUTH_ORGANIZATION, setUpOrganization, SetUpOrganizationRequest } from "@/api/onboarding";
-import { Button } from "@/components/common/Button";
-import { Field, FieldGroup, Fieldset, Label } from "@/components/common/Fieldset";
-import { Heading } from "@/components/common/Heading";
-import { Input } from "@/components/common/Input";
-import { Text } from "@/components/common/Text";
-import { Textarea } from "@/components/common/Textarea";
-import { useAuthContext } from "@/contexts/AuthContext";
+import { useAuthContext } from "@/contexts/auth.context";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePathUtils } from "@/lib/path";
+import { Button } from "../ui/button";
+import { Field, FieldGroup, Fieldset, Label } from "../ui/fieldset";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
 
 // export const Address = () => {
 //   let countries = getCountries()
@@ -154,8 +152,6 @@ const SetUpOrganization = () => {
 
   return (
     <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-      {/* <Heading>Set up your organization/company</Heading>
-        <Text>Kindly, provide some information about your organization/company</Text>*/}
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
           Create your organization
@@ -198,7 +194,7 @@ const SetUpOrganization = () => {
           </FieldGroup>
         </Fieldset>
 
-        <Button type="submit" className="w-full" color="dark/white">Submit</Button>
+        <Button type="submit" className="w-full">Submit</Button>
       </form>
     </div>
   )

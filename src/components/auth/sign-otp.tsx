@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useMutation } from "@tanstack/react-query";
 import { signOTP, SignOTPRequest } from "@/api/auth"
-import { useAuthContext } from "@/contexts/AuthContext";
+import { useAuthContext } from "@/contexts/auth.context";
 import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom";
 import { usePathUtils } from "@/lib/path";
@@ -64,8 +64,6 @@ const SignOTP = () => {
 
   return (
     <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-      {/* <Heading>Sign in to your account</Heading>
-      <Text>Enter your phone number, please</Text> */}
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
           One-Time-Password

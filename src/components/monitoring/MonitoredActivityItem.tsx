@@ -1,4 +1,4 @@
-import { Activity } from "models/monitoring";
+import { Activity } from "@/models/monitoring";
 
 interface Props {
   activity: Activity;

@@ -1,4 +1,4 @@
-import { Data } from "models/monitoring";
+import { Data } from "@/models/monitoring";
 import { UseQueryOptionsWithoutQueryFnKey } from "./type";
 import { ACTIVITIES, ORGANIZATIONS } from "./activities";
 import { fetchApiResponse } from "./axios";
