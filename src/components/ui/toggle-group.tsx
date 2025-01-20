@@ -4,7 +4,6 @@ import { type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 import { toggleVariants } from "@/components/ui/toggle"
-import { Button } from "./button"
 
 const ToggleGroupContext = React.createContext<
   VariantProps<typeof toggleVariants>
@@ -57,68 +56,4 @@ const ToggleGroupItem = React.forwardRef<
 
 ToggleGroupItem.displayName = ToggleGroupPrimitive.Item.displayName
 
-interface ToggleButtonsSingleProps {
-	type: "single";
-	value: string;
-	onValueChange: (value: string) => void;
-}
-
-interface ToggleButtonsMultipleProps {
-	type: "multiple";
-	value: string[];
-	onValueChange: (value: string[]) => void;
-}
-
-interface ToggleButtonsCommonProps {
-	tabIndex?: number;
-	values: string[];
-	children?: (value: string) => React.ReactNode;
-  className?: string;
-}
-
-type ToggleGroupRootElement = React.ElementRef<typeof ToggleGroup>;
-
-type ToggleButtonsProps = (
-	| ToggleButtonsSingleProps
-	| ToggleButtonsMultipleProps
-) &
-	ToggleButtonsCommonProps;
-
-const ToggleButtons = React.forwardRef<
-	ToggleGroupRootElement,
-	ToggleButtonsProps
->(({ children, tabIndex, values, ...props }, forwardedRef) => {
-	const isActive = (value: string) =>
-		props.type === "single"
-			? props.value === value
-			: props.value.includes(value);
-
-	return (
-		<ToggleGroupPrimitive.Root
-			ref={forwardedRef}
-			{...props}
-			{...(tabIndex !== undefined && { tabIndex })}
-			onValueChange={(value: any) => {
-				if (value) {
-					props.onValueChange(value);
-				}
-			}}
-		>
-			{values.map((value) => (
-				<ToggleGroupPrimitive.Item asChild key={value} value={value}>
-					<Button
-						// highContrast
-						variant={isActive(value)? "default" : "secondary"}
-            className={cn(!isActive(value) && 'border')}
-						style={{ fontWeight: 400 }}
-						{...(tabIndex !== undefined && { tabIndex })}
-					>
-						{children ? children(value) : value}
-					</Button>
-				</ToggleGroupPrimitive.Item>
-			))}
-		</ToggleGroupPrimitive.Root>
-	);
-});
-
-export { ToggleGroup, ToggleGroupItem, ToggleButtons }
+export { ToggleGroup, ToggleGroupItem }

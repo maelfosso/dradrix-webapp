@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ChangeEvent, FocusEvent, KeyboardEvent, useRef, useState } from "react";
-import useAutosizeTextArea from "@/hooks/useAutosizeTextArea";
+import useAutosizeTextArea from "hooks/use-autosize-textarea";
 import { cn } from "@/lib/utils";
 import { EditKeyboardUsage } from "./edit-keyboard-usage";
 import { Field } from "../ui/fieldset";

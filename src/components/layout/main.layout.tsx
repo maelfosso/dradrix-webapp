@@ -80,7 +80,7 @@ const MainLayout = () => {
                 current={pathname.startsWith('/x/inventory')}
               >
                 <Package className="h-5 w-5" />
-                <SidebarLabel>Iventory</SidebarLabel>
+                <SidebarLabel>Inventory</SidebarLabel>
               </SidebarItem>
               <SidebarItem
                 href="settings"

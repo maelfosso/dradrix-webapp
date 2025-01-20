@@ -24,6 +24,10 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { ToggleButtons, ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Card, CardContent } from '@/components/ui/card';
 import { DotsVerticalIcon } from '@radix-ui/react-icons';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 
 
 const AddFamilyItemsPage = () => {
@@ -112,17 +116,20 @@ const AddFamilyItemsPage = () => {
           initial={{opacity: 0, y: 700}}
           animate={{opacity: 1, y: 0}}
           transition={{duration: 1, ease: "easeOut"}}
-          className='col-start-2 gap-3 border rounded-lg p-4'
+          className='flex flex-col relative col-start-2 gap-3 border rounded-lg p-4'
         >
-          <Button variant='ghost' size='icon' className='float-right' onClick={() => handleCloseSettings()}>
+          <Button variant='ghost' size='icon' 
+            className='absolute top-4 right-4'
+            onClick={() => handleCloseSettings()}
+          >
             <X className='h-4 w-4' />
           </Button>
           <Subheading>Settings <span></span></Subheading>
-          <div
+          {/* <div
             className='flex flex-col'
-          >
+          > */}
             <FamilyItemsFieldSettings field={selectedField} />
-          </div>
+          {/* </div> */}
         </motion.div>}
       </div>
     </>
@@ -294,7 +301,13 @@ const FamilyItemsFieldSettings = ({ field }) => {
   }  
 }
 
+const FIMCSchema = z.object({
+
+})
 const FamilyItemsFieldMCSettings = ({ field }) => {
+  const form = useForm({
+    // resolver: zodResolver()
+  });
   const [choices, setChoices] = React.useState([]);
   const [selectionType, setSelectionType] = React.useState('single');
   const [onAddingChoice, setOnAddingChoice] = React.useState(false);
@@ -324,50 +337,101 @@ const FamilyItemsFieldMCSettings = ({ field }) => {
 
   const handleDeleteChoice = (position: number) => {}
 
+  const [onHover, setOnHover] = React.useState(-1);
+
   return (
-    <>
-    <div className='flex flex-col gap-1'>
-      <Label>Choices</Label>
-      <div className='grid auto-cols-fr grid-cols-3 gap-1'>
-        { choices.map((choice, index) => (
-          <div key={`fi-fied-mc-settings-${index}`} className='flex items-center justify-center border p-4 rounded-lg relative [&>*:first-child]:hidden [&>*:first-child]:hover:flex'> {/*  [&>*:first-child]:hidden [&>*:first-child]:hover:flex */}
-            <div className='flex gap-1 absolute right-0 top-0'>
-              <Button variant='ghost' size='icon'><Pencil className='h-4 w-4' /></Button>
-              <Button variant='ghost' size='icon' onClick={() => handleDeleteChoice(index)}><Trash className='h-4 w-4' /></Button>
-            </div>
-            <div className='text-center'>{ choice }</div>
-          </div>
-        ))}
-        <Button className='h-auto flex items-center justify-center border p-4 rounded-lg relative' onClick={handleAddChoice} variant='default' size='sm' disabled={onAddingChoice}><Plus className='h-4 w-4 mr-2' /> add a choice</Button> 
-      </div>
-      {onAddingChoice && (
-        <div className='flex items-center gap-2'>
-          <Input type='text' placeholder='Name of the choice here' value={currentChoiceValue} onChange={(event) => setCurrentChoiceValue(event.target.value)} />
-          <Button variant='ghost' size='icon' onClick={handleSubmitNewChoice}><Check className="h-4 w-4" /></Button>
-          <Button variant='ghost' size='icon' onClick={handleCancelAddingChoice}><Trash className='h-4 w-4' /></Button>
+    <Form {...form}>
+      <form
+        // onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col flex-1 gap-y-2"
+      >
+        <FormField
+          control={form.control}
+          name='choices'
+          render={({ field }) => (
+            <FormItem className='space-y-0'>
+              <FormLabel>List of choices</FormLabel>
+              <FormControl>
+                <div className='flex flex-col gap-2'>
+                  { choices.map((choice, index) => (
+                      <div
+                        key={`fi-fied-mc-settings-${index}`}
+                        onMouseEnter={() => setOnHover(index)}
+                        onMouseLeave={() => setOnHover(-1)}
+                        className={cn(
+                          'flex relative'
+                        )}
+                      >
+                        <div
+                          className={cn(
+                            'gap-1',
+                            onHover == index ? 'flex items-center pr-2' : 'hidden'
+                          )}
+                        >
+                          <Button variant='ghost' size='icon'><Pencil className='h-4 w-4' /></Button>
+                          <Button variant='ghost' size='icon' onClick={() => handleDeleteChoice(index)}><Trash className='h-4 w-4' /></Button>
+                        </div>
+                        { choice }
+                      </div>
+                  ))}
+                  {onAddingChoice && (
+                    <div className='flex items-center gap-2'>
+                      <Input type='text' placeholder='Name of the choice here' value={currentChoiceValue} onChange={(event) => setCurrentChoiceValue(event.target.value)} />
+                      <Button variant='ghost' size='icon' onClick={handleSubmitNewChoice}><Check className="h-4 w-4" /></Button>
+                      <Button variant='ghost' size='icon' onClick={handleCancelAddingChoice}><Trash className='h-4 w-4' /></Button>
+                    </div>
+                  )}
+                  <Button
+                    className='text-xs h-6'
+                    onClick={handleAddChoice}
+                    variant='default'
+                    size='sm'
+                    disabled={onAddingChoice}
+                  >
+                    <Plus className='h-4 w-4 mr-2' />
+                    add a choice
+                  </Button>
+                </div>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='selection-type'
+          render={({ field }) => (
+            <FormItem className='space-y-0'>
+              <FormLabel>Selecting one or multiple choices?</FormLabel>
+              <FormControl>
+                  <RadioGroup
+                    onValueChange={(value) => setSelectionType(value)}
+                    defaultValue={selectionType}
+                    className='flex flex-col space-y-1'
+                  >
+                    <FormItem className='flex items-center space-x-3 space-y-0'>
+                      <FormControl>
+                        <RadioGroupItem value='single-choice' id='single-choice' />
+                      </FormControl>
+                      <FormLabel className='font-normal'>Single choice</FormLabel>
+                    </FormItem>
+                    <FormItem className='flex items-center space-x-3 space-y-0'>
+                      <FormControl>
+                        <RadioGroupItem value='multiple-choices' id='multiple-choices' />
+                      </FormControl>
+                      <FormLabel className='font-normal'>Multiple choices</FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <div className='mt-auto flex justify-between'>
+          <Button size='sm' variant='text' className='px-0'>Cancel</Button>
+          <Button className='' size='sm'>Done</Button>
         </div>
-      )}
-    </div>
-    <div>
-      <Label>Selecting one or multiple choices</Label>
-      <ToggleButtons
-        type='single'
-        value={selectionType}
-        onValueChange={(value) => setSelectionType(value)}
-        values={['One choice', 'Many choices']}
-        className="flex gap-1"
-      />
-    </div>
-    <div>
-      Number maximum of selection
-    </div>
-    <div>
-      How to display them?
-      - List of selection
-      - Group buttons
-      - Table
-    </div>
-    </>
+      </form>
+    </Form>
   )
 }
 
