@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Subheading } from "@/components/ui/heading";
+import { Heading, Subheading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { CalendarDays, Check, Clock, Delete, FileText, Hash, Image, List, Pencil, Plus, Settings, Text, Trash, Upload, X } from "lucide-react";
+import { CalendarDays, Check, Clock, FileText, Hash, Image, List, Pencil, Plus, PlusIcon, Settings, Text, Trash, TrashIcon, Upload, X } from "lucide-react";
 import { AddFieldItem } from '@/components/edit-activity/add-field-item';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,21 +18,24 @@ import {
 import { cn } from '@/lib/utils';
 import { usePathUtils } from '@/lib/path';
 import { motion } from "framer-motion"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { ToggleButtons, ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Card, CardContent } from '@/components/ui/card';
-import { DotsVerticalIcon } from '@radix-ui/react-icons';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
-
+import { Separator } from '@/components/ui/separator';
+import { Tooltip, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { TooltipContent } from '@radix-ui/react-tooltip';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { zodResolver } from "@hookform/resolvers/zod"
 
 const AddFamilyItemsPage = () => {
   const [fields, setFields] = React.useState([]);
   const [selectedField, setSelectedField] = React.useState(null);
+  const [isAddingFeature, setIsAddingFeature] = React.useState(false);
+  const [isAddingGroupOfFeatures, setIsAddingGroupOfFeatures] = React.useState(false);
 
   const { findParameter, removeParameter } = usePathUtils();
   React.useEffect(() => {
@@ -59,27 +62,42 @@ const AddFamilyItemsPage = () => {
 
   return (
     <>
+      <Heading>Add a category of product</Heading>
+      <Separator />
       <div className="grid grid-cols-2 gap-6">
-        <div className="grid row-start-1 gap-3">
-          <Label htmlFor="name">Name</Label>
-          <Input
-            id="name"
-            type="text"
-            className="w-full"
-            defaultValue="Gamer Gear Pro Controller"
-          />
-        </div>
-        <div className="grid row-start-2 gap-3">
-          <Label htmlFor="description">Description</Label>
-          <Textarea
-            id="description"
-            defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl nec ultricies ultricies, nunc nisl ultricies nunc, nec ultricies nunc nisl nec nunc."
-            className="min-h-32"
-          />
-        </div>
-        <div className='flex flex-col row-span-2 gap-3'>
-          <Label htmlFor='image'>Image of the family of items</Label>
-          <div className="h-full flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+        <Card className="">
+          <CardHeader>
+            <CardTitle className='text-base'>General information</CardTitle>
+            {/* <CardDescription>Deploy your new project in one-click.</CardDescription> */}
+          </CardHeader>
+          <CardContent>
+            <div className="grid row-start-1 gap-3">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                type="text"
+                className="w-full"
+                defaultValue="Gamer Gear Pro Controller"
+              />
+            </div>
+            <div className="grid row-start-2 gap-3">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl nec ultricies ultricies, nunc nisl ultricies nunc, nec ultricies nunc nisl nec nunc."
+                className="min-h-32"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="">
+          <CardHeader>
+            <CardTitle className='text-base'>Upload image for the collection</CardTitle>
+            <CardDescription>Click to upload a file or drag and drop</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-full flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
               <div className="text-center">
                 <Image aria-hidden="true" className="mx-auto h-12 w-12 text-gray-300" />
                 <div className="mt-4 text-sm leading-6 text-gray-600">
@@ -90,24 +108,138 @@ const AddFamilyItemsPage = () => {
                     <span>Click to upload a file</span>
                     <input id="file-upload" name="file-upload" type="file" className="sr-only" />
                   </Label>
-                  {/* <p className="pl-1">or drag and drop</p> */}
                 </div>
                 <p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
               </div>
             </div>
-        </div>
-        <div className={cn(
-          'grid col-start-1 gap-3 border rounded-lg p-4',
-          selectedField ? 'col-start-1' : 'col-span-2'
-        )}>
-          <Subheading>What define your item?</Subheading>
-          <div className='flex flex-col gap-3'>
-            <Input type='text' placeholder='Images of the item' /> {/* option number of images to be upload - at least 1 by default */}
+          </CardContent>
+        </Card>
+      </div>
+      <div>
+        <div className={cn()}>
+          <div className="flex items-center justify-between space-y-2">
+            <div>
+              <h3 className="text-lg font-medium">Characteristics of items</h3>
+              <p className="text-sm text-muted-foreground">
+                What are the differents items that define an item, by group.
+              </p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                size="md"
+                onClick={() => setIsAddingGroupOfFeatures(true)}
+                // variant="outline"
+                // className="h-6 rounded-[6px] border bg-transparent px-2 text-xs text-foreground shadow-none hover:bg-muted dark:text-foreground"
+              >
+                Add a group of characteristics
+              </Button>
+            </div>
+          </div>
+
+          <Card className='w-1/2'>
+            <CardHeader className="space-y-0 flex flex-row items-center">
+              <div className="flex flex-col">
+                <CardTitle className="text-base font-medium leading-none">Variants</CardTitle>
+                <CardDescription className="text-sm text-muted-foreground">Ex: colors, size, etc...</CardDescription>
+              </div>
+              <TooltipProvider delayDuration={0}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      className="ml-auto rounded-full"
+                      onClick={() => setIsAddingFeature(true)}
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span className="sr-only">Add a characteristic</span>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent sideOffset={10}>
+                    <p>Add a characteristic</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </CardHeader>
+            <CardContent>
+              <form className='flex flex-col gap-3'>
+                <div>
+                  <Label className='flex items-center justify-between mb-1'>
+                    Description
+                    <div className='flex gap-1'>
+                      <Button variant='outline' className='h-6 w-6 p-1'>
+                        <Pencil  className='h-4 w-4' />
+                      </Button>
+                      <Button variant='outline' className='h-6 w-6 p-1'>
+                        <Trash className='h-4 w-4' />
+                      </Button>
+                    </div>
+                  </Label>
+                  <Textarea></Textarea>
+                </div>
+                <div>
+                  <Label className='flex items-center justify-between mb-1'>
+                    Size
+                    <div className='flex gap-1'>
+                      <Button variant='outline' className='h-6 w-6 p-1'>
+                        <Pencil  className='h-4 w-4' />
+                      </Button>
+                      <Button variant='outline' className='h-6 w-6 p-1'>
+                        <Trash className='h-4 w-4' />
+                      </Button>
+                    </div>
+                  </Label>
+                  <Input />
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+          <Dialog open={isAddingFeature} onOpenChange={setIsAddingFeature}>
+            <DialogContent className="gap-0 p-0 outline-none">
+              <DialogHeader className="px-4 pb-4 pt-5">
+                <DialogTitle>New Characteristic</DialogTitle>
+                <DialogDescription>
+                  Named a characteristic with its different options/values
+                </DialogDescription>
+              </DialogHeader>
+              <AddCharacteristicForm />
+              <DialogFooter className="flex items-center border-t p-4 sm:justify-between">
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary">
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <Button type="submit">Save property</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={isAddingGroupOfFeatures} onOpenChange={setIsAddingGroupOfFeatures}>
+            <DialogContent className="gap-0 p-0 outline-none">
+              <DialogHeader className="px-4 pb-4 pt-5">
+                <DialogTitle>New Group of Characteristics</DialogTitle>
+                {/* <DialogDescription>
+                  Add a new propery to the group <strong>Variants</strong>
+                </DialogDescription> */}
+              </DialogHeader>
+              <AddNewGroupOfCharacteristicsForm />
+              <DialogFooter className="flex items-center border-t p-4 sm:justify-between">
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary">
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <Button type="submit">Save the group</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          
+          <div className='flex flex-col gap-3 mt-6'>
+            <Input type='text' placeholder='Images of the item' />
             <Input type='text' placeholder='Code of the item' />
             <Input type='text' placeholder='Name/Title of the item' />
             <Input type='text' placeholder='Quantity/Number of item available' />
-            <Input type='text' placeholder='Price' /> {/* add a button to make it unavailable */}
-            {/* <EditInput type='text' placeholder='Code of the item' /> */}
+            <Input type='text' placeholder='Price' />
             {fields.map((field, index) => <FamilyItemsFieldInput key={`new-family-items-fields-${index}`} field={field} />)}
             <AddFieldItem place='bottom' position={fields.length} onClick={(position, type) => handleAddField(position, type)}/>
           </div>
@@ -136,6 +268,154 @@ const AddFamilyItemsPage = () => {
   );
 }
 
+const addNewGroupOfPropertiesFormSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+})
+
+const AddNewGroupOfCharacteristicsForm = () => {
+  const form = useForm<z.infer<typeof addNewGroupOfPropertiesFormSchema>>({
+    resolver: zodResolver(addNewGroupOfPropertiesFormSchema),
+    defaultValues: {
+      title: '',
+      description: '',
+    }
+  })
+
+  const onSubmit = (values: z.infer<typeof addNewGroupOfPropertiesFormSchema>) => {
+    console.log(values);
+  }
+
+  return (
+
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='p-4'>
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder='title of the group' {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea placeholder='Small description of the group' {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+      </form>
+    </Form>
+  )
+}
+
+const typesOfProperty = {
+  "text": {
+    name: "Text",
+  },
+  "number": {
+    name: "Number"
+  },
+  "single_choice": {
+    name: "Single Choice"
+  },
+  "multiple_choice": {
+    name: "Multiple Choice"
+  }
+}
+const addCharacteristicFormSchema = z.object({
+  name: z.string(),
+  choices: z.array(z.string()),
+})
+
+const AddCharacteristicForm = () => {
+  const form = useForm<z.infer<typeof addCharacteristicFormSchema>>({
+    resolver: zodResolver(addCharacteristicFormSchema),
+    defaultValues: {
+      name: '',
+      choices: []
+    }
+  })
+
+  const onSubmit = (values: z.infer<typeof addCharacteristicFormSchema>) => {
+    console.log(values);
+  }
+
+  const handleAddChoice = () => {
+    form.setValue('choices', [...form.getValues('choices'), ''])
+  }
+
+  const handleUpdateChoice = (index: number, value: string) => {
+    const updatedChoices = form.getValues('choices').map((choice, i) =>
+      i === index ? value : choice
+    );
+    form.setValue('choices', updatedChoices);
+  }
+
+  const handleDeleteChoice = (index: number) => {
+    const updatedChoices = form.getValues('choices').filter((_, i) => i !== index);
+    form.setValue('choices', updatedChoices);
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='p-4'>
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder='name of the property' {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="choices"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className='flex justify-between'>
+                Choices/Options/Values
+
+                <Button
+                  size='sm' variant='outline' className='rounded-lg'
+                  onClick={() => handleAddChoice()}
+                >
+                  <PlusIcon />
+                </Button>
+              </FormLabel>
+              <FormControl>
+                <>
+                {field.value.map((choice, index) => ( 
+                    <div className='flex gap-2'>
+                      <Input className='flex-grow' value={choice} onChange={(event) => handleUpdateChoice(index, event.target.value)} />
+                      <Button size='sm' variant='outline' onClick={() => handleDeleteChoice(index)}>
+                        <TrashIcon />
+                      </Button>
+                    </div>
+                ))}
+                </>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+      </form>
+    </Form>
+  )
+}
 export default AddFamilyItemsPage;
 
 const types = [
