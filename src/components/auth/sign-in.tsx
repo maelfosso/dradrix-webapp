@@ -57,7 +57,7 @@ const SignIn = () => {
           Create an account
         </h1>
         <p className="text-sm text-muted-foreground">
-          Enter your email below to create your account
+          Enter your phone number below to create your account
         </p>
       </div>
       <div className="p-4 grid gap-6">
@@ -83,7 +83,7 @@ const SignIn = () => {
               {isLoading && (
                 <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
               )}
-              Sign In with Phone number
+              Sign In
             </Button>
           </div>
         </form>
